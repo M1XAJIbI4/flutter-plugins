@@ -15,7 +15,7 @@ dependencies:
   sqflite_aurora:
     git:
       url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
-      ref: master
+      ref: flutter-aurora-3.3.10
       path: packages/sqflite/sqflite_aurora
 ```
 

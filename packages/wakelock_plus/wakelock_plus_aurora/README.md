@@ -3,7 +3,7 @@
 The Aurora implementation of [`wakelock_plus`](https://pub.dev/packages/wakelock_plus).
 
 ## Usage
-This package is not an _endorsed_ implementation of `wakelock_plus`. 
+This package is not an _endorsed_ implementation of `wakelock_plus`.
 Therefore, you have to include `wakelock_plus_aurora` alongside `wakelock_plus` as dependencies in your `pubspec.yaml` file.
 
 **pubspec.yaml**

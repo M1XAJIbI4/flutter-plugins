@@ -9,7 +9,7 @@
 Пакет Dart в минимальном виде состоит из файла [`pubspec.yaml`](https://dart.dev/tools/pub/pubspec), папки `lib` с как минимум одним файлом `<package-name>.dart`. Создать пакет можно командой:
 
 ```shell
-$ flutter-aurora create --template=package <package-name>
+flutter-aurora create --template=package <package-name>
 ```
 
 Рассмотрим пакет "[dart_package_device](https://gitlab.com/omprussia/flutter/demo-dart-packages/-/tree/master/packages/aurora/dart_package_device?ref_type=heads)" из проекта [Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages). **dart_package_device** - платформо-зависимая реализация плагина "Flutter Device" для ОС Аврора типа "Dart package". В основе пакета лежит пакет `dbus` - нативная клиентская реализация D-Bus для Dart. С его помощью можно реализовать пакет Dart для ОС Аврора, ни строчки не написав на C++.
@@ -45,7 +45,7 @@ $ flutter-aurora create --template=package <package-name>
 Выполнить генерацию можно командой:
 
 ```shell
-$ dart-dbus generate-remote-object ./ru.omp.deviceinfo.Features.xml \  
+dart-dbus generate-remote-object ./ru.omp.deviceinfo.Features.xml \
 -o lib/ru_omp_device_info_features.dart
 ```
 

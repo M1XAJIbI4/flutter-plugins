@@ -5,7 +5,7 @@ Documentation for setting permissions can be found [here](https://developer.auro
 
 ## Usage
 
-This package is not an _endorsed_ implementation of `path_provider`. 
+This package is not an _endorsed_ implementation of `path_provider`.
 Therefore, you have to include `path_provider_aurora` alongside `path_provider` as dependencies in your `pubspec.yaml` file.
 
 **pubspec.yaml**

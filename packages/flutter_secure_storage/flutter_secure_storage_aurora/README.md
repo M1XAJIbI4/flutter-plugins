@@ -4,7 +4,7 @@ The Aurora implementation of [`flutter_secure_storage`](https://pub.dev/packages
 
 ## Usage
 
-This package is not an _endorsed_ implementation of `flutter_secure_storage`. 
+This package is not an _endorsed_ implementation of `flutter_secure_storage`.
 Therefore, you have to include `flutter_secure_storage_aurora` alongside `flutter_secure_storage` as dependencies in your `pubspec.yaml` file.
 
 **pubspec.yaml**

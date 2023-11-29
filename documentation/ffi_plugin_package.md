@@ -9,10 +9,10 @@
 Создать пакет "FFI Plugin package" можно командой:
 
 ```shell
-$ flutter-aurora create --template=plugin_ffi <package-name>
+flutter-aurora create --template=plugin_ffi --platforms aurora <package-name>
 ```
 
-Рассмотрим плагин "[ffi_plugin_device](https://gitlab.com/omprussia/flutter/demo-dart-packages/-/tree/master/packages/aurora/ffi_plugin_device?ref_type=heads)" из проекта [Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages). **ffi_plugin_device** - платформо-зависимая реализация плагина "Flutter Device" для ОС Аврора типа "FFI Plugin package". 
+Рассмотрим плагин "[ffi_plugin_device](https://gitlab.com/omprussia/flutter/demo-dart-packages/-/tree/master/packages/aurora/ffi_plugin_device?ref_type=heads)" из проекта [Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages). **ffi_plugin_device** - платформо-зависимая реализация плагина "Flutter Device" для ОС Аврора типа "FFI Plugin package".
 
 Структура пакета **ffi_plugin_device**
 

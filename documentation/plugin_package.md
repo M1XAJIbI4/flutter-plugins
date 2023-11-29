@@ -9,10 +9,10 @@
 Создать пакет "Plugin package" можно командой:
 
 ```shell
-$ flutter-aurora create --template=plugin <package-name>
+flutter-aurora create --template=plugin --platforms aurora <package-name>
 ```
 
-Рассмотрим плагин "[plugin_device](https://gitlab.com/omprussia/flutter/demo-dart-packages/-/tree/master/packages/aurora/plugin_device?ref_type=heads)" из проекта [Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages). **plugin_device** - платформо-зависимая реализация плагина "Flutter Device" для ОС Аврора типа "Plugin package". 
+Рассмотрим плагин "[plugin_device](https://gitlab.com/omprussia/flutter/demo-dart-packages/-/tree/master/packages/aurora/plugin_device?ref_type=heads)" из проекта [Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages). **plugin_device** - платформо-зависимая реализация плагина "Flutter Device" для ОС Аврора типа "Plugin package".
 
 Структура пакета **plugin_device**:
 

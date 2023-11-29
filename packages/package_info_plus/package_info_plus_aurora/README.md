@@ -4,7 +4,7 @@ The Aurora implementation of [`package_info_plus`](https://pub.dev/packages/pack
 
 ## Usage
 
-This package is not an _endorsed_ implementation of `package_info_plus`. 
+This package is not an _endorsed_ implementation of `package_info_plus`.
 Therefore, you have to include `package_info_plus_aurora` alongside `package_info_plus` as dependencies in your `pubspec.yaml` file.
 
 **pubspec.yaml**

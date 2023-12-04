@@ -6,6 +6,7 @@ import 'package:sensors_plus_aurora/events/als_event.dart';
 import 'package:sensors_plus_aurora/events/compass_event.dart';
 import 'package:sensors_plus_aurora/events/orientation_event.dart';
 import 'package:sensors_plus_aurora/events/proximity_event.dart';
+import 'package:sensors_plus_aurora/events/rotation_event.dart';
 import 'package:sensors_plus_aurora/events/tap_event.dart';
 import 'package:sensors_plus_platform_interface/sensors_plus_platform_interface.dart';
 
@@ -51,43 +52,49 @@ Stream<ProximityEvent>? get proximityEvents {
   return null;
 }
 
+/// A broadcast stream of events from the Aurora OS device rotation.
+Stream<RotationEvent>? get rotationEvents {
+  if (TargetPlatform.aurora == defaultTargetPlatform) {
+    return SensorsPlusAurora().onChangeRotation;
+  }
+  return null;
+}
+
 class SensorsPlusAurora extends SensorsPlatform {
   static void registerWith() {
     SensorsPlatform.instance = SensorsPlusAurora();
   }
 
-  /// orientationsensor
   Stream<OrientationEvent> get onChangeOrientation =>
       SensorsPlusAuroraPlatform.instance.onChangeOrientation();
 
-  /// accelerometersensor
   @override
-  Stream<AccelerometerEvent> get accelerometerEvents =>
-      SensorsPlusAuroraPlatform.instance.onChangeAccelerometer();
+  Stream<AccelerometerEvent> accelerometerEventStream({
+    Duration samplingPeriod = SensorInterval.normalInterval,
+  }) => SensorsPlusAuroraPlatform.instance.onChangeAccelerometer();
 
-  /// compasssensor
   Stream<CompassEvent> get onChangeCompass =>
       SensorsPlusAuroraPlatform.instance.onChangeCompass();
 
-  /// tapsensor
   Stream<TapEvent> get onChangeTap =>
       SensorsPlusAuroraPlatform.instance.onChangeTap();
 
-  /// alssensor
   Stream<ALSEvent> get onChangeALS =>
       SensorsPlusAuroraPlatform.instance.onChangeALS();
 
-  /// proximitysensor
   Stream<ProximityEvent> get onChangeProximity =>
       SensorsPlusAuroraPlatform.instance.onChangeProximity();
 
-  /// rotationsensor
-  @override
-  Stream<GyroscopeEvent> get gyroscopeEvents =>
+  Stream<RotationEvent> get onChangeRotation =>
       SensorsPlusAuroraPlatform.instance.onChangeRotation();
 
-  /// magnetometersensor
   @override
-  Stream<MagnetometerEvent> get magnetometerEvents =>
-      SensorsPlusAuroraPlatform.instance.onChangeMagnetometer();
+  Stream<MagnetometerEvent> magnetometerEventStream({
+    Duration samplingPeriod = SensorInterval.normalInterval,
+  }) => SensorsPlusAuroraPlatform.instance.onChangeMagnetometer();
+
+  @override
+  Stream<GyroscopeEvent> gyroscopeEventStream({
+    Duration samplingPeriod = SensorInterval.normalInterval,
+  }) => SensorsPlusAuroraPlatform.instance.onChangeGyroscope();
 }

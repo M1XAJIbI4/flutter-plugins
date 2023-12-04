@@ -2,12 +2,13 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 class CompassEvent {
-  CompassEvent(this.degrees, this.level);
+  CompassEvent(this.azimuth, this.calibrationLevel);
 
-  final int degrees;
+  final double azimuth;
 
-  final int level;
+  final double calibrationLevel;
 
   @override
-  String toString() => '[CompassEvent (degrees: $degrees, level: $level)]';
+  String toString() =>
+      '[CompassEvent (azimuth: $azimuth, calibrationLevel: $calibrationLevel)]';
 }

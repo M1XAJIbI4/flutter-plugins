@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 class ProximityEvent {
-  ProximityEvent(this.withinProximity);
+  ProximityEvent(this.close);
 
-  final bool withinProximity;
+  final bool close;
 
   @override
-  String toString() => '[ProximityEvent (withinProximity: $withinProximity)]';
+  String toString() => '[ProximityEvent (close: $close)]';
 }

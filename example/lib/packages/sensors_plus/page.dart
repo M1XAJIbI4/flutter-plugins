@@ -13,6 +13,7 @@ import 'package:sensors_plus_aurora/events/als_event.dart';
 import 'package:sensors_plus_aurora/events/compass_event.dart';
 import 'package:sensors_plus_aurora/events/orientation_event.dart';
 import 'package:sensors_plus_aurora/events/proximity_event.dart';
+import 'package:sensors_plus_aurora/events/rotation_event.dart';
 import 'package:sensors_plus_aurora/events/tap_event.dart';
 import 'package:sensors_plus_aurora/sensors_plus_aurora.dart';
 
@@ -37,8 +38,9 @@ class _SensorsPlusPageState extends AppState<SensorsPlusPage> {
   Stream<TapEvent>? _tapEvents;
   Stream<ALSEvent>? _alsEvents;
   Stream<ProximityEvent>? _proximityEvents;
-  Stream<GyroscopeEvent>? _gyroscopeEvents;
+  Stream<RotationEvent>? _rotationEvents;
   Stream<MagnetometerEvent>? _magnetometerEvents;
+  Stream<GyroscopeEvent>? _gyroscopeEvents;
 
   @override
   void initState() {
@@ -75,12 +77,17 @@ class _SensorsPlusPageState extends AppState<SensorsPlusPage> {
       debugPrint(e.toString());
     }
     try {
-      _gyroscopeEvents = gyroscopeEvents;
+      _rotationEvents = rotationEvents;
     } catch (e) {
       debugPrint(e.toString());
     }
     try {
       _magnetometerEvents = magnetometerEvents;
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    try {
+      _gyroscopeEvents = gyroscopeEvents;
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -124,7 +131,11 @@ class _SensorsPlusPageState extends AppState<SensorsPlusPage> {
                     stream: _accelerometerEvents,
                     builder: (value) => value == null
                         ? l10n.sensorsPlusNotFound
-                        : value.toString(),
+                        : AccelerometerEvent(
+                            double.parse(value.x.toStringAsFixed(6)),
+                            double.parse(value.y.toStringAsFixed(6)),
+                            double.parse(value.z.toStringAsFixed(6)),
+                          ).toString(),
                   ),
                 ),
                 Visibility(
@@ -176,15 +187,19 @@ class _SensorsPlusPageState extends AppState<SensorsPlusPage> {
                   ),
                 ),
                 Visibility(
-                  visible: _gyroscopeEvents != null,
+                  visible: _rotationEvents != null,
                   child: BlockItem(
                     isShowProgress: false,
-                    title: l10n.sensorsPlusTitleGyroscope,
+                    title: l10n.sensorsPlusTitleRotation,
                     desc: l10n.sensorsPlusSubtitle('rotationsensor'),
-                    stream: _gyroscopeEvents,
+                    stream: _rotationEvents,
                     builder: (value) => value == null
                         ? l10n.sensorsPlusNotFound
-                        : value.toString(),
+                        : RotationEvent(
+                            double.parse(value.x.toStringAsFixed(6)),
+                            double.parse(value.y.toStringAsFixed(6)),
+                            double.parse(value.z.toStringAsFixed(6)),
+                          ).toString(),
                   ),
                 ),
                 Visibility(
@@ -196,7 +211,27 @@ class _SensorsPlusPageState extends AppState<SensorsPlusPage> {
                     stream: _magnetometerEvents,
                     builder: (value) => value == null
                         ? l10n.sensorsPlusNotFound
-                        : value.toString(),
+                        : MagnetometerEvent(
+                            double.parse(value.x.toStringAsFixed(6)),
+                            double.parse(value.y.toStringAsFixed(6)),
+                            double.parse(value.z.toStringAsFixed(6)),
+                          ).toString(),
+                  ),
+                ),
+                Visibility(
+                  visible: _gyroscopeEvents != null,
+                  child: BlockItem(
+                    isShowProgress: false,
+                    title: l10n.sensorsPlusTitleGyroscope,
+                    desc: l10n.sensorsPlusSubtitle('gyroscopesensor'),
+                    stream: _gyroscopeEvents,
+                    builder: (value) => value == null
+                        ? l10n.sensorsPlusNotFound
+                        : GyroscopeEvent(
+                            double.parse(value.x.toStringAsFixed(6)),
+                            double.parse(value.y.toStringAsFixed(6)),
+                            double.parse(value.z.toStringAsFixed(6)),
+                          ).toString(),
                   ),
                 ),
               ],

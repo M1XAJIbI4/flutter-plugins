@@ -6,8 +6,9 @@
   "sensorsPlusTitleTap": "Tap",
   "sensorsPlusTitleALS": "ALS",
   "sensorsPlusTitleProximity": "Proximity",
-  "sensorsPlusTitleGyroscope": "Gyroscope",
+  "sensorsPlusTitleRotation": "Rotation",
   "sensorsPlusTitleMagnetometer": "Magnetometer",
+  "sensorsPlusTitleGyroscope": "Gyroscope",
   "sensorsPlusNotFound": "Sensor not found",
   "sensorsPlusSubtitle": "Sensor key: {name}",
   "@sensorsPlusSubtitle": {

@@ -4,7 +4,7 @@ The Aurora implementation of [`battery_plus`](https://pub.dev/packages/battery_p
 
 ## Usage
 
-This package is not an _endorsed_ implementation of `battery_plus`. 
+This package is not an _endorsed_ implementation of `battery_plus`.
 Therefore, you have to include `battery_plus_aurora` alongside `battery_plus` as dependencies in your `pubspec.yaml` file.
 
 **pubspec.yaml**

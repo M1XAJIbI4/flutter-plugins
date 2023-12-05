@@ -9,17 +9,16 @@
 #include <flutter/plugin-interface.h>
 #include <sensors_plus_aurora/globals.h>
 
+#include <QAccelerometer>
+#include <QAmbientLightSensor>
+#include <QCompass>
+#include <QGyroscope>
+#include <QMagnetometer>
+#include <QOrientationSensor>
+#include <QProximitySensor>
+#include <QRotationSensor>
+#include <QTapSensor>
 #include <QtCore>
-
-#include <accelerometersensor_i.h>
-#include <alssensor_i.h>
-#include <compasssensor_i.h>
-#include <magnetometersensor_i.h>
-#include <orientationsensor_i.h>
-#include <proximitysensor_i.h>
-#include <rotationsensor_i.h>
-#include <sensormanagerinterface.h>
-#include <tapsensor_i.h>
 
 class PLUGIN_EXPORT SensorsPlusAuroraPlugin final : public QObject, public PluginInterface
 {
@@ -29,18 +28,17 @@ public:
     void RegisterWithRegistrar(PluginRegistrar &registrar) override;
 
 public slots:
-    void EventSensorOrientation(const Unsigned &data);
-    void EventSensorAccelerometer(const XYZ &data);
-    void EventSensorCompass(const Compass &data);
-    void EventSensorTap(const Tap &data);
-    void EventSensorALS(const Unsigned &data);
-    void EventSensorProximity(const Proximity &data);
-    void EventSensorRotation(const XYZ &data);
-    void EventSensorMagnetometer(const MagneticField &data);
+    void EventSensorOrientation();
+    void EventSensorAccelerometer();
+    void EventSensorCompass();
+    void EventSensorTap();
+    void EventSensorALS();
+    void EventSensorProximity();
+    void EventSensorRotation();
+    void EventSensorMagnetometer();
+    void EventSensorGyroscope();
 
 private:
-    template<typename T>
-    bool RegisterSensorInterface(QString sensor);
     void EventChannelNull(const std::string &channel);
     void EventChannelData(const std::string &channel, const Encodable::List &result);
 
@@ -68,15 +66,19 @@ private:
     void EnableSensorMagnetometer();
     void DisableSensorMagnetometer();
 
+    void EnableSensorGyroscope();
+    void DisableSensorGyroscope();
+
 private:
-    OrientationSensorChannelInterface *m_ifaceOrientation = nullptr;
-    AccelerometerSensorChannelInterface *m_ifaceAccelerometer = nullptr;
-    CompassSensorChannelInterface *m_ifaceCompass = nullptr;
-    TapSensorChannelInterface *m_ifaceTap = nullptr;
-    ALSSensorChannelInterface *m_ifaceALS = nullptr;
-    ProximitySensorChannelInterface *m_ifaceProximity = nullptr;
-    RotationSensorChannelInterface *m_ifaceRotation = nullptr;
-    MagnetometerSensorChannelInterface *m_ifaceMagnetometer = nullptr;
+    QScopedPointer<QOrientationSensor> m_orientation;
+    QScopedPointer<QAccelerometer> m_accelerometer;
+    QScopedPointer<QCompass> m_compass;
+    QScopedPointer<QTapSensor> m_tap;
+    QScopedPointer<QAmbientLightSensor> m_ambientLight;
+    QScopedPointer<QProximitySensor> m_proximity;
+    QScopedPointer<QRotationSensor> m_rotation;
+    QScopedPointer<QMagnetometer> m_magnetometer;
+    QScopedPointer<QGyroscope> m_gyroscope;
 };
 
 #endif /* FLUTTER_PLUGIN_SENSORS_PLUS_AURORA_PLUGIN_H */

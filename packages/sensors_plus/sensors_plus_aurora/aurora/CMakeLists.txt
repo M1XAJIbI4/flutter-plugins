@@ -15,17 +15,15 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-psabi")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 find_package(PkgConfig REQUIRED)
-find_package(Qt5 COMPONENTS Core Network DBus REQUIRED)
+find_package(Qt5 COMPONENTS Core Network DBus Sensors REQUIRED)
 
 pkg_check_modules(FlutterEmbedder REQUIRED IMPORTED_TARGET flutter-embedder)
-pkg_check_modules(SensordQt5 REQUIRED IMPORTED_TARGET sensord-qt5)
 
 add_library(${PLUGIN_NAME} SHARED sensors_plus_aurora_plugin.cpp)
 set_target_properties(${PLUGIN_NAME} PROPERTIES CXX_VISIBILITY_PRESET hidden AUTOMOC ON)
 
 target_link_libraries(${PLUGIN_NAME} PRIVATE PkgConfig::FlutterEmbedder)
-target_link_libraries(${PLUGIN_NAME} PUBLIC  Qt5::Core Qt5::Network Qt5::DBus)
-target_link_libraries(${PLUGIN_NAME} PUBLIC  PkgConfig::SensordQt5)
+target_link_libraries(${PLUGIN_NAME} PUBLIC  Qt5::Core Qt5::Network Qt5::DBus Qt5::Sensors)
 
 target_include_directories(${PLUGIN_NAME} PRIVATE ${FLUTTER_DIR})
 target_include_directories(${PLUGIN_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

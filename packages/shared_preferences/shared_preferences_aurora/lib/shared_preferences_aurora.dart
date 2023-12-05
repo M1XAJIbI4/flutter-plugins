@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 import 'package:flutter/services.dart';
 import 'package:shared_preferences_aurora/shared_preferences_aurora_api.dart';
+import 'package:shared_preferences_aurora/shared_preferences_aurora_storage.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 
 class SharedPreferencesAurora extends SharedPreferencesStorePlatform {
@@ -12,8 +13,9 @@ class SharedPreferencesAurora extends SharedPreferencesStorePlatform {
 
   static const String _defaultPrefix = 'flutter.';
 
-  final SharedPreferencesAuroraApi _api =
-      SharedPreferencesAuroraApi('.flutter_shared_preferences.json');
+  final SharedPreferencesAuroraApi _api = SharedPreferencesAuroraApi(
+    SharedPreferencesAuroraStorageFile('.flutter_shared_preferences.json'),
+  );
 
   @override
   Future<bool> setValue(String valueType, String key, Object value) async {

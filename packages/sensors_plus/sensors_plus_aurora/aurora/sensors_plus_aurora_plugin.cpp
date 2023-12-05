@@ -5,17 +5,6 @@
 
 #include <flutter/method-channel.h>
 #include <sensors_plus_aurora/sensors_plus_aurora_plugin.h>
-#include <QDebug>
-
-#include <accelerometersensor_i.h>
-#include <alssensor_i.h>
-#include <compasssensor_i.h>
-#include <magnetometersensor_i.h>
-#include <orientationsensor_i.h>
-#include <proximitysensor_i.h>
-#include <rotationsensor_i.h>
-#include <sensormanagerinterface.h>
-#include <tapsensor_i.h>
 
 namespace KeyChannel {
 constexpr auto Orientation = "sensors_plus_aurora_orientationsensor";
@@ -26,6 +15,7 @@ constexpr auto ALS = "sensors_plus_aurora_alssensor";
 constexpr auto Proximity = "sensors_plus_aurora_proximitysensor";
 constexpr auto Rotation = "sensors_plus_aurora_rotationsensor";
 constexpr auto Magnetometer = "sensors_plus_aurora_magnetometersensor";
+constexpr auto Gyroscope = "sensors_plus_aurora_gyroscope";
 } // namespace KeyChannel
 
 namespace KeySensor {
@@ -37,6 +27,7 @@ constexpr auto ALS = "alssensor";
 constexpr auto Proximity = "proximitysensor";
 constexpr auto Rotation = "rotationsensor";
 constexpr auto Magnetometer = "magnetometersensor";
+constexpr auto Gyroscope = "gyroscopesensor";
 } // namespace KeySensor
 
 void SensorsPlusAuroraPlugin::RegisterWithRegistrar(PluginRegistrar &registrar)
@@ -136,24 +127,18 @@ void SensorsPlusAuroraPlugin::RegisterWithRegistrar(PluginRegistrar &registrar)
             DisableSensorMagnetometer();
             return EventResponse();
         });
-}
 
-template<typename T>
-bool SensorsPlusAuroraPlugin::RegisterSensorInterface(QString sensor)
-{
-    SensorManagerInterface &sm = SensorManagerInterface::instance();
-    if (!sm.isValid()) {
-        return false;
-    }
-
-    QDBusReply<bool> reply(sm.loadPlugin(sensor));
-    if (!reply.isValid() || !reply.value()) {
-        return false;
-    }
-
-    sm.registerSensorInterface<T>(sensor);
-
-    return true;
+    registrar.RegisterEventChannel(
+        KeyChannel::Gyroscope,
+        MethodCodecType::Standard,
+        [this](const Encodable &) {
+            EnableSensorGyroscope();
+            return EventResponse();
+        },
+        [this](const Encodable &) {
+            DisableSensorGyroscope();
+            return EventResponse();
+        });
 }
 
 void SensorsPlusAuroraPlugin::EventChannelNull(const std::string &channel)
@@ -161,7 +146,8 @@ void SensorsPlusAuroraPlugin::EventChannelNull(const std::string &channel)
     EventChannel(channel, MethodCodecType::Standard).SendEvent(nullptr);
 }
 
-void SensorsPlusAuroraPlugin::EventChannelData(const std::string &channel, const Encodable::List &result)
+void SensorsPlusAuroraPlugin::EventChannelData(const std::string &channel,
+                                               const Encodable::List &result)
 {
     EventChannel(channel, MethodCodecType::Standard).SendEvent(result);
 }
@@ -171,39 +157,33 @@ void SensorsPlusAuroraPlugin::EventChannelData(const std::string &channel, const
  */
 void SensorsPlusAuroraPlugin::EnableSensorOrientation()
 {
-    if (m_ifaceOrientation == nullptr) {
-        if (!RegisterSensorInterface<OrientationSensorChannelInterface>(KeySensor::Orientation)) {
-            EventChannelNull(KeyChannel::Orientation);
-            return;
-        }
+    if (!m_orientation) {
+        m_orientation.reset(new QOrientationSensor());
 
-        m_ifaceOrientation = OrientationSensorChannelInterface::interface(KeySensor::Orientation);
-
-        if (!m_ifaceOrientation) {
-            EventChannelNull(KeyChannel::Orientation);
-            return;
-        }
-
-        connect(m_ifaceOrientation,
-                SIGNAL(orientationChanged(const Unsigned &)),
-                this,
-                SLOT(EventSensorOrientation(const Unsigned &)));
+        connect(m_orientation.data(), &QOrientationSensor::readingChanged,
+                this, &SensorsPlusAuroraPlugin::EventSensorOrientation);
     }
 
-    m_ifaceOrientation->start();
-    EventSensorOrientation(m_ifaceOrientation->orientation());
+    if (m_orientation->start()) {
+        EventSensorOrientation();
+    } else {
+        EventChannelNull(KeyChannel::Orientation);
+    }
 }
 
 void SensorsPlusAuroraPlugin::DisableSensorOrientation()
 {
-    if (m_ifaceOrientation) {
-        m_ifaceOrientation->stop();
+    if (m_orientation) {
+        m_orientation->stop();
     }
 }
 
-void SensorsPlusAuroraPlugin::EventSensorOrientation(const Unsigned &data)
+void SensorsPlusAuroraPlugin::EventSensorOrientation()
 {
-    EventChannelData(KeyChannel::Orientation, Encodable::List {data.x()});
+    if (m_orientation) {
+        EventChannelData(KeyChannel::Orientation,
+                         Encodable::List{(int) m_orientation->reading()->orientation()});
+    }
 }
 
 /**
@@ -211,41 +191,35 @@ void SensorsPlusAuroraPlugin::EventSensorOrientation(const Unsigned &data)
  */
 void SensorsPlusAuroraPlugin::EnableSensorAccelerometer()
 {
-    if (m_ifaceAccelerometer == nullptr) {
-        if (!RegisterSensorInterface<AccelerometerSensorChannelInterface>(
-                KeySensor::Accelerometer)) {
-            EventChannelNull(KeyChannel::Accelerometer);
-            return;
-        }
+    if (!m_accelerometer) {
+        m_accelerometer.reset(new QAccelerometer());
 
-        m_ifaceAccelerometer = AccelerometerSensorChannelInterface::interface(
-            KeySensor::Accelerometer);
-
-        if (!m_ifaceAccelerometer) {
-            EventChannelNull(KeyChannel::Accelerometer);
-            return;
-        }
-
-        connect(m_ifaceAccelerometer,
-                SIGNAL(dataAvailable(const XYZ &)),
-                this,
-                SLOT(EventSensorAccelerometer(const XYZ &)));
+        connect(m_accelerometer.data(), &QAccelerometer::readingChanged,
+                this, &SensorsPlusAuroraPlugin::EventSensorAccelerometer);
     }
 
-    m_ifaceAccelerometer->start();
-    EventSensorAccelerometer(m_ifaceAccelerometer->get());
+    if (m_accelerometer->start()) {
+        EventSensorAccelerometer();
+    } else {
+        EventChannelNull(KeyChannel::Accelerometer);
+    }
 }
 
 void SensorsPlusAuroraPlugin::DisableSensorAccelerometer()
 {
-    if (m_ifaceAccelerometer) {
-        m_ifaceAccelerometer->stop();
+    if (m_accelerometer) {
+        m_accelerometer->stop();
     }
 }
 
-void SensorsPlusAuroraPlugin::EventSensorAccelerometer(const XYZ &data)
+void SensorsPlusAuroraPlugin::EventSensorAccelerometer()
 {
-    EventChannelData(KeyChannel::Accelerometer, Encodable::List {data.x(), data.y(), data.z()});
+    if (m_accelerometer) {
+        EventChannelData(KeyChannel::Accelerometer,
+                         Encodable::List{(double) m_accelerometer->reading()->x(),
+                                         (double) m_accelerometer->reading()->y(),
+                                         (double) m_accelerometer->reading()->z()});
+    }
 }
 
 /**
@@ -253,39 +227,34 @@ void SensorsPlusAuroraPlugin::EventSensorAccelerometer(const XYZ &data)
  */
 void SensorsPlusAuroraPlugin::EnableSensorCompass()
 {
-    if (m_ifaceCompass == nullptr) {
-        if (!RegisterSensorInterface<CompassSensorChannelInterface>(KeySensor::Compass)) {
-            EventChannelNull(KeyChannel::Compass);
-            return;
-        }
+    if (!m_compass) {
+        m_compass.reset(new QCompass());
 
-        m_ifaceCompass = CompassSensorChannelInterface::interface(KeySensor::Compass);
-
-        if (!m_ifaceCompass) {
-            EventChannelNull(KeyChannel::Compass);
-            return;
-        }
-
-        connect(m_ifaceCompass,
-                SIGNAL(dataAvailable(const Compass &)),
-                this,
-                SLOT(EventSensorCompass(const Compass &)));
+        connect(m_compass.data(), &QCompass::readingChanged,
+                this, &SensorsPlusAuroraPlugin::EventSensorCompass);
     }
 
-    m_ifaceCompass->start();
-    EventSensorCompass(m_ifaceCompass->get());
+    if (m_compass->start()) {
+        EventSensorCompass();
+    } else {
+        EventChannelNull(KeyChannel::Compass);
+    }
 }
 
 void SensorsPlusAuroraPlugin::DisableSensorCompass()
 {
-    if (m_ifaceCompass) {
-        m_ifaceCompass->stop();
+    if (m_compass) {
+        m_compass->stop();
     }
 }
 
-void SensorsPlusAuroraPlugin::EventSensorCompass(const Compass &data)
+void SensorsPlusAuroraPlugin::EventSensorCompass()
 {
-    EventChannelData(KeyChannel::Compass, Encodable::List {data.degrees(), data.level()});
+    if (m_compass) {
+        EventChannelData(KeyChannel::Compass,
+                         Encodable::List{(double) m_compass->reading()->azimuth(),
+                                         (double) m_compass->reading()->calibrationLevel()});
+    }
 }
 
 /**
@@ -293,41 +262,34 @@ void SensorsPlusAuroraPlugin::EventSensorCompass(const Compass &data)
  */
 void SensorsPlusAuroraPlugin::EnableSensorTap()
 {
-    if (m_ifaceTap == nullptr) {
-        if (!RegisterSensorInterface<TapSensorChannelInterface>(KeySensor::Tap)) {
-            EventChannelNull(KeyChannel::Tap);
-            return;
-        }
+    if (!m_tap) {
+        m_tap.reset(new QTapSensor());
 
-        m_ifaceTap = TapSensorChannelInterface::interface(KeySensor::Tap);
-
-        if (!m_ifaceTap) {
-            EventChannelNull(KeyChannel::Tap);
-            return;
-        }
-
-        connect(m_ifaceTap,
-                SIGNAL(dataAvailable(const Tap &)),
-                this,
-                SLOT(EventSensorTap(const Tap &)));
+        connect(m_tap.data(), &QTapSensor::readingChanged,
+                this, &SensorsPlusAuroraPlugin::EventSensorTap);
     }
 
-    m_ifaceTap->start();
+    if (m_tap->start()) {
+        EventSensorTap();
+    } else {
+        EventChannelNull(KeyChannel::Tap);
+    }
 }
 
 void SensorsPlusAuroraPlugin::DisableSensorTap()
 {
-    if (m_ifaceTap) {
-        m_ifaceTap->stop();
+    if (m_tap) {
+        m_tap->stop();
     }
 }
 
-void SensorsPlusAuroraPlugin::EventSensorTap(const Tap &data)
+void SensorsPlusAuroraPlugin::EventSensorTap()
 {
-    EventChannelData(KeyChannel::Tap, Encodable::List {
-        static_cast<int>(data.direction()),
-        static_cast<int>(data.type())
-    });
+    if (m_tap) {
+        EventChannelData(KeyChannel::Tap,
+                         Encodable::List{(int) m_tap->reading()->tapDirection(),
+                                         m_tap->reading()->isDoubleTap()});
+    }
 }
 
 /**
@@ -335,39 +297,33 @@ void SensorsPlusAuroraPlugin::EventSensorTap(const Tap &data)
  */
 void SensorsPlusAuroraPlugin::EnableSensorALS()
 {
-    if (m_ifaceALS == nullptr) {
-        if (!RegisterSensorInterface<ALSSensorChannelInterface>(KeySensor::ALS)) {
-            EventChannelNull(KeyChannel::ALS);
-            return;
-        }
+    if (!m_ambientLight) {
+        m_ambientLight.reset(new QAmbientLightSensor());
 
-        m_ifaceALS = ALSSensorChannelInterface::interface(KeySensor::ALS);
-
-        if (!m_ifaceALS) {
-            EventChannelNull(KeyChannel::ALS);
-            return;
-        }
-
-        connect(m_ifaceALS,
-                SIGNAL(ALSChanged(const Unsigned &)),
-                this,
-                SLOT(EventSensorALS(const Unsigned &)));
+        connect(m_ambientLight.data(), &QAmbientLightSensor::readingChanged,
+                this, &SensorsPlusAuroraPlugin::EventSensorALS);
     }
 
-    m_ifaceALS->start();
-    EventSensorALS(m_ifaceALS->lux());
+    if (m_ambientLight->start()) {
+        EventSensorALS();
+    } else {
+        EventChannelNull(KeyChannel::ALS);
+    }
 }
 
 void SensorsPlusAuroraPlugin::DisableSensorALS()
 {
-    if (m_ifaceALS) {
-        m_ifaceALS->stop();
+    if (m_ambientLight) {
+        m_ambientLight->stop();
     }
 }
 
-void SensorsPlusAuroraPlugin::EventSensorALS(const Unsigned &data)
+void SensorsPlusAuroraPlugin::EventSensorALS()
 {
-    EventChannelData(KeyChannel::ALS, Encodable::List {data.x()});
+    if (m_ambientLight) {
+        EventChannelData(KeyChannel::ALS,
+                         Encodable::List{(int) m_ambientLight->reading()->lightLevel()});
+    }
 }
 
 /**
@@ -375,39 +331,32 @@ void SensorsPlusAuroraPlugin::EventSensorALS(const Unsigned &data)
  */
 void SensorsPlusAuroraPlugin::EnableSensorProximity()
 {
-    if (m_ifaceProximity == nullptr) {
-        if (!RegisterSensorInterface<ProximitySensorChannelInterface>(KeySensor::Proximity)) {
-            EventChannelNull(KeyChannel::Proximity);
-            return;
-        }
+    if (!m_proximity) {
+        m_proximity.reset(new QProximitySensor());
 
-        m_ifaceProximity = ProximitySensorChannelInterface::interface(KeySensor::Proximity);
-
-        if (!m_ifaceProximity) {
-            EventChannelNull(KeyChannel::Proximity);
-            return;
-        }
-
-        connect(m_ifaceProximity,
-                SIGNAL(reflectanceDataAvailable(const Proximity &)),
-                this,
-                SLOT(EventSensorProximity(const Proximity &)));
+        connect(m_proximity.data(), &QProximitySensor::readingChanged,
+                this, &SensorsPlusAuroraPlugin::EventSensorProximity);
     }
 
-    m_ifaceProximity->start();
-    EventSensorProximity(m_ifaceProximity->proximityReflectance());
+    if (m_proximity->start()) {
+        EventSensorProximity();
+    } else {
+        EventChannelNull(KeyChannel::Proximity);
+    }
 }
 
 void SensorsPlusAuroraPlugin::DisableSensorProximity()
 {
-    if (m_ifaceProximity) {
-        m_ifaceProximity->stop();
+    if (m_proximity) {
+        m_proximity->stop();
     }
 }
 
-void SensorsPlusAuroraPlugin::EventSensorProximity(const Proximity &data)
+void SensorsPlusAuroraPlugin::EventSensorProximity()
 {
-    EventChannelData(KeyChannel::Proximity, Encodable::List {data.withinProximity() ? 1 : 0});
+    if (m_proximity) {
+        EventChannelData(KeyChannel::Proximity, Encodable::List{m_proximity->reading()->close()});
+    }
 }
 
 /**
@@ -415,39 +364,35 @@ void SensorsPlusAuroraPlugin::EventSensorProximity(const Proximity &data)
  */
 void SensorsPlusAuroraPlugin::EnableSensorRotation()
 {
-    if (m_ifaceRotation == nullptr) {
-        if (!RegisterSensorInterface<RotationSensorChannelInterface>(KeySensor::Rotation)) {
-            EventChannelNull(KeyChannel::Rotation);
-            return;
-        }
+    if (!m_rotation) {
+        m_rotation.reset(new QRotationSensor());
 
-        m_ifaceRotation = RotationSensorChannelInterface::interface(KeySensor::Rotation);
-
-        if (!m_ifaceRotation) {
-            EventChannelNull(KeyChannel::Rotation);
-            return;
-        }
-
-        connect(m_ifaceRotation,
-                SIGNAL(dataAvailable(const XYZ &)),
-                this,
-                SLOT(EventSensorRotation(const XYZ &)));
+        connect(m_rotation.data(), &QRotationSensor::readingChanged,
+                this, &SensorsPlusAuroraPlugin::EventSensorRotation);
     }
 
-    m_ifaceRotation->start();
-    EventSensorRotation(m_ifaceRotation->rotation());
+    if (m_rotation->start()) {
+        EventSensorRotation();
+    } else {
+        EventChannelNull(KeyChannel::Rotation);
+    }
 }
 
 void SensorsPlusAuroraPlugin::DisableSensorRotation()
 {
-    if (m_ifaceRotation) {
-        m_ifaceRotation->stop();
+    if (m_rotation) {
+        m_rotation->stop();
     }
 }
 
-void SensorsPlusAuroraPlugin::EventSensorRotation(const XYZ &data)
+void SensorsPlusAuroraPlugin::EventSensorRotation()
 {
-    EventChannelData(KeyChannel::Rotation, Encodable::List {data.x(), data.y(), data.z()});
+    if (m_rotation) {
+        EventChannelData(KeyChannel::Rotation,
+                         Encodable::List{(double) m_accelerometer->reading()->x(),
+                                         (double) m_accelerometer->reading()->y(),
+                                         (double) m_accelerometer->reading()->z()});
+    }
 }
 
 /**
@@ -455,39 +400,71 @@ void SensorsPlusAuroraPlugin::EventSensorRotation(const XYZ &data)
  */
 void SensorsPlusAuroraPlugin::EnableSensorMagnetometer()
 {
-    if (m_ifaceMagnetometer == nullptr) {
-        if (!RegisterSensorInterface<MagnetometerSensorChannelInterface>(KeySensor::Magnetometer)) {
-            EventChannelNull(KeyChannel::Magnetometer);
-            return;
-        }
+    if (!m_magnetometer) {
+        m_magnetometer.reset(new QMagnetometer());
 
-        m_ifaceMagnetometer = MagnetometerSensorChannelInterface::interface(KeySensor::Magnetometer);
-
-        if (!m_ifaceMagnetometer) {
-            EventChannelNull(KeyChannel::Magnetometer);
-            return;
-        }
-
-        connect(m_ifaceMagnetometer,
-                SIGNAL(dataAvailable(const MagneticField &)),
-                this,
-                SLOT(EventSensorMagnetometer(const MagneticField &)));
+        connect(m_magnetometer.data(), &QMagnetometer::readingChanged,
+                this, &SensorsPlusAuroraPlugin::EventSensorMagnetometer);
     }
 
-    m_ifaceMagnetometer->start();
-    EventSensorMagnetometer(m_ifaceMagnetometer->magneticField());
+    if (m_magnetometer->start()) {
+        EventSensorMagnetometer();
+    } else {
+        EventChannelNull(KeyChannel::Magnetometer);
+    }
 }
 
 void SensorsPlusAuroraPlugin::DisableSensorMagnetometer()
 {
-    if (m_ifaceMagnetometer) {
-        m_ifaceMagnetometer->stop();
+    if (m_magnetometer) {
+        m_magnetometer->stop();
     }
 }
 
-void SensorsPlusAuroraPlugin::EventSensorMagnetometer(const MagneticField &data)
+void SensorsPlusAuroraPlugin::EventSensorMagnetometer()
 {
-    EventChannelData(KeyChannel::Magnetometer, Encodable::List {data.x(), data.y(), data.z()});
+    if (m_magnetometer) {
+        EventChannelData(KeyChannel::Magnetometer,
+                         Encodable::List{(double) m_accelerometer->reading()->x(),
+                                         (double) m_accelerometer->reading()->y(),
+                                         (double) m_accelerometer->reading()->z()});
+    }
+}
+
+/**
+ * Gyroscope
+ */
+void SensorsPlusAuroraPlugin::EnableSensorGyroscope()
+{
+    if (!m_gyroscope) {
+        m_gyroscope.reset(new QGyroscope());
+
+        connect(m_gyroscope.data(), &QGyroscope::readingChanged,
+                this, &SensorsPlusAuroraPlugin::EventSensorGyroscope);
+    }
+
+    if (m_gyroscope->start()) {
+        EventSensorGyroscope();
+    } else {
+        EventChannelNull(KeyChannel::Gyroscope);
+    }
+}
+
+void SensorsPlusAuroraPlugin::DisableSensorGyroscope()
+{
+    if (m_gyroscope) {
+        m_gyroscope->stop();
+    }
+}
+
+void SensorsPlusAuroraPlugin::EventSensorGyroscope()
+{
+    if (m_gyroscope) {
+        EventChannelData(KeyChannel::Gyroscope,
+                         Encodable::List{(double) m_accelerometer->reading()->x(),
+                                         (double) m_accelerometer->reading()->y(),
+                                         (double) m_accelerometer->reading()->z()});
+    }
 }
 
 #include "moc_sensors_plus_aurora_plugin.cpp"

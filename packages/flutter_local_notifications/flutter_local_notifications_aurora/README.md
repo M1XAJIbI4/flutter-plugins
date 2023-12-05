@@ -3,7 +3,7 @@
 The Aurora implementation of [flutter_local_notifications](https://pub.dev/packages/flutter_local_notifications).
 
 ## Usage
-This package is not an _endorsed_ implementation of `flutter_local_notifications`. 
+This package is not an _endorsed_ implementation of `flutter_local_notifications`.
 Therefore, you have to include `flutter_local_notifications_aurora` alongside `flutter_local_notifications` as dependencies in your `pubspec.yaml` file.
 
 **pubspec.yaml**

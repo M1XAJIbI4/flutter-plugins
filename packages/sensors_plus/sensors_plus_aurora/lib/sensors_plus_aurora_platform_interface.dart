@@ -6,6 +6,7 @@ import 'package:sensors_plus_aurora/events/als_event.dart';
 import 'package:sensors_plus_aurora/events/compass_event.dart';
 import 'package:sensors_plus_aurora/events/orientation_event.dart';
 import 'package:sensors_plus_aurora/events/proximity_event.dart';
+import 'package:sensors_plus_aurora/events/rotation_event.dart';
 import 'package:sensors_plus_aurora/events/tap_event.dart';
 import 'package:sensors_plus_platform_interface/sensors_plus_platform_interface.dart';
 
@@ -37,7 +38,8 @@ abstract class SensorsPlusAuroraPlatform extends PlatformInterface {
   }
 
   Stream<AccelerometerEvent> onChangeAccelerometer() {
-    throw UnimplementedError('onChangeAccelerometer() has not been implemented.');
+    throw UnimplementedError(
+        'onChangeAccelerometer() has not been implemented.');
   }
 
   Stream<CompassEvent> onChangeCompass() {
@@ -56,11 +58,16 @@ abstract class SensorsPlusAuroraPlatform extends PlatformInterface {
     throw UnimplementedError('onChangeProximity() has not been implemented.');
   }
 
-  Stream<GyroscopeEvent> onChangeRotation() {
+  Stream<RotationEvent> onChangeRotation() {
     throw UnimplementedError('onChangeRotation() has not been implemented.');
   }
 
   Stream<MagnetometerEvent> onChangeMagnetometer() {
-    throw UnimplementedError('onChangeMagnetometer() has not been implemented.');
+    throw UnimplementedError(
+        'onChangeMagnetometer() has not been implemented.');
+  }
+
+  Stream<GyroscopeEvent> onChangeGyroscope() {
+    throw UnimplementedError('onChangeGyroscope() has not been implemented.');
   }
 }

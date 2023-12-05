@@ -4,7 +4,7 @@ The Aurora implementation of [`shared_preferences`](https://pub.dev/packages/sha
 
 ## Usage
 
-This package is not an _endorsed_ implementation of `shared_preferences`. 
+This package is not an _endorsed_ implementation of `shared_preferences`.
 Therefore, you have to include `path_provider_aurora` alongside `shared_preferences` as dependencies in your `pubspec.yaml` file.
 
 **pubspec.yaml**

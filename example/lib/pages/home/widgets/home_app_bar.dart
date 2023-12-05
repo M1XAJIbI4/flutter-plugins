@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_example_packages/widgets/base/export.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_example_packages/theme/colors.dart';
 
 enum PlatformFilter {
   disable,
@@ -42,6 +43,7 @@ class _HomeAppBarState extends AppState<HomeAppBar> {
     final theme = Theme.of(context);
     return AppBar(
       centerTitle: true,
+      backgroundColor: AppColors.primary,
       shape: const Border(bottom: BorderSide(width: 0)),
       leading: _search != null
           ? Padding(

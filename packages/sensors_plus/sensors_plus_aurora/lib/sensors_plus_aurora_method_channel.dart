@@ -7,6 +7,7 @@ import 'package:sensors_plus_aurora/events/als_event.dart';
 import 'package:sensors_plus_aurora/events/compass_event.dart';
 import 'package:sensors_plus_aurora/events/orientation_event.dart';
 import 'package:sensors_plus_aurora/events/proximity_event.dart';
+import 'package:sensors_plus_aurora/events/rotation_event.dart';
 import 'package:sensors_plus_aurora/events/tap_event.dart';
 import 'package:sensors_plus_platform_interface/sensors_plus_platform_interface.dart';
 
@@ -31,24 +32,27 @@ class MethodChannelSensorsPlusAurora extends SensorsPlusAuroraPlatform {
     await for (final data
         in const EventChannel('sensors_plus_aurora_orientationsensor')
             .receiveBroadcastStream()) {
-      switch (_loadData(data, 'orientationsensor')[0]) {
+      if (data == null) {
+        throw "Failed to load sensor 'orientationsensor'";
+      }
+      switch (data[0]) {
         case 1:
-          yield OrientationEvent.rightUp;
-          break;
-        case 2:
-          yield OrientationEvent.leftUp;
-          break;
-        case 3:
-          yield OrientationEvent.topDown;
-          break;
-        case 4:
           yield OrientationEvent.topUp;
           break;
+        case 2:
+          yield OrientationEvent.topDown;
+          break;
+        case 3:
+          yield OrientationEvent.leftUp;
+          break;
+        case 4:
+          yield OrientationEvent.rightUp;
+          break;
         case 5:
-          yield OrientationEvent.faceDown;
+          yield OrientationEvent.faceUp;
           break;
         case 6:
-          yield OrientationEvent.faceUp;
+          yield OrientationEvent.faceDown;
           break;
         default:
           yield OrientationEvent.undefined;
@@ -61,11 +65,13 @@ class MethodChannelSensorsPlusAurora extends SensorsPlusAuroraPlatform {
     await for (final data
         in const EventChannel('sensors_plus_aurora_accelerometersensor')
             .receiveBroadcastStream()) {
-      final result = _loadData(data, 'accelerometersensor');
+      if (data == null) {
+        throw "Failed to load sensor 'accelerometersensor'";
+      }
       yield AccelerometerEvent(
-        result[0].toDouble(),
-        result[1].toDouble(),
-        result[2].toDouble(),
+        data[0],
+        data[1],
+        data[2],
       );
     }
   }
@@ -75,10 +81,12 @@ class MethodChannelSensorsPlusAurora extends SensorsPlusAuroraPlatform {
     await for (final data
         in const EventChannel('sensors_plus_aurora_compasssensor')
             .receiveBroadcastStream()) {
-      final result = _loadData(data, 'compasssensor');
+      if (data == null) {
+        throw "Failed to load sensor 'compasssensor'";
+      }
       yield CompassEvent(
-        result[0],
-        result[1],
+        data[0],
+        data[1],
       );
     }
   }
@@ -87,10 +95,12 @@ class MethodChannelSensorsPlusAurora extends SensorsPlusAuroraPlatform {
   Stream<TapEvent> onChangeTap() async* {
     await for (final data in const EventChannel('sensors_plus_aurora_tapsensor')
         .receiveBroadcastStream()) {
-      final result = _loadData(data, 'tapsensor');
+      if (data == null) {
+        throw "Failed to load sensor 'tapsensor'";
+      }
       yield TapEvent(
-        TapDirection.values[result[0]],
-        TapType.values[result[1]],
+        TapDirection.values[data[0]],
+        data[1],
       );
     }
   }
@@ -99,9 +109,11 @@ class MethodChannelSensorsPlusAurora extends SensorsPlusAuroraPlatform {
   Stream<ALSEvent> onChangeALS() async* {
     await for (final data in const EventChannel('sensors_plus_aurora_alssensor')
         .receiveBroadcastStream()) {
-      final result = _loadData(data, 'alssensor');
+      if (data == null) {
+        throw "Failed to load sensor 'alssensor'";
+      }
       yield ALSEvent(
-        result[0],
+        LightLevel.values[data[0]],
       );
     }
   }
@@ -111,23 +123,27 @@ class MethodChannelSensorsPlusAurora extends SensorsPlusAuroraPlatform {
     await for (final data
         in const EventChannel('sensors_plus_aurora_proximitysensor')
             .receiveBroadcastStream()) {
-      final result = _loadData(data, 'proximitysensor');
+      if (data == null) {
+        throw "Failed to load sensor 'proximitysensor'";
+      }
       yield ProximityEvent(
-        result[0] == 1,
+        data[0],
       );
     }
   }
 
   @override
-  Stream<GyroscopeEvent> onChangeRotation() async* {
+  Stream<RotationEvent> onChangeRotation() async* {
     await for (final data
         in const EventChannel('sensors_plus_aurora_rotationsensor')
             .receiveBroadcastStream()) {
-      final result = _loadData(data, 'rotationsensor');
-      yield GyroscopeEvent(
-        result[0].toDouble(),
-        result[1].toDouble(),
-        result[2].toDouble(),
+      if (data == null) {
+        throw "Failed to load sensor 'rotationsensor'";
+      }
+      yield RotationEvent(
+        data[0],
+        data[1],
+        data[2],
       );
     }
   }
@@ -137,11 +153,28 @@ class MethodChannelSensorsPlusAurora extends SensorsPlusAuroraPlatform {
     await for (final data
         in const EventChannel('sensors_plus_aurora_magnetometersensor')
             .receiveBroadcastStream()) {
-      final result = _loadData(data, 'magnetometersensor');
+      if (data == null) {
+        throw "Failed to load sensor 'magnetometersensor'";
+      }
       yield MagnetometerEvent(
-        result[0].toDouble(),
-        result[1].toDouble(),
-        result[2].toDouble(),
+        data[0],
+        data[1],
+        data[2],
+      );
+    }
+  }
+
+  @override
+  Stream<GyroscopeEvent> onChangeGyroscope() async* {
+    await for (final data in const EventChannel('sensors_plus_aurora_gyroscope')
+        .receiveBroadcastStream()) {
+      if (data == null) {
+        throw "Failed to load sensor 'gyroscopesensor'";
+      }
+      yield GyroscopeEvent(
+        data[0],
+        data[1],
+        data[2],
       );
     }
   }

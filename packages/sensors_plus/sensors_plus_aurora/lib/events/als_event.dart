@@ -1,11 +1,13 @@
 // SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
 
-class ALSEvent {
-  ALSEvent(this.degrees);
+enum LightLevel { undefined, dark, twilight, light, bright, sunny }
 
-  final int degrees;
+class ALSEvent {
+  ALSEvent(this.lightLevel);
+
+  final LightLevel lightLevel;
 
   @override
-  String toString() => '[ALSEvent (degrees: $degrees)]';
+  String toString() => '[ALSEvent (lightLevel: $lightLevel)]';
 }

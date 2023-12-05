@@ -30,7 +30,7 @@ final _controllerAurora = FlutterKeyboardVisibilityAurora();
 /// Stream change visibility
 Stream<bool> onChangeKeyboard() async* {
   yield _controller.isVisible;
-  
+
   await for (final state in _controller.onChange) {
     yield state;
   }
@@ -39,7 +39,7 @@ Stream<bool> onChangeKeyboard() async* {
 /// Stream change height
 Stream<int> onChangeKeyboardHeight() async* {
   yield await _controllerAurora.height;
-  
+
   await for (final state in _controllerAurora.onChangeHeight) {
     yield state;
   }

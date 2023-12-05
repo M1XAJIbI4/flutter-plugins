@@ -6,8 +6,9 @@
   "sensorsPlusTitleTap": "Датчик движения",
   "sensorsPlusTitleALS": "ALS",
   "sensorsPlusTitleProximity": "Датчик приближения",
-  "sensorsPlusTitleGyroscope": "Гироскоп",
+  "sensorsPlusTitleRotation": "Вращение",
   "sensorsPlusTitleMagnetometer": "Магнитометр",
+  "sensorsPlusTitleGyroscope": "Гироскоп",
   "sensorsPlusNotFound": "Датчик не найден",
   "sensorsPlusSubtitle": "Ключ датчика: {name}",
   "@sensorsPlusSubtitle": {

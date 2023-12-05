@@ -1,19 +1,19 @@
 # Flutter example packages
 
-Demonstrating the operation of Flutter plugins on the Aurora OS.
+Приложение демонстрирует работу как платформо-зависимых так и нет плагинов/пакетов. Выполняет роль единого приложения-примера для платформо-зависимых плагинов и позволяет проверить работоспособность не платформо зависимых плагинов на платформе ОС Аврора.
 
-## Getting Started
+## Сборка
 
 ```shell
-# Add an alias if it doesn't already exist
+# Добавьте псевдоним, если он еще не существует.
 alias flutter-aurora=$HOME/.local/opt/flutter/bin/flutter
 
-# Get dependencies
+# Получить зависимости
 flutter-aurora pub get
 
-# Generate internationalizing
+# Создание интернационализации
 flutter-aurora pub run build_runner build
 
-# Run build
+# Запустить сборку
 flutter-aurora build aurora --release # [--release|--debug|--profile]
 ```

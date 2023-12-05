@@ -4,6 +4,7 @@ import 'package:flutter_example_packages/base/package/package.dart';
 import 'package:flutter_example_packages/packages/battery_plus/package.dart';
 import 'package:flutter_example_packages/packages/build_runner/package.dart';
 import 'package:flutter_example_packages/packages/cached_network_image/package.dart';
+import 'package:flutter_example_packages/packages/camera/package.dart';
 import 'package:flutter_example_packages/packages/crypto/package.dart';
 import 'package:flutter_example_packages/packages/cupertino_icons/package.dart';
 import 'package:flutter_example_packages/packages/dartz/package.dart';
@@ -38,9 +39,11 @@ import 'package:flutter_example_packages/packages/xdga_directories/package.dart'
 
 /// List app packages
 final packages = <Package>[
+  packageSensorsPlus, // @todo
   packageBatteryPlus,
   packageBuildRunner,
   packageCachedNetworkImage,
+  packageCamera,
   packageCrypto,
   packageCupertinoIcons,
   packageDartz,
@@ -66,7 +69,7 @@ final packages = <Package>[
   packageQrFlutter,
   packageRxdart,
   packageScopedModel,
-  packageSensorsPlus,
+  // packageSensorsPlus,
   packageSharedPreferences,
   packageSqflite,
   packageUniversalIO,

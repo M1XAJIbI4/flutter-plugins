@@ -30,7 +30,7 @@ Information available:
 
 ## Usage
 
-This package is not an _endorsed_ implementation of `device_info_plus`. 
+This package is not an _endorsed_ implementation of `device_info_plus`.
 Therefore, you have to include `device_info_plus_aurora` alongside `device_info_plus` as dependencies in your `pubspec.yaml` file.
 
 **pubspec.yaml**
@@ -55,4 +55,3 @@ final deviceInfo = await deviceInfoPlugin.linuxInfo as AuroraDeviceInfo;
 
 debutPrint(deviceInfo.data);
 ```
-

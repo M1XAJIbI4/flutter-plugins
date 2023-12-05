@@ -21,14 +21,31 @@ dependencies:
 
 ## Features
 
-- accelerometerEvents - A broadcast stream of events from the device accelerometer.
-- gyroscopeEvents - A broadcast stream of events from the device gyroscope.
-- magnetometerEvents - A broadcast stream of events from the device magnetometer.
 - orientationEvents - A broadcast stream of events from the Aurora OS device orientation.
+- accelerometerEvents - A broadcast stream of events from the device accelerometer.
 - compassEvents - A broadcast stream of events from the Aurora OS device compass.
 - tapEvents - A broadcast stream of events from the Aurora OS device tap.
 - alsEvents - A broadcast stream of events from the Aurora OS device ALS.
 - proximityEvents - A broadcast stream of events from the Aurora OS device proximity.
+- rotationEvents - A broadcast stream of events from the Aurora OS device rotation.
+- magnetometerEvents - A broadcast stream of events from the device magnetometer.
+- gyroscopeEvents - A broadcast stream of events from the device gyroscope.
+
+***main.cpp**
+
+```desktop
+#include <flutter/application.h>
+#include <flutter/compatibility.h> // <- Add for Qt
+#include "generated_plugin_registrant.h"
+
+int main(int argc, char *argv[]) {
+    Application::Initialize(argc, argv);
+    EnableQtCompatibility(); // <- Add for Qt
+    RegisterPlugins();
+    Application::Launch();
+    return 0;
+}
+```
 
 ***.desktop**
 
@@ -38,7 +55,7 @@ Permissions=Sensors
 ***.spec**
 
 ```spec
-BuildRequires: pkgconfig(sensord-qt5)
+BuildRequires: pkgconfig(Qt5Sensors)
 ```
 
 ***.dart**
@@ -49,43 +66,10 @@ import 'package:sensors_plus_aurora/events/als_event.dart';
 import 'package:sensors_plus_aurora/events/compass_event.dart';
 import 'package:sensors_plus_aurora/events/orientation_event.dart';
 import 'package:sensors_plus_aurora/events/proximity_event.dart';
+import 'package:sensors_plus_aurora/events/rotation_event.dart';
 import 'package:sensors_plus_aurora/events/tap_event.dart';
 import 'package:sensors_plus_aurora/sensors_plus_aurora.dart';
 
-/// Package sensors_plus
-/// 
-/// A broadcast stream of events from the device accelerometer.
-accelerometerEvents.listen(
-        (AccelerometerEvent event) {
-      debugPrint(event.toString());
-    },
-    onError: (error) {
-      debugPrint(error.toString());
-    }
-);
-
-/// A broadcast stream of events from the device gyroscope.
-gyroscopeEvents.listen(
-        (GyroscopeEvent event) {
-      debugPrint(event.toString());
-    },
-    onError: (error) {
-      debugPrint(error.toString());
-    }
-);
-
-/// A broadcast stream of events from the device magnetometer.
-magnetometerEvents.listen(
-        (MagnetometerEvent event) {
-      debugPrint(event.toString());
-    },
-    onError: (error) {
-      debugPrint(error.toString());
-    }
-);
-
-/// Custom Aurora OS events
-/// 
 /// A broadcast stream of events from the Aurora OS device orientation.
 orientationEvents?.listen(
   (OrientationEvent event) {
@@ -94,6 +78,16 @@ orientationEvents?.listen(
   onError: (error) {
     debugPrint(error.toString());
   }
+);
+
+/// A broadcast stream of events from the device accelerometer.
+accelerometerEvents.listen(
+        (AccelerometerEvent event) {
+      debugPrint(event.toString());
+    },
+    onError: (error) {
+      debugPrint(error.toString());
+    }
 );
 
 /// A broadcast stream of events from the Aurora OS device compass.
@@ -129,6 +123,36 @@ alsEvents?.listen(
 /// A broadcast stream of events from the Aurora OS device proximity.
 proximityEvents?.listen(
         (ProximityEvent event) {
+      debugPrint(event.toString());
+    },
+    onError: (error) {
+      debugPrint(error.toString());
+    }
+);
+
+/// A broadcast stream of events from the device rotation.
+rotationEvents.listen(
+        (RotationEvent event) {
+      debugPrint(event.toString());
+    },
+    onError: (error) {
+      debugPrint(error.toString());
+    }
+);
+
+/// A broadcast stream of events from the device magnetometer.
+magnetometerEvents.listen(
+        (MagnetometerEvent event) {
+      debugPrint(event.toString());
+    },
+    onError: (error) {
+      debugPrint(error.toString());
+    }
+);
+
+/// A broadcast stream of events from the device gyroscope.
+gyroscopeEvents.listen(
+        (GyroscopeEvent event) {
       debugPrint(event.toString());
     },
     onError: (error) {

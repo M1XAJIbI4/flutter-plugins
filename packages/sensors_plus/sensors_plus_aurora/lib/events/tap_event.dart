@@ -1,53 +1,30 @@
 // SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
 
-/// Direction of tap. The last six directions may not be supported
-/// depending on hardware.
 enum TapDirection {
-  /// Left or right side tapped
+  undefined,
   x,
-
-  /// Top or down side tapped
   y,
-
-  /// Face or bottom tapped
   z,
-
-  /// Tapped from left to right
-  leftRight,
-
-  /// Tapped from right to left
-  rightLeft,
-
-  /// Tapped from top to bottom
-  topBottom,
-
-  /// Tapped from bottom to top
-  bottomTop,
-
-  /// Tapped from face to back
-  faceBack,
-
-  /// Tapped from back to face
-  backFace
-}
-
-/// Type of tap.
-enum TapType {
-  /// Double tap
-  doubleTap,
-
-  /// Single tap.
-  singleTap
+  xPos,
+  yPos,
+  zPos,
+  xNeg,
+  yNeg,
+  zNeg,
+  xBoth,
+  yBoth,
+  zBoth,
 }
 
 class TapEvent {
-  TapEvent(this.direction, this.type);
+  TapEvent(this.tapDirection, this.isDoubleTap);
 
-  final TapDirection direction;
+  final TapDirection tapDirection;
 
-  final TapType type;
+  final bool isDoubleTap;
 
   @override
-  String toString() => '[TapEvent (direction: $direction, level: $type)]';
+  String toString() =>
+      '[TapEvent (tapDirection: $tapDirection, isDoubleTap: $isDoubleTap)]';
 }

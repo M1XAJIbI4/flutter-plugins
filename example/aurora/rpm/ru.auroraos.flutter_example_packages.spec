@@ -1,5 +1,5 @@
 %global __provides_exclude_from ^%{_datadir}/%{name}/lib/.*$
-%global __requires_exclude ^lib(dconf|flutter-embedder|maliit-glib|appmanifest-.+|.+_platform_plugin)\\.so.*$
+%global __requires_exclude ^lib(yuv|ZXing|jpeg|dconf|flutter-embedder|maliit-glib|.+_platform_plugin)\\.so.*$
 
 Name: ru.auroraos.flutter_example_packages
 Summary: Examples of the flutter plugins for Aurora OS.
@@ -8,10 +8,11 @@ Release: 1
 License: Proprietary
 Source0: %{name}-%{version}.tar.zst
 
-BuildRequires: cmake
+BuildRequires: ninja
 BuildRequires: pkgconfig(sqlite3)
 BuildRequires: pkgconfig(flutter-embedder)
-BuildRequires: pkgconfig(sensord-qt5)
+BuildRequires: pkgconfig(Qt5Sensors)
+BuildRequires: pkgconfig(streamcamera)
 
 %description
 %{summary}.
@@ -20,11 +21,11 @@ BuildRequires: pkgconfig(sensord-qt5)
 %autosetup
 
 %build
-%cmake -DCMAKE_BUILD_TYPE=%{_flutter_build_type}
-%make_build
+%cmake -GNinja -DCMAKE_BUILD_TYPE=%{_flutter_build_type}
+%ninja_build
 
 %install
-%make_install
+%ninja_install
 
 %files
 %{_bindir}/%{name}

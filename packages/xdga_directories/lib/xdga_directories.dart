@@ -13,12 +13,18 @@ final DynamicLibrary _dylib = () {
 final XdgaDirectoriesBindings _bindings = XdgaDirectoriesBindings(_dylib);
 
 /// QStandardPaths::CacheLocation
-String getCacheLocation() =>
-    _bindings.getCacheLocation().cast<Utf8>().toDartString();
+String getCacheLocation() => _bindings
+    .getCacheLocation()
+    .cast<Utf8>()
+    .toDartString()
+    .replaceAll("/qsource", "");
 
 /// QStandardPaths::AppDataLocation
-String getAppDataLocation() =>
-    _bindings.getAppDataLocation().cast<Utf8>().toDartString();
+String getAppDataLocation() => _bindings
+    .getAppDataLocation()
+    .cast<Utf8>()
+    .toDartString()
+    .replaceAll("/qsource", "");
 
 ///  QStandardPaths::DocumentsLocation
 String getDocumentsLocation() =>

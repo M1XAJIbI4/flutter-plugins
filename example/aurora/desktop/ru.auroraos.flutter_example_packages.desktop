@@ -7,6 +7,6 @@ Exec=/usr/bin/ru.auroraos.flutter_example_packages
 X-Nemo-Application-Type=silica-qt5
 
 [X-Application]
-Permissions=DeviceInfo;UserDirs;Sensors
+Permissions=DeviceInfo;UserDirs;Sensors;Camera
 OrganizationName=ru.auroraos
 ApplicationName=flutter_example_packages

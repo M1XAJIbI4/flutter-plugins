@@ -173,6 +173,18 @@ dependencies:
 #      ref: master
 #      path: packages/sensors_plus/sensors_plus_aurora
 
+  ## https://pub.dev/packages/camera
+  camera: ^0.10.5+5
+  ## https://pub.dev/packages/camera_android
+  camera_android: ^0.10.8+13
+  ## https://os-git.omprussia.ru/non-oss/flutter/flutter-plugins/-/tree/master/packages/camera/camera_aurora
+  camera_aurora:
+    path: ../packages/camera/camera_aurora
+#    git:
+#      url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
+#      ref: master
+#      path: packages/camera/camera_aurora
+
 dev_dependencies:
   flutter_test:
     sdk:

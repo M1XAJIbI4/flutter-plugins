@@ -167,11 +167,10 @@ dependencies:
   camera_android: ^0.10.8+13
   ## https://os-git.omprussia.ru/non-oss/flutter/flutter-plugins/-/tree/master/packages/camera/camera_aurora
   camera_aurora:
-    path: ../packages/camera/camera_aurora
-#    git:
-#      url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
-#      ref: master
-#      path: packages/camera/camera_aurora
+    git:
+      url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
+      ref: master
+      path: packages/camera/camera_aurora
 
 dev_dependencies:
   flutter_test:

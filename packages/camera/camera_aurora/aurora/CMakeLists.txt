@@ -38,25 +38,41 @@ target_include_directories(${PLUGIN_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc
 target_compile_definitions(${PLUGIN_NAME} PRIVATE PLUGIN_IMPL)
 
 ## zxing
+set(ZXING_SYMLINK "libZXing.so.1")
+set(ZXING_LIB "libZXing.so.1.1.1")
+
 target_include_directories(${PLUGIN_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/libzxing)
 
 add_custom_command(TARGET ${PLUGIN_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy
-                ${CMAKE_CURRENT_SOURCE_DIR}/3rdpatry/zxing/${CMAKE_SYSTEM_PROCESSOR}/libzxing.so
-                ${ROOT_PROJECT_BINARY_DIR}/bundle/lib/libzxing.so)
+                ${CMAKE_CURRENT_SOURCE_DIR}/3rdpatry/zxing/${CMAKE_SYSTEM_PROCESSOR}/${ZXING_SYMLINK}
+                ${ROOT_PROJECT_BINARY_DIR}/bundle/lib/${ZXING_SYMLINK})
+
+add_custom_command(TARGET ${PLUGIN_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy
+                ${CMAKE_CURRENT_SOURCE_DIR}/3rdpatry/zxing/${CMAKE_SYSTEM_PROCESSOR}/${ZXING_LIB}
+                ${ROOT_PROJECT_BINARY_DIR}/bundle/lib/${ZXING_LIB})
 
 add_library(zxing SHARED IMPORTED)
-set_property(TARGET zxing PROPERTY IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/3rdpatry/zxing/${CMAKE_SYSTEM_PROCESSOR}/libzxing.so)
+set_property(TARGET zxing PROPERTY IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/3rdpatry/zxing/${CMAKE_SYSTEM_PROCESSOR}/${ZXING_SYMLINK})
 target_link_libraries(${PLUGIN_NAME} PUBLIC zxing)
 
 ## yuv
+set(YUV_SYMLINK "libyuv.so.0")
+set(YUV_LIB "libyuv.so.0.0.0")
+
 target_include_directories(${PLUGIN_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/libyuv)
 
 add_custom_command(TARGET ${PLUGIN_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy
-                ${CMAKE_CURRENT_SOURCE_DIR}/3rdpatry/libyuv/${CMAKE_SYSTEM_PROCESSOR}/libyuv.so
-                ${ROOT_PROJECT_BINARY_DIR}/bundle/lib/libyuv.so)
+                ${CMAKE_CURRENT_SOURCE_DIR}/3rdpatry/libyuv/${CMAKE_SYSTEM_PROCESSOR}/${YUV_SYMLINK}
+                ${ROOT_PROJECT_BINARY_DIR}/bundle/lib/${YUV_SYMLINK})
+
+add_custom_command(TARGET ${PLUGIN_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy
+                ${CMAKE_CURRENT_SOURCE_DIR}/3rdpatry/libyuv/${CMAKE_SYSTEM_PROCESSOR}/${YUV_LIB}
+                ${ROOT_PROJECT_BINARY_DIR}/bundle/lib/${YUV_LIB})
 
 add_library(yuv SHARED IMPORTED)
-set_property(TARGET yuv PROPERTY IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/3rdpatry/libyuv/${CMAKE_SYSTEM_PROCESSOR}/libyuv.so)
+set_property(TARGET yuv PROPERTY IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/3rdpatry/libyuv/${CMAKE_SYSTEM_PROCESSOR}/${YUV_SYMLINK})
 target_link_libraries(${PLUGIN_NAME} PUBLIC yuv)

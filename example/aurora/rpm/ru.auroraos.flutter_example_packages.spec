@@ -21,7 +21,7 @@ BuildRequires: pkgconfig(streamcamera)
 %autosetup
 
 %build
-%cmake -GNinja -DCMAKE_BUILD_TYPE=%{_flutter_build_type}
+%cmake -GNinja -DCMAKE_BUILD_TYPE=%{_flutter_build_type} -DPSDK_VERSION=%{_flutter_psdk_version} -DPSDK_MAJOR=%{_flutter_psdk_major}
 %ninja_build
 
 %install

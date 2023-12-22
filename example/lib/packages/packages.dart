@@ -39,7 +39,6 @@ import 'package:flutter_example_packages/packages/xdga_directories/package.dart'
 
 /// List app packages
 final packages = <Package>[
-  packageSensorsPlus, // @todo
   packageBatteryPlus,
   packageBuildRunner,
   packageCachedNetworkImage,
@@ -69,7 +68,7 @@ final packages = <Package>[
   packageQrFlutter,
   packageRxdart,
   packageScopedModel,
-  // packageSensorsPlus,
+  packageSensorsPlus,
   packageSharedPreferences,
   packageSqflite,
   packageUniversalIO,

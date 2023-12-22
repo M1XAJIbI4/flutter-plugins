@@ -10,7 +10,7 @@
 #include <flutter/platform-types.h>
 #include <flutter/platform-methods.h>
 
-#include "zxing/ReadBarcode.h"
+#include "ZXing/ReadBarcode.h"
 
 TextureCamera::TextureCamera(TextureRegistrar *plugin,
                              const CameraErrorHandler &onError,
@@ -360,7 +360,13 @@ void TextureCamera::SearchQr(std::shared_ptr<const Aurora::StreamCamera::YCbCrFr
 
     if (bits) {
         auto image = ZXing::ImageView(bits.get(), width, height, ZXing::ImageFormat::RGBX);
-        auto hints = ZXing::DecodeHints().setFormats(ZXing::BarcodeFormat::QR_CODE);
+
+        #if PSDK_MAJOR == 5
+            auto hints = ZXing::DecodeHints().setFormats(ZXing::BarcodeFormat::QRCode);
+        #else
+            auto hints = ZXing::DecodeHints().setFormats(ZXing::BarcodeFormat::QR_CODE);
+        #endif
+        
         auto result = ZXing::ReadBarcode(image, hints);
         if (result.isValid()) {
             auto ws = result.text();

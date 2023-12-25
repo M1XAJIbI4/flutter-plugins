@@ -15,24 +15,17 @@ dependencies:
   path: ^1.8.3
   plugin_platform_interface: ^2.0.2
   path_provider_platform_interface: ^2.1.0
-
-  ## https://gitlab.com/omprussia/flutter/flutter-plugins/-/tree/master/packages/xdga_directories
   xdga_directories:
-    path: ../../xdga_directories
-#    git:
-#      url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
-#      ref: master
-#      path: packages/xdga_directories
-
-  ## https://pub.dev/packages/package_info_plus
+    git:
+      url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
+      ref: dev
+      path: packages/xdga_directories
   package_info_plus: 4.1.0
-  ## https://gitlab.com/omprussia/flutter/flutter-plugins/-/tree/master/packages/package_info_plus/package_info_plus_aurora
   package_info_plus_aurora:
-    path: ../../package_info_plus/package_info_plus_aurora
-#    git:
-#      url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
-#      ref: master
-#      path: packages/package_info_plus/package_info_plus_aurora
+    git:
+      url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
+      ref: dev
+      path: packages/package_info_plus/package_info_plus_aurora
 
 dev_dependencies:
   flutter_test:

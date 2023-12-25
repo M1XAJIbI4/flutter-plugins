@@ -16,15 +16,12 @@ dependencies:
   shared_preferences: ^2.1.1
   shared_preferences_platform_interface: ^2.2.0
   path: ^1.8.3
-  ## https://pub.dev/packages/path_provider
   path_provider: ^2.1.1
-  ## https://gitlab.com/omprussia/flutter/flutter-plugins/-/tree/master/packages/path_provider/path_provider_aurora
   path_provider_aurora:
-    path: ../../path_provider/path_provider_aurora
-#    git:
-#      url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
-#      ref: master
-#      path: packages/path_provider/path_provider_aurora
+    git:
+      url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
+      ref: master
+      path: packages/path_provider/path_provider_aurora
 
 dev_dependencies:
   flutter_test:

@@ -15,12 +15,6 @@
 
 Подробно процесс создания платформо-зависимых плагинов можно найти в статье "[Flutter на ОС Аврора](https://habr.com/ru/articles/761176/)". Если остаются вопросы присоединяйтесь к сообществу ОС Аврора "[Aurora Developers](https://t.me/aurora_devs)" в Telegram, там вы сможете задать вопрос по Flutter и следить за новостями.
 
-## Демонстрационное приложение
-
-![preview.png](documentation/data/preview_app.png)
-
-Все плагины имеют общее демонстрационное приложение **Flutter example packages**. Оно предназначено для демонстрации работы как платформо-зависимых так и нет плагинов/пакетов. Выполняет роль единого приложения-примера для платформо-зависимых плагинов и позволяет проверить работоспособность не платформо зависимых плагинов на платформе ОС Аврора. [Подробее](example/README.md).
-
 ## Платформо-зависимые плагины Flutter
 
 Список платформо-зависимых плагинов созданных для ОС Аврора либо зависящих от платформо-зависимых плагинов ОС Аврора.
@@ -43,30 +37,6 @@
 | -                                                                                                                                                                                | -        | [flutter_cache_manager](https://pub.dev/packages/flutter_cache_manager)             | `3.3.1`     | `4.0.2.269`      |
 | -                                                                                                                                                                                | -        | [cached_network_image](https://pub.dev/packages/cached_network_image)               | `3.3.0`     | `4.0.2.269`      |
 | -                                                                                                                                                                                | -        | [google_fonts](https://pub.dev/packages/google_fonts)                               | `6.1.0`     | `4.0.2.269`      |
-
-## Пакеты Flutter
-
-Список проверенных на совместимость и работоспособность в ОС Аврора пакетов Flutter не являющиеся платформо-зависимыми.
-
-| Внешний плагин                                                                      | Версия     | Версия ОС Аврора   |
-|-------------------------------------------------------------------------------------|------------|--------------------|
-| [crypto](https://pub.dev/packages/crypto)                                           | `3.0.3`    | `4.0.2.269`        |
-| [cupertino_icons](https://pub.dev/packages/cupertino_icons)                         | `1.0.6`    | `4.0.2.269`        |
-| [get_it](https://pub.dev/packages/get_it)                                           | `7.6.4`    | `4.0.2.269`        |
-| [intl](https://pub.dev/packages/intl)                                               | `0.18.1`   | `4.0.2.269`        |
-| [photo_view](https://pub.dev/packages/photo_view)                                   | `0.14.0`   | `4.0.2.269`        |
-| [scoped_model](https://pub.dev/packages/scoped_model)                               | `2.0.0`    | `4.0.2.269`        |
-| [dartz](https://pub.dev/packages/dartz)                                             | `0.10.1`   | `4.0.2.269`        |
-| [freezed](https://pub.dev/packages/freezed)                                         | `2.4.3`    | `4.0.2.269`        |
-| [equatable](https://pub.dev/packages/equatable)                                     | `2.0.5`    | `4.0.2.269`        |
-| [flutter_markdown](https://pub.dev/packages/flutter_markdown)                       | `0.6.17+4` | `4.0.2.269`        |
-| [build_runner](https://pub.dev/packages/build_runner)                               | `2.4.6`    | `4.0.2.269`        |
-| [freezed_annotation](https://pub.dev/packages/freezed_annotation)                   | `2.4.1`    | `4.0.2.269`        |
-| [json_annotation](https://pub.dev/packages/json_annotation)                         | `4.8.1`    | `4.0.2.269`        |
-| [json_serializable](https://pub.dev/packages/json_serializable)                     | `6.7.1`    | `4.0.2.269`        |
-| [provider](https://pub.dev/packages/provider)                                       | `6.0.5`    | `4.0.2.269`        |
-| [qr_flutter](https://pub.dev/packages/qr_flutter)                                   | `4.1.0`    | `4.0.2.269`        |
-| [rxdart](https://pub.dev/packages/rxdart)                                           | `0.27.7`   | `4.0.2.269`        |
 
 ## Вклад
 

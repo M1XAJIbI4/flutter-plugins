@@ -12,7 +12,7 @@
 
 #include "ZXing/ReadBarcode.h"
 
-TextureCamera::TextureCamera(TextureRegistrar *plugin,
+TextureCamera::TextureCamera(const TextureRegistrar &plugin,
                              const CameraErrorHandler &onError,
                              const ChangeQRHandler &onChangeQR)
     : m_plugin(plugin)
@@ -142,7 +142,7 @@ void TextureCamera::StopCapture()
 
 std::map<Encodable, Encodable> TextureCamera::Register(std::string cameraName)
 {
-    m_textureId = m_plugin->RegisterTexture(
+    m_textureId = m_plugin.RegisterTexture(
         [this](size_t, size_t) -> std::optional<BufferVariant> {
             if (m_bits && m_captureWidth != 0 && m_captureHeight != 0) {
                 return std::make_optional(BufferVariant(
@@ -169,7 +169,7 @@ std::map<Encodable, Encodable> TextureCamera::Unregister()
         m_camera = nullptr;
     }
 
-    m_plugin->UnregisterTexture(m_textureId);
+    m_plugin.UnregisterTexture(m_textureId);
 
     m_error = "";
     m_counter = 0;
@@ -300,7 +300,7 @@ void TextureCamera::onCameraFrame(std::shared_ptr<Aurora::StreamCamera::GraphicB
             m_bits = yuv::NV12ToARGB(result.y, result.uv, result.width, result.height);
         }
 
-        m_plugin->MarkTextureAvailable(m_textureId);
+        m_plugin.MarkTextureAvailable(m_textureId);
     }
 }
 

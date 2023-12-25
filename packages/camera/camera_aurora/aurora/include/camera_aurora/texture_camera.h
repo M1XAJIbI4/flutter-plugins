@@ -18,7 +18,7 @@ typedef std::function<void(std::string)> ChangeQRHandler;
 class TextureCamera : public Aurora::StreamCamera::CameraListener
 {
 public:
-    TextureCamera(TextureRegistrar *plugin,
+    TextureCamera(const TextureRegistrar &plugin,
                   const CameraErrorHandler &onError,
                   const ChangeQRHandler &onChangeQR);
 
@@ -51,7 +51,7 @@ private:
         std::shared_ptr<Aurora::StreamCamera::GraphicBuffer> buffer);
 
 private:
-    std::shared_ptr<TextureRegistrar> m_plugin;
+    TextureRegistrar m_plugin;
 
     TakeImageBase64Handler m_takeImageBase64;
     CameraErrorHandler m_onError;

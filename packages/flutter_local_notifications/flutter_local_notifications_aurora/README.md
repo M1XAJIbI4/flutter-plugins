@@ -14,7 +14,7 @@ dependencies:
   flutter_local_notifications_aurora:
     git:
       url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
-      ref: master
+      ref: flutter_local_notifications_aurora-0.0.1
       path: packages/flutter_local_notifications/flutter_local_notifications_aurora
 ```
 

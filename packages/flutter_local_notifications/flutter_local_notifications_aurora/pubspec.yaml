@@ -19,7 +19,7 @@ dependencies:
   package_info_plus_aurora:
     git:
       url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
-      ref: dev
+      ref: package_info_plus_aurora-0.0.1
       path: packages/package_info_plus/package_info_plus_aurora
 
 dev_dependencies:

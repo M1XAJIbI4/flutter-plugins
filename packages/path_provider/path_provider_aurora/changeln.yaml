@@ -1,0 +1,16 @@
+### Changeln Configuration Settings
+
+# Template engine is Mako - https://www.makotemplates.org/
+# Base template format is Markdown - https://python-markdown.github.io/
+---
+
+### Tag find
+tags: 'path_provider_aurora-.*'
+
+### Group commits
+# {group name}: {regex}
+groups:
+  Bug: '\[(path_provider_aurora)\]\[(bug)\]\s+(.+)'
+  Change: '\[(path_provider_aurora)\]\[(change)\]\s+(.+)'
+  Feature: '\[(path_provider_aurora)\]\[(feature)\]\s+(.+)'
+

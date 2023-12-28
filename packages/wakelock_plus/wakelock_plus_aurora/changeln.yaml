@@ -1,0 +1,16 @@
+### Changeln Configuration Settings
+
+# Template engine is Mako - https://www.makotemplates.org/
+# Base template format is Markdown - https://python-markdown.github.io/
+---
+
+### Tag find
+tags: 'wakelock_plus_aurora-.*'
+
+### Group commits
+# {group name}: {regex}
+groups:
+  Bug: '\[(wakelock_plus_aurora)\]\[(bug)\]\s+(.+)'
+  Change: '\[(wakelock_plus_aurora)\]\[(change)\]\s+(.+)'
+  Feature: '\[(wakelock_plus_aurora)\]\[(feature)\]\s+(.+)'
+

@@ -15,7 +15,7 @@ dependencies:
   shared_preferences_aurora:
     git:
       url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
-      ref: master
+      ref: shared_preferences_aurora-0.0.1
       path: packages/shared_preferences/shared_preferences_aurora
 ```
 

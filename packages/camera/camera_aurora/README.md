@@ -28,6 +28,6 @@ dependencies:
   camera_aurora:
     git:
       url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
-      ref: master
+      ref: camera_aurora-0.0.1
       path: packages/device_info_plus/device_info_plus_aurora
 ```

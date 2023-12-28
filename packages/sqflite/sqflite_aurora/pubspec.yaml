@@ -3,7 +3,7 @@
 
 name: sqflite_aurora
 description: The Aurora OS implementation of sqflite.
-version: 2.2.6+aurora1
+version: 0.0.1
 
 environment:
   sdk: '>=2.18.6 <4.0.0'

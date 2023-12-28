@@ -15,7 +15,7 @@ dependencies:
   battery_plus_aurora:
     git:
       url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
-      ref: master
+      ref: battery_plus_aurora-0.0.1
       path: packages/battery_plus/battery_plus_aurora
 ```
 

@@ -15,7 +15,7 @@ dependencies:
   sensors_plus_aurora:
     git:
       url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
-      ref: master
+      ref: sensors_plus_aurora-0.0.1
       path: packages/sensors_plus/sensors_plus_aurora
 ```
 

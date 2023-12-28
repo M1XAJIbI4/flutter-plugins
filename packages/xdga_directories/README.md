@@ -23,7 +23,7 @@ dependencies:
   xdga_directories:
     git:
       url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
-      ref: master
+      ref: xdga_directories-0.0.1
       path: packages/xdga_directories
 ```
 

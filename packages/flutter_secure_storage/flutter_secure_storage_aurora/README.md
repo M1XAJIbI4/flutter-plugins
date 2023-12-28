@@ -15,7 +15,7 @@ dependencies:
   flutter_secure_storage_aurora:
     git:
       url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
-      ref: master
+      ref: flutter_secure_storage_aurora-0.0.1
       path: packages/flutter_secure_storage/flutter_secure_storage_aurora
 ```
 

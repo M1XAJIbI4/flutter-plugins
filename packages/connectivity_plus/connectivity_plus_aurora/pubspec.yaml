@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: 2024 Open Mobile Platform LLC <community@omp.ru>
+# SPDX-License-Identifier: BSD-3-Clause
+
+name: connectivity_plus_aurora
+description: The Aurora OS implementation of connectivity_plus.
+version: 0.0.1
+
+environment:
+  sdk: ">=2.18.0 <4.0.0"
+  flutter: ">=3.3.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  plugin_platform_interface: ^2.0.2
+  connectivity_plus_platform_interface: ^1.2.4
+
+dev_dependencies:
+  flutter_lints: ^2.0.0
+
+flutter:
+  plugin:
+    platforms:
+      aurora:
+        pluginClass: ConnectivityPlusAuroraPlugin

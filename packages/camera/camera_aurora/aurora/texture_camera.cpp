@@ -12,6 +12,12 @@
 
 #include "ZXing/ReadBarcode.h"
 
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+
+static PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR;
+static PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR;
+
 TextureCamera::TextureCamera(const TextureRegistrar &plugin,
                              const CameraErrorHandler &onError,
                              const ChangeQRHandler &onChangeQR)
@@ -20,7 +26,12 @@ TextureCamera::TextureCamera(const TextureRegistrar &plugin,
     , m_onChangeQR(onChangeQR)
     , m_manager(StreamCameraManager())
     , m_camera(nullptr)
-{}
+{
+    eglCreateImageKHR = reinterpret_cast<PFNEGLCREATEIMAGEKHRPROC>(
+        eglGetProcAddress("eglCreateImageKHR"));
+    eglDestroyImageKHR = reinterpret_cast<PFNEGLDESTROYIMAGEKHRPROC>(
+        eglGetProcAddress("eglDestroyImageKHR"));
+}
 
 void TextureCamera::GetImageBase64(const TakeImageBase64Handler &takeImageBase64)
 {
@@ -144,7 +155,12 @@ std::map<Encodable, Encodable> TextureCamera::Register(std::string cameraName)
 {
     m_textureId = m_plugin.RegisterTexture(
         [this](size_t, size_t) -> std::optional<BufferVariant> {
-            if (m_bits && m_captureWidth != 0 && m_captureHeight != 0) {
+            if (m_eglimage) {
+                std::cout << "m_eglimage" << std::endl;
+                return std::make_optional(BufferVariant(
+                    FlutterEGLImage{m_eglimage.get()}));
+            }
+            else if (m_bits && m_captureWidth != 0 && m_captureHeight != 0) {
                 return std::make_optional(BufferVariant(
                     FlutterPixelBuffer{m_bits, (size_t) m_captureWidth, (size_t) m_captureHeight}));
             }
@@ -161,6 +177,7 @@ std::map<Encodable, Encodable> TextureCamera::Register(std::string cameraName)
 std::map<Encodable, Encodable> TextureCamera::Unregister()
 {
     m_bits = nullptr;
+    m_eglimage = nullptr;
 
     if (m_camera) {
         m_isStart = false;
@@ -208,6 +225,7 @@ void TextureCamera::ResizeFrame(int width,
     }
 
     m_bits = nullptr;
+    m_eglimage = nullptr;
 
     captureHeight = dh;
     captureWidth = (cw * dh) / ch;
@@ -216,6 +234,23 @@ void TextureCamera::ResizeFrame(int width,
         captureWidth = dw;
         captureHeight = (ch * dw) / cw;
     }
+}
+
+std::optional<std::shared_ptr<EGLImageKHR>> TextureCamera::GetEGLImage(
+    std::shared_ptr<Aurora::StreamCamera::GraphicBuffer> buffer)
+{
+    auto display = PlatformMethods::GetEGLDisplay();
+    auto context = PlatformMethods::GetEGLContext();
+
+    const void *handle = buffer->handle;
+    GLint eglImgAttrs[] = {EGL_IMAGE_PRESERVED_KHR, EGL_TRUE, EGL_NONE, EGL_NONE};
+    auto eglImage = eglCreateImageKHR(display,
+                             context,
+                             EGL_NATIVE_BUFFER_ANDROID,
+                             (EGLClientBuffer) handle,
+                             eglImgAttrs);
+
+    return std::make_shared<EGLImageKHR>(eglImage);
 }
 
 std::optional<std::shared_ptr<const Aurora::StreamCamera::YCbCrFrame>> TextureCamera::GetFrame(
@@ -272,35 +307,42 @@ void TextureCamera::onCameraFrame(std::shared_ptr<Aurora::StreamCamera::GraphicB
         return;
     }
 
-    if (auto optional = GetFrame(buffer)) {
-        auto frame = optional.value();
-
-        m_chromaStep = frame->chromaStep;
-
-        if (m_enableSearchQr) {
-            SearchQr(frame);
+    if (buffer->handleType == Aurora::StreamCamera::HandleType::EGL) {
+        if (auto optional = GetEGLImage(buffer)) {
+            m_eglimage = optional.value();
+            m_plugin.MarkTextureAvailable(m_textureId);
         }
+    } else {
+        if (auto optional = GetFrame(buffer)) {
+            auto frame = optional.value();
 
-        if (frame->chromaStep == 1 /* I420 */) {
-            auto result = yuv::I420Scale(frame->y,
-                                         frame->cr,
-                                         frame->cb,
-                                         frame->width,
-                                         frame->height,
-                                         m_captureWidth,
-                                         m_captureHeight);
-            m_bits = yuv::I420ToARGB(result.y, result.u, result.v, result.width, result.height);
-        } else if (frame->chromaStep == 2 /* NV12 */) {
-            auto result = yuv::NV12Scale(frame->y,
-                                         frame->cr,
-                                         frame->width,
-                                         frame->height,
-                                         m_captureWidth,
-                                         m_captureHeight);
-            m_bits = yuv::NV12ToARGB(result.y, result.uv, result.width, result.height);
+            m_chromaStep = frame->chromaStep;
+
+            if (m_enableSearchQr) {
+                SearchQr(frame);
+            }
+
+            if (frame->chromaStep == 1 /* I420 */) {
+                auto result = yuv::I420Scale(frame->y,
+                                            frame->cr,
+                                            frame->cb,
+                                            frame->width,
+                                            frame->height,
+                                            m_captureWidth,
+                                            m_captureHeight);
+                m_bits = yuv::I420ToARGB(result.y, result.u, result.v, result.width, result.height);
+            } else if (frame->chromaStep == 2 /* NV12 */) {
+                auto result = yuv::NV12Scale(frame->y,
+                                            frame->cr,
+                                            frame->width,
+                                            frame->height,
+                                            m_captureWidth,
+                                            m_captureHeight);
+                m_bits = yuv::NV12ToARGB(result.y, result.uv, result.width, result.height);
+            }
+
+            m_plugin.MarkTextureAvailable(m_textureId);
         }
-
-        m_plugin.MarkTextureAvailable(m_textureId);
     }
 }
 

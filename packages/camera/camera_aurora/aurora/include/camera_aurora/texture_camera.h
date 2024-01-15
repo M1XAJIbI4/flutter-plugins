@@ -11,6 +11,9 @@
 #include <chrono>
 #include <thread>
 
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
+
 typedef std::function<void()> CameraErrorHandler;
 typedef std::function<void(std::string)> TakeImageBase64Handler;
 typedef std::function<void(std::string)> ChangeQRHandler;
@@ -49,6 +52,8 @@ private:
                      int &captureHeight);
     std::optional<std::shared_ptr<const Aurora::StreamCamera::YCbCrFrame>> GetFrame(
         std::shared_ptr<Aurora::StreamCamera::GraphicBuffer> buffer);
+    std::optional<std::shared_ptr<EGLImageKHR>> GetEGLImage(
+        std::shared_ptr<Aurora::StreamCamera::GraphicBuffer> buffer);
 
 private:
     TextureRegistrar m_plugin;
@@ -72,6 +77,7 @@ private:
     int m_viewHeight = 0;
 
     std::shared_ptr<uint8_t> m_bits;
+    std::shared_ptr<EGLImageKHR> m_eglimage;
     int m_counter = 0;
     int m_counter_qr = 0;
     int m_chromaStep = 1;

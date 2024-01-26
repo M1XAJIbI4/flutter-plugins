@@ -28,7 +28,8 @@ class ComNokiaMceRequest extends DBusRemoteObject {
         replySignature: DBusSignature('i'),
         noAutoStart: noAutoStart,
         allowInteractiveAuthorization: allowInteractiveAuthorization);
-    return result.returnValues[0].asInt32();
+    final level = result.returnValues[0].asInt32();
+    return level < 0 ? 100 : level;
   }
 
   /// Invokes com.nokia.mce.request.get_charger_state()

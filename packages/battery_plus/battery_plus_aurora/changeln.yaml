@@ -1,8 +1,5 @@
-### Changeln Configuration Settings
-
-# Template engine is Mako - https://www.makotemplates.org/
-# Base template format is Markdown - https://python-markdown.github.io/
----
+# SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+# SPDX-License-Identifier: BSD-3-Clause
 
 ### Tag find
 tags: 'battery_plus_aurora-.*'

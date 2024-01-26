@@ -1,0 +1,23 @@
+{
+  "@_COMMON": {},
+  "title": "Battery plus aurora",
+  "description": "This plugin allows you to track the current battery status, battery charge level and battery saving mode",
+  "btnUpdate": "Update",
+  "dataUnknown": "Unknown",
+  "dataUnavailable": "Not available",
+
+  "@_LIST": {},
+  "item1BatteryLevel": "Battery Level",
+  "item1BatteryLevelDesc": "Returns the current battery level as a percentage.",
+  "item2IsInBatterySaveMode": "Battery Status",
+  "item2IsInBatterySaveModeDesc": "Returns true if the device is in battery saving mode.",
+  "item3OnBatteryStateChanged": "Battery State",
+  "item3OnBatteryStateChangedDesc": "Returns a stream that updates when the battery state changes.",
+
+  "@_STATES": {},
+  "stateActive": "Active",
+  "stateInactive": "Not active",
+  "stateFull": "Full",
+  "stateCharging": "Charging",
+  "stateDischarging": "Discharging"
+}

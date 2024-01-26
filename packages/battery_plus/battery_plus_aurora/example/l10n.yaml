@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+# SPDX-License-Identifier: BSD-3-Clause
+
+arb-dir: lib/battery_plus/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart

@@ -1,6 +1,5 @@
-# SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+# SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
 # SPDX-License-Identifier: BSD-3-Clause
-
 name: battery_plus_aurora_example
 description: "The Aurora OS example of battery_plus_aurora."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev

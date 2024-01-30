@@ -5,7 +5,7 @@ Name: ru.auroraos.connectivity_plus_aurora_example
 Summary: Demonstrates how to use the connectivity_plus_aurora plugin.
 Version: 0.1.0
 Release: 1
-License: Proprietary
+License: BSD 3-Clause
 Source0: %{name}-%{version}.tar.zst
 
 BuildRequires: cmake

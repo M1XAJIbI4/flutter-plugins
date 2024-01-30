@@ -28,8 +28,7 @@ class ListItemData<T> extends StatelessWidget {
   final Future<T>? future;
   final Function(T?)? builder;
 
-  AsyncWidgetBuilder<T?> get widgetBuilder =>
-      (BuildContext context, AsyncSnapshot<T?> snapshot) {
+  AsyncWidgetBuilder<T?> get widgetBuilder => (BuildContext context, AsyncSnapshot<T?> snapshot) {
         if (snapshot.hasError) {
           return const Text('Error');
         }
@@ -43,9 +42,7 @@ class ListItemData<T> extends StatelessWidget {
               title,
               description,
               color,
-              builder == null
-                  ? snapshot.data.toString()
-                  : builder!(snapshot.data),
+              builder == null ? snapshot.data.toString() : builder!(snapshot.data),
               widthData: widthData,
             );
         }

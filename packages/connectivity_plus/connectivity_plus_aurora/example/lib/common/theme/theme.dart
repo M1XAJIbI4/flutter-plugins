@@ -1,9 +1,8 @@
 // SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
-import 'radius.dart';
 import 'package:flutter/material.dart';
-
 import 'colors.dart';
+import 'radius.dart';
 
 final theme = ThemeData.light();
 

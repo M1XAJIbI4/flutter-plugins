@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: 2024 Open Mobile Platform LLC <community@omp.ru>
  * SPDX-License-Identifier: BSD-3-Clause
  */
-
 #include <flutter/application.h>
 #include <flutter/compatibility.h>
 #include "generated_plugin_registrant.h"

@@ -5,7 +5,7 @@ Name: ru.auroraos.battery_plus_aurora_example
 Summary: The Aurora OS example of battery_plus_aurora.
 Version: 0.1.0
 Release: 1
-License: Proprietary
+License: BSD 3-Clause
 Source0: %{name}-%{version}.tar.zst
 
 BuildRequires: cmake

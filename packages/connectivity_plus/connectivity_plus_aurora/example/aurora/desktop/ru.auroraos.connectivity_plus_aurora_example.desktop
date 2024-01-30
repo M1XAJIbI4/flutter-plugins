@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
-Name=connectivity_plus_aurora_example
-Comment=Demonstrates how to use the connectivity_plus_aurora plugin.
+Name=Connectivity plus aurora example
+Comment=The Aurora OS example of connectivity_plus_aurora.
 Icon=ru.auroraos.connectivity_plus_aurora_example
 Exec=/usr/bin/ru.auroraos.connectivity_plus_aurora_example
 X-Nemo-Application-Type=silica-qt5

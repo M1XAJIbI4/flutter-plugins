@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+# SPDX-License-Identifier: BSD-3-Clause
+
+### Tag find
+tags: 'connectivity_plus_aurora-.*'
+
+### Group commits
+# {group name}: {regex}
+groups:
+  Bug: '\[(connectivity_plus_aurora)\]\[(bug)\]\s+(.+)'
+  Change: '\[(connectivity_plus_aurora)\]\[(change)\]\s+(.+)'
+  Feature: '\[(connectivity_plus_aurora)\]\[(feature)\]\s+(.+)'
+

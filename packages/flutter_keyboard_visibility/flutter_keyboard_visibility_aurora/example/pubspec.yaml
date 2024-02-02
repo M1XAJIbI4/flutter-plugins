@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
 # SPDX-License-Identifier: BSD-3-Clause
-name: connectivity_plus_aurora_example
-description: "The Aurora OS example of connectivity_plus_aurora."
+name: flutter_keyboard_visibility_aurora_example
+description: "The Aurora OS example of flutter_keyboard_visibility_aurora."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
@@ -16,8 +16,8 @@ dependencies:
     sdk: flutter
   intl: any
   cupertino_icons: ^1.0.2
-  connectivity_plus: ^5.0.2
-  connectivity_plus_aurora:
+  flutter_keyboard_visibility: ^5.4.1
+  flutter_keyboard_visibility_aurora:
     path: ../
 
 dev_dependencies:

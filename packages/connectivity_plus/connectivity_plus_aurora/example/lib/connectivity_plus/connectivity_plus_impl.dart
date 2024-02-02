@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clausectivity_plus/connectivity_plus.dart';
+// SPDX-License-Identifier: BSD-3-Clause
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 /// Main features of the plugin Connectivity

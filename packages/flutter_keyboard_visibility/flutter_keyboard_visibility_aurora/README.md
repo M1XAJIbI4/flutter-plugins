@@ -3,8 +3,10 @@
 The Aurora implementation of [flutter_keyboard_visibility](https://pub.dev/packages/flutter_keyboard_visibility).
 
 ## Usage
+
 This package is not an _endorsed_ implementation of `flutter_keyboard_visibility`.
-Therefore, you have to include `flutter_local_notifications_aurora` alongside `flutter_keyboard_visibility` as dependencies in your `pubspec.yaml` file.
+Therefore, you have to include `flutter_keyboard_visibility_aurora`
+alongside `flutter_keyboard_visibility` as dependencies in your `pubspec.yaml` file.
 
 **pubspec.yaml**
 

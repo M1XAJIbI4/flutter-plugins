@@ -28,24 +28,15 @@ class ListItemData<T> extends StatelessWidget {
   final Future<T>? future;
   final Function(T?)? builder;
 
-  AsyncWidgetBuilder<T?> get widgetBuilder => (BuildContext context, AsyncSnapshot<T?> snapshot) {
-        if (snapshot.hasError) {
-          return const Text('Error');
-        }
-        switch (snapshot.connectionState) {
-          case ConnectionState.none:
-            return const Text('none');
-          case ConnectionState.waiting:
-          case ConnectionState.active:
-          case ConnectionState.done:
-            return ListItem(
-              title,
-              description,
-              color,
-              builder == null ? snapshot.data.toString() : builder!(snapshot.data),
-              widthData: widthData,
-            );
-        }
+  AsyncWidgetBuilder<T?> get widgetBuilder =>
+      (BuildContext context, AsyncSnapshot<T?> snapshot) {
+        return ListItem(
+          title,
+          description,
+          color,
+          builder == null ? snapshot.data.toString() : builder!(snapshot.data),
+          widthData: widthData,
+        );
       };
 
   @override

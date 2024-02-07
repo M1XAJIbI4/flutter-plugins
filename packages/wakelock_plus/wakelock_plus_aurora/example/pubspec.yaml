@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
+# SPDX-License-Identifier: BSD-3-Clause
+name: wakelock_plus_aurora_example
+description: "The Aurora OS example of wakelock_plus_aurora."
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.2 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: any
+  cupertino_icons: ^1.0.2
+  flutter_keyboard_visibility: ^5.4.1
+  flutter_keyboard_visibility_aurora:
+    git:
+      url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
+      ref: flutter_keyboard_visibility_aurora-0.0.1
+      path: packages/flutter_keyboard_visibility/flutter_keyboard_visibility_aurora
+  # Include plugin wakelock_plus
+  wakelock_plus: ^1.1.1
+  wakelock_plus_aurora:
+    path: ../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  build_runner: ^2.4.6
+
+flutter:
+  generate: true
+  uses-material-design: true

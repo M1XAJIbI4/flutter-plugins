@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Wakelock plus aurora example
+Comment=The Aurora OS example of wakelock_plus_aurora.
+Icon=ru.auroraos.wakelock_plus_aurora_example
+Exec=/usr/bin/ru.auroraos.wakelock_plus_aurora_example
+X-Nemo-Application-Type=silica-qt5
+
+[X-Application]
+Permissions=
+OrganizationName=ru.auroraos
+ApplicationName=wakelock_plus_aurora_example

@@ -1,0 +1,10 @@
+{
+  "@_COMMON": {},
+  "title": "Wakelock plus aurora",
+  "description": "Plugin that allows you to keep the device screen awake, i.e. prevent the screen from sleeping.",
+
+  "@_OTHER": {},
+  "itemTitle": "State Wakelock",
+  "itemDesc": "Displays the sleep lock status of the device.",
+  "itemButton": "Toggle"
+}

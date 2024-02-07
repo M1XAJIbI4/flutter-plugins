@@ -3,6 +3,15 @@
 The Aurora OS implementation of [`path_provider`](https://pub.dev/packages/path_provider).
 Documentation for setting permissions can be found [here](https://developer.auroraos.ru/doc/software_development/reference/user_data).
 
+- [x] `getTemporaryDirectory` - Directory location where user-specific non-essential (cached) data should be written
+- [x] `getApplicationSupportDirectory` - Directory where the application may place application support files.
+- [ ] `getLibraryDirectory`
+- [x] `getApplicationDocumentsDirectory` - Directory containing user document files.
+- [ ] `getExternalStorageDirectory`
+- [ ] `getExternalCacheDirectories`
+- [x] `getExternalStorageDirectories` - There is no concept of External in Aurora OS, but this interface allows you to get the pictures/music/movies directory
+- [x] `getDownloadsDirectory`- Directory for user's downloaded files.
+
 ## Usage
 
 This package is not an _endorsed_ implementation of `path_provider`.
@@ -20,6 +29,10 @@ dependencies:
       path: packages/path_provider/path_provider_aurora
 ```
 
+```desktop
+Permissions=UserDirs
+```
+
 ***.dart**
 
 ```dart
@@ -31,14 +44,3 @@ final Directory appDocumentsDir = await getApplicationDocumentsDirectory();
 
 final Directory? downloadsDir = await getDownloadsDirectory();
 ```
-
-## Supported APIs
-
-- [x] `getTemporaryDirectory` - Directory location where user-specific non-essential (cached) data should be written
-- [x] `getApplicationSupportDirectory` - Directory where the application may place application support files.
-- [ ] `getLibraryDirectory`
-- [x] `getApplicationDocumentsDirectory` - Directory containing user document files.
-- [ ] `getExternalStorageDirectory`
-- [ ] `getExternalCacheDirectories`
-- [x] `getExternalStorageDirectories` - There is no concept of External in Aurora OS, but this interface allows you to get the pictures/music/movies directory
-- [x] `getDownloadsDirectory`- Directory for user's downloaded files.

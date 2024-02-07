@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Path provider
+Comment=The Aurora OS example of path_provider_aurora.
+Icon=ru.auroraos.path_provider_aurora_example
+Exec=/usr/bin/ru.auroraos.path_provider_aurora_example
+X-Nemo-Application-Type=silica-qt5
+
+[X-Application]
+Permissions=UserDirs
+OrganizationName=ru.auroraos
+ApplicationName=path_provider_aurora_example

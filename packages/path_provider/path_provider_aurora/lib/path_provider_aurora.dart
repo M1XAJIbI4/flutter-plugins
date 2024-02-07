@@ -1,10 +1,9 @@
 // SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
-import 'package:package_info_plus_aurora/package_info_plus_aurora.dart';
-import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
-import 'package:xdga_directories/xdga_directories.dart' as xdga_directories;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart' as p;
+import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
+import 'package:xdga_directories/xdga_directories.dart' as xdga_directories;
 
 /// The aurora implementation of [PathProviderPlatform]
 ///

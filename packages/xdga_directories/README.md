@@ -27,6 +27,12 @@ dependencies:
       path: packages/xdga_directories
 ```
 
+***.desktop**
+
+```desktop
+Permissions=UserDirs 
+```
+
 ***.dart**
 
 ```dart

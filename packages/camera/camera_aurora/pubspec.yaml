@@ -1,13 +1,12 @@
 # SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
 # SPDX-License-Identifier: BSD-3-Clause
-
 name: camera_aurora
 description: Aurora implementation of the camera plugin.
 version: 0.0.1
 
 environment:
   sdk: '>=2.18.6 <4.0.0'
-  flutter: ">=3.16.2"
+  flutter: ">=3.16.2-1"
 
 dependencies:
   flutter:

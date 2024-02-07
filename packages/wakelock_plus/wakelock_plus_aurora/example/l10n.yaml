@@ -1,5 +1,0 @@
-# SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
-# SPDX-License-Identifier: BSD-3-Clause
-arb-dir: lib/wakelock_plus/l10n
-template-arb-file: app_en.arb
-output-localization-file: app_localizations.dart

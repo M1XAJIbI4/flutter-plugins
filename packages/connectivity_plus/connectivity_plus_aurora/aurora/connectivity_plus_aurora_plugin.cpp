@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: 2024 Open Mobile Platform LLC <community@omp.ru>
  * SPDX-License-Identifier: BSD-3-Clause
  */
-
 #include <connectivity_plus_aurora/connectivity_plus_aurora_plugin.h>
 #include <flutter/method-channel.h>
 

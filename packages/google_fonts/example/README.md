@@ -10,12 +10,6 @@ Get dependency
 flutter-aurora pub get
 ```
 
-Run build dart
-
-```shell
-flutter-aurora pub run build_runner build --delete-conflicting-outputs
-```
-
 Build aurora application
 
 ```shell

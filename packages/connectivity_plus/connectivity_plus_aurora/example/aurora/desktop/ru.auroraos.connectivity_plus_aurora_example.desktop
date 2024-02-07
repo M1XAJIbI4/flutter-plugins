@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=Connectivity plus aurora example
+Name=Connectivity plus
 Comment=The Aurora OS example of connectivity_plus_aurora.
 Icon=ru.auroraos.connectivity_plus_aurora_example
 Exec=/usr/bin/ru.auroraos.connectivity_plus_aurora_example

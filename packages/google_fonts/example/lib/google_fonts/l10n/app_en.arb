@@ -1,8 +1,0 @@
-{
-  "@_COMMON": {},
-  "title": "Google fonts",
-  "description": "A Flutter package to use fonts from fonts.google.com.",
-
-  "@_OTHER": {},
-  "exampleText": "Example text using GoogleFonts styles."
-}

@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: 2023 Open Mobile Platform LLC <community@omp.ru>
  * SPDX-License-Identifier: BSD-3-Clause
  */
-
 #include <flutter/method-channel.h>
 #include <sensors_plus_aurora/sensors_plus_aurora_plugin.h>
 

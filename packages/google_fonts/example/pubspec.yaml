@@ -14,15 +14,8 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  intl: any
-  cupertino_icons: ^1.0.2
-  flutter_keyboard_visibility: ^5.4.1
-  flutter_keyboard_visibility_aurora:
-    git:
-      url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
-      ref: flutter_keyboard_visibility_aurora-0.0.1
-      path: packages/flutter_keyboard_visibility/flutter_keyboard_visibility_aurora
-  # Include plugin google_fonts
+  internal:
+    path: ../../../internal
   google_fonts: ^6.1.0
   path_provider: ^2.0.15
   path_provider_aurora:
@@ -35,8 +28,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
-  build_runner: ^2.4.6
 
 flutter:
-  generate: true
   uses-material-design: true

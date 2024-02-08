@@ -13,23 +13,6 @@ class _TextFieldWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextInputFormatter? formatter;
-    TextInputType? keyboardType;
-    switch (fieldType) {
-      case FieldType.intType:
-        formatter = FilteringTextInputFormatter.digitsOnly;
-        keyboardType = TextInputType.number;
-        break;
-      case FieldType.doubleType:
-        formatter = FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]+(\.[0-9]*)?$'));
-        keyboardType = TextInputType.number;
-        break;
-      case FieldType.stringType:
-        formatter = FilteringTextInputFormatter.singleLineFormatter;
-        keyboardType = TextInputType.text;
-        break;
-    }
-
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: TextFormField(
@@ -40,13 +23,41 @@ class _TextFieldWidget extends StatelessWidget {
           if (!_validate(value!)) return 'Please enter a valid value';
           return null;
         },
-        decoration: InputDecoration(
-          hintText: label,
-        ),
-        keyboardType: keyboardType,
-        inputFormatters: [formatter],
+        decoration: _buildInputDecoration(),
+        keyboardType: _getKeyboardType(),
+        inputFormatters: [_getInputFormatter()!],
       ),
     );
+  }
+
+  InputDecoration _buildInputDecoration() {
+    return InputDecoration(
+      hintText: label,
+    );
+  }
+
+  TextInputType? _getKeyboardType() {
+    switch (fieldType) {
+      case FieldType.intType:
+        return TextInputType.number;
+      case FieldType.doubleType:
+        return TextInputType.number;
+      case FieldType.stringType:
+        return TextInputType.text;
+      default:
+        return TextInputType.text;
+    }
+  }
+
+  TextInputFormatter? _getInputFormatter() {
+    switch (fieldType) {
+      case FieldType.intType:
+        return FilteringTextInputFormatter.digitsOnly;
+      case FieldType.doubleType:
+        return FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]+(\.[0-9]*)?$'));
+      case FieldType.stringType:
+        return FilteringTextInputFormatter.singleLineFormatter;
+    }
   }
 
   bool _validate(String value) {

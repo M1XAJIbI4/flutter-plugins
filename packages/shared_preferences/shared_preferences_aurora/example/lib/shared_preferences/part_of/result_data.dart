@@ -35,7 +35,7 @@ class _ResultDataState extends State<ResultData> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text('Result: ', style: TextStyle(fontSize: 20)),
+                const Text('Current Result: ', style: TextStyle(fontSize: 18)),
                 Text(
                   mapEntriesToString(widget.sharedPreferencesImpl.readValues!),
                 ),

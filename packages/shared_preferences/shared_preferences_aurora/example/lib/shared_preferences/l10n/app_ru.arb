@@ -1,0 +1,15 @@
+{
+  "@_COMMON": {},
+  "title": "Keyboard visibility aurora",
+  "description": "Этот плагин позволяет отслеживать состояние активности клавиатуры и ее высоты.",
+
+  "@_LIST": {},
+  "item1OnChangeTitle": "Поток статуса клавиатуры",
+  "item1OnChangeDesc": "Отображает статус открыта или закрыта клавиатура.",
+  "item2OnChangeHeightTitle": "Поток высоты клавиатуры",
+  "item2OnChangeHeightDesc": "Отображает изменение высоты клавиатуры.",
+
+  "@_OTHER": {},
+  "formInput": "Нажмите для фокусировки",
+  "formButton": "Очистить фокус"
+}

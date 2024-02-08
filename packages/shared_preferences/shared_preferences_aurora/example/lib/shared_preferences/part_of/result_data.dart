@@ -1,19 +1,29 @@
 part of '../form_shared.dart';
 
-class ResultData extends StatelessWidget {
+class ResultData extends StatefulWidget {
   final SharedPreferencesImpl sharedPreferencesImpl;
   const ResultData(
     this.sharedPreferencesImpl, {
     super.key,
   });
 
+  @override
+  State<ResultData> createState() => _ResultDataState();
+}
+
+class _ResultDataState extends State<ResultData> {
   String mapEntriesToString(Map<String, dynamic> map) {
     return map.entries.map((entry) => '${entry.key}: ${entry.value}\n').join();
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return sharedPreferencesImpl.readValues != null
+    return widget.sharedPreferencesImpl.readValues != null
         ? Container(
             height: 100,
             padding: const EdgeInsets.all(8),
@@ -27,7 +37,7 @@ class ResultData extends StatelessWidget {
               children: [
                 const Text('Result: ', style: TextStyle(fontSize: 20)),
                 Text(
-                  mapEntriesToString(sharedPreferencesImpl.readValues!),
+                  mapEntriesToString(widget.sharedPreferencesImpl.readValues!),
                 ),
               ],
             ),

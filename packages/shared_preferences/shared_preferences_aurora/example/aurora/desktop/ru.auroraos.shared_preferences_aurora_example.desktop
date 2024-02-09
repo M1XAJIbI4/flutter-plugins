@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=Shared preferences aurora example
+Name=Shared preferences
 Comment=The Aurora OS example of shared_preferences_aurora.
 Icon=ru.auroraos.shared_preferences_aurora_example
 Exec=/usr/bin/ru.auroraos.shared_preferences_aurora_example

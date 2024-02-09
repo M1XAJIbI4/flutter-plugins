@@ -21,8 +21,21 @@ class _FormSharedState extends State<FormShared> {
   double? decimal;
   String? action;
 
-  final SharedPreferencesImpl _sharedPreferencesImpl = SharedPreferencesImpl();
+  final PluginImpl _sharedPreferencesImpl = PluginImpl();
 
+  @override
+  void initState() {
+    initialize();
+    super.initState();
+  }
+
+  /// Obtaining data from shared preferences during initialization
+  void initialize() async {
+    await _sharedPreferencesImpl.getData();
+    setState(() {});
+  }
+
+  /// Saving data to shared preferences
   void onPressed() {
     if (_formKey.currentState!.validate()) {
       FocusManager.instance.primaryFocus?.unfocus();
@@ -35,19 +48,9 @@ class _FormSharedState extends State<FormShared> {
     }
   }
 
+  /// Clearing data from shared preferences
   void clear() async {
     await _sharedPreferencesImpl.clearAllData();
-    setState(() {});
-  }
-
-  @override
-  void initState() {
-    initialize();
-    super.initState();
-  }
-
-  initialize() async {
-    await _sharedPreferencesImpl.getData();
     setState(() {});
   }
 
@@ -136,6 +139,7 @@ class _TextFieldWidget extends StatelessWidget {
     }
   }
 
+  /// Setting the input formatter
   TextInputFormatter? _getInputFormatter() {
     switch (fieldType) {
       case FieldType.intType:
@@ -163,12 +167,13 @@ class _TextFieldWidget extends StatelessWidget {
 }
 
 class ResultData extends StatelessWidget {
-  final SharedPreferencesImpl sharedPreferencesImpl;
+  final PluginImpl sharedPreferencesImpl;
   const ResultData(
     this.sharedPreferencesImpl, {
     super.key,
   });
 
+  /// Convert to display readings in a text widget
   String mapEntriesToString(Map<String, dynamic> map) {
     return map.entries.map((entry) => '${entry.key}: ${entry.value}\n').join();
   }
@@ -211,7 +216,7 @@ class _RadioButtonWidget extends StatefulWidget {
 }
 
 class _RadioButtonWidgetState extends State<_RadioButtonWidget> {
-  BoolType _character = BoolType.tr;
+  BoolType _character = BoolType.trueEnum;
 
   @override
   void initState() {
@@ -227,9 +232,9 @@ class _RadioButtonWidgetState extends State<_RadioButtonWidget> {
         const Text('Choose value type "bool"'),
         Row(
           children: <Widget>[
-            Text(BoolType.tr.value.toString()),
+            Text(BoolType.trueEnum.value.toString()),
             Radio<BoolType>(
-              value: BoolType.tr,
+              value: BoolType.trueEnum,
               groupValue: _character,
               onChanged: (BoolType? value) {
                 if (value != null) {
@@ -240,9 +245,9 @@ class _RadioButtonWidgetState extends State<_RadioButtonWidget> {
                 }
               },
             ),
-            Text(BoolType.fal.value.toString()),
+            Text(BoolType.falseEnum.value.toString()),
             Radio<BoolType>(
-              value: BoolType.fal,
+              value: BoolType.falseEnum,
               groupValue: _character,
               onChanged: (BoolType? value) {
                 if (value != null) {
@@ -267,8 +272,8 @@ enum FieldType {
 }
 
 enum BoolType {
-  tr(true),
-  fal(false);
+  trueEnum(true),
+  falseEnum(false);
 
   const BoolType(this.value);
   final bool value;

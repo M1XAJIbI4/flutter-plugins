@@ -3,15 +3,11 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Main features of the plugin FlutterKeyboardVisibility
-class SharedPreferencesImpl {
+class PluginImpl {
   /// Read shared preferences
   Future<SharedPreferences> get _prefs async => await SharedPreferences.getInstance();
 
-  /// Local value
-  Map<String, dynamic>? _readValues;
-
-  /// Public values
-  Map<String, dynamic>? get readValues => _readValues;
+  Map<String, dynamic>? readValues;
 
   /// Set Int value
   Future<void> setInt(int counter) async {
@@ -37,17 +33,17 @@ class SharedPreferencesImpl {
     await (await _prefs).setString('action', action);
   }
 
-  /// CLear all data
+  /// CLear all data from shared preferences
   Future<void> clearAllData() async {
     await (await _prefs).clear();
-    _readValues!.clear();
-    _readValues = null;
+    readValues!.clear();
+    readValues = null;
   }
 
-  /// Get data
+  /// Get data from shared preferences
   Future<void> getData() async {
     final prefs = await _prefs;
-    _readValues = {
+    readValues = {
       'int': prefs.getInt('counter'),
       'bool': prefs.getBool('repeat'),
       'double': prefs.getDouble('decimal'),

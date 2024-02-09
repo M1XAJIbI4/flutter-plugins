@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 name: shared_preferences_aurora_example
 description: "The Aurora OS example of shared_preferences_aurora."
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: 'none'
 
 version: 1.0.0+1
 
@@ -12,28 +12,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
-  intl: any
   cupertino_icons: ^1.0.2
   shared_preferences: ^2.1.2
   internal:
     path: ../../../../internal
   shared_preferences_aurora:
     path: ../
-#  flutter_keyboard_visibility: ^5.4.1
-#  flutter_keyboard_visibility_aurora:
-#    git:
-#      url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
-#      ref: flutter_keyboard_visibility_aurora-0.0.1
-#      path: packages/flutter_keyboard_visibility/flutter_keyboard_visibility_aurora
-
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
   flutter_lints: ^2.0.0
-  build_runner: ^2.4.6
 
 flutter:
   generate: true

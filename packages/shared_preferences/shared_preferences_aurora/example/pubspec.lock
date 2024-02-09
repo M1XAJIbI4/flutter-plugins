@@ -215,7 +215,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_keyboard_visibility:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_keyboard_visibility
       sha256: "4983655c26ab5b959252ee204c2fffa4afeb4413cd030455194ec0caa3b8e7cb"
@@ -223,13 +223,11 @@ packages:
     source: hosted
     version: "5.4.1"
   flutter_keyboard_visibility_aurora:
-    dependency: "direct main"
+    dependency: transitive
     description:
-      path: "packages/flutter_keyboard_visibility/flutter_keyboard_visibility_aurora"
-      ref: "flutter_keyboard_visibility_aurora-0.0.1"
-      resolved-ref: f607e662d6df5d87f2537ddff50e5ae3af500b01
-      url: "https://gitlab.com/omprussia/flutter/flutter-plugins.git"
-    source: git
+      path: "../../../flutter_keyboard_visibility/flutter_keyboard_visibility_aurora"
+      relative: true
+    source: path
     version: "0.0.1"
   flutter_keyboard_visibility_linux:
     dependency: transitive
@@ -342,6 +340,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  internal:
+    dependency: "direct main"
+    description:
+      path: "../../../../internal"
+      relative: true
+    source: path
+    version: "0.0.1"
   intl:
     dependency: "direct main"
     description:

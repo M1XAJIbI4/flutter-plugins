@@ -21,12 +21,12 @@ dependencies:
     path: ../../../../internal
   shared_preferences_aurora:
     path: ../
-  flutter_keyboard_visibility: ^5.4.1
-  flutter_keyboard_visibility_aurora:
-    git:
-      url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
-      ref: flutter_keyboard_visibility_aurora-0.0.1
-      path: packages/flutter_keyboard_visibility/flutter_keyboard_visibility_aurora
+#  flutter_keyboard_visibility: ^5.4.1
+#  flutter_keyboard_visibility_aurora:
+#    git:
+#      url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
+#      ref: flutter_keyboard_visibility_aurora-0.0.1
+#      path: packages/flutter_keyboard_visibility/flutter_keyboard_visibility_aurora
 
 
 dev_dependencies:

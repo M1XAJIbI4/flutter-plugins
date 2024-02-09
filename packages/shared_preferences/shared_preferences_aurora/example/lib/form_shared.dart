@@ -2,11 +2,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences_aurora_example/shared_preferences/shared_preferences_impl.dart';
-
-import '../../common/theme/radius.dart';
-import '../common/list_button.dart';
-import '../common/theme/colors.dart';
+import 'package:internal/list_button.dart';
+import 'package:internal/theme/colors.dart';
+import 'package:internal/theme/radius.dart';
+import 'package:shared_preferences_aurora_example/shared_preferences_impl.dart';
 
 class FormShared extends StatefulWidget {
   const FormShared({Key? key}) : super(key: key);
@@ -78,9 +77,9 @@ class _FormSharedState extends State<FormShared> {
           ),
           Row(
             children: [
-              ListButton('Save data', AppColors.primary, onPressed: onPressed),
+              ListButton('Save data', InternalColors.blue, onPressed: onPressed),
               const SizedBox(width: 6.0),
-              ListButton('Clear data', AppColors.coal, onPressed: clear)
+              ListButton('Clear data', InternalColors.coal, onPressed: clear)
             ],
           ),
           ResultData(_sharedPreferencesImpl),
@@ -126,6 +125,7 @@ class _TextFieldWidget extends StatelessWidget {
     );
   }
 
+  /// Setting the keyboard type
   TextInputType? _getKeyboardType() {
     switch (fieldType) {
       case FieldType.intType:
@@ -150,6 +150,7 @@ class _TextFieldWidget extends StatelessWidget {
     }
   }
 
+  /// Validating our text field
   bool _validate(String value) {
     switch (fieldType) {
       case FieldType.intType:
@@ -162,12 +163,6 @@ class _TextFieldWidget extends StatelessWidget {
         return false;
     }
   }
-}
-
-enum FieldType {
-  intType,
-  doubleType,
-  stringType,
 }
 
 class ResultData extends StatelessWidget {
@@ -188,8 +183,8 @@ class ResultData extends StatelessWidget {
             height: 100,
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              borderRadius: AppRadius.medium,
-              color: AppColors.green,
+              borderRadius: InternalRadius.large,
+              color: InternalColors.green,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -266,6 +261,12 @@ class _RadioButtonWidgetState extends State<_RadioButtonWidget> {
       ],
     );
   }
+}
+
+enum FieldType {
+  intType,
+  doubleType,
+  stringType,
 }
 
 enum BoolType {

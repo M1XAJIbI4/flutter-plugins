@@ -8,10 +8,6 @@ import '../../common/theme/radius.dart';
 import '../common/list_button.dart';
 import '../common/theme/colors.dart';
 
-part 'part_of/radio_button_widget.dart';
-part 'part_of/result_data.dart';
-part 'part_of/textfield_widget.dart';
-
 class FormShared extends StatefulWidget {
   const FormShared({Key? key}) : super(key: key);
 
@@ -92,4 +88,190 @@ class _FormSharedState extends State<FormShared> {
       ),
     );
   }
+}
+
+class _TextFieldWidget extends StatelessWidget {
+  final String label;
+  final ValueChanged<dynamic> currentValue;
+  final FieldType fieldType;
+
+  const _TextFieldWidget(
+    this.label,
+    this.currentValue,
+    this.fieldType,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: TextFormField(
+        onChanged: (value) {
+          if (_validate(value)) currentValue(value);
+        },
+        validator: (value) {
+          if (!_validate(value!)) return 'Please enter a valid value';
+          return null;
+        },
+        decoration: _buildInputDecoration(),
+        keyboardType: _getKeyboardType(),
+        inputFormatters: [_getInputFormatter()!],
+      ),
+    );
+  }
+
+  InputDecoration _buildInputDecoration() {
+    return InputDecoration(
+      hintText: label,
+    );
+  }
+
+  TextInputType? _getKeyboardType() {
+    switch (fieldType) {
+      case FieldType.intType:
+        return TextInputType.number;
+      case FieldType.doubleType:
+        return TextInputType.number;
+      case FieldType.stringType:
+        return TextInputType.text;
+      default:
+        return TextInputType.text;
+    }
+  }
+
+  TextInputFormatter? _getInputFormatter() {
+    switch (fieldType) {
+      case FieldType.intType:
+        return FilteringTextInputFormatter.digitsOnly;
+      case FieldType.doubleType:
+        return FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]+(\.[0-9]*)?$'));
+      case FieldType.stringType:
+        return FilteringTextInputFormatter.singleLineFormatter;
+    }
+  }
+
+  bool _validate(String value) {
+    switch (fieldType) {
+      case FieldType.intType:
+        return int.tryParse(value) != null;
+      case FieldType.doubleType:
+        return double.tryParse(value) != null;
+      case FieldType.stringType:
+        return value.isNotEmpty;
+      default:
+        return false;
+    }
+  }
+}
+
+enum FieldType {
+  intType,
+  doubleType,
+  stringType,
+}
+
+class ResultData extends StatelessWidget {
+  final SharedPreferencesImpl sharedPreferencesImpl;
+  const ResultData(
+    this.sharedPreferencesImpl, {
+    super.key,
+  });
+
+  String mapEntriesToString(Map<String, dynamic> map) {
+    return map.entries.map((entry) => '${entry.key}: ${entry.value}\n').join();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return sharedPreferencesImpl.readValues != null
+        ? Container(
+            height: 100,
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              borderRadius: AppRadius.medium,
+              color: AppColors.green,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text('Current Result: ', style: TextStyle(fontSize: 18)),
+                Text(
+                  mapEntriesToString(sharedPreferencesImpl.readValues!),
+                  softWrap: true,
+                  overflow: TextOverflow.clip,
+                ),
+              ],
+            ),
+          )
+        : const SizedBox.shrink();
+  }
+}
+
+class _RadioButtonWidget extends StatefulWidget {
+  final ValueChanged<bool> currentValue;
+  const _RadioButtonWidget(
+    this.currentValue,
+  );
+
+  @override
+  State<_RadioButtonWidget> createState() => _RadioButtonWidgetState();
+}
+
+class _RadioButtonWidgetState extends State<_RadioButtonWidget> {
+  BoolType _character = BoolType.tr;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.currentValue(_character.value);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Choose value type "bool"'),
+        Row(
+          children: <Widget>[
+            Text(BoolType.tr.value.toString()),
+            Radio<BoolType>(
+              value: BoolType.tr,
+              groupValue: _character,
+              onChanged: (BoolType? value) {
+                if (value != null) {
+                  setState(() {
+                    _character = value;
+                    widget.currentValue(_character.value); // Update value
+                  });
+                }
+              },
+            ),
+            Text(BoolType.fal.value.toString()),
+            Radio<BoolType>(
+              value: BoolType.fal,
+              groupValue: _character,
+              onChanged: (BoolType? value) {
+                if (value != null) {
+                  setState(() {
+                    _character = value;
+                    widget.currentValue(_character.value); // Update value
+                  });
+                }
+              },
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+enum BoolType {
+  tr(true),
+  fal(false);
+
+  const BoolType(this.value);
+  final bool value;
 }

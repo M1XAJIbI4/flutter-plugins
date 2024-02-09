@@ -29,7 +29,6 @@ class _BodyWidgetState extends State<BodyWidget> {
       appBar: AppBar(
         title: const Text(
           'Shared preferences example',
-          // localizations.title.toUpperCase()
         ),
       ),
       body: ListSeparated(list: list),

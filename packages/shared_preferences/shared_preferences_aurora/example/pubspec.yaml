@@ -17,6 +17,8 @@ dependencies:
   intl: any
   cupertino_icons: ^1.0.2
   shared_preferences: ^2.1.2
+  internal:
+    path: ../../../../internal
   shared_preferences_aurora:
     path: ../
   flutter_keyboard_visibility: ^5.4.1

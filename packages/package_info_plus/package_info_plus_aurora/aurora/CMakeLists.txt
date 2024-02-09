@@ -1,6 +1,5 @@
 # SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
 # SPDX-License-Identifier: BSD-3-Clause
-
 cmake_minimum_required(VERSION 3.10)
 
 set(PROJECT_NAME package_info_plus_aurora)

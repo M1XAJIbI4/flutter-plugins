@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=Package info plus aurora example
+Name=Package info plus
 Comment=The Aurora OS example of package_info_plus_aurora.
 Icon=ru.auroraos.package_info_plus_aurora_example
 Exec=/usr/bin/ru.auroraos.package_info_plus_aurora_example

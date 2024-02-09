@@ -1,3 +1,11 @@
+# SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+# SPDX-License-Identifier: BSD-3-Clause
+
+# CMAKE_SYSTEM_PROCESSOR - CPU architecture name (armv7l, aarch64, x86_64)
+# CMAKE_BUILD_TYPE       - Build mode (debug, profile, release)
+# PSDK_VERSION           - Build psdk exact version
+# PSDK_MAJOR             - Build psdk major version
+
 cmake_minimum_required(VERSION 3.10)
 
 set(PROJECT_NAME flutter_keyboard_visibility_aurora)

@@ -1,9 +1,0 @@
-{
- "@_COMMON": {},
- "title": "Connectivity plus aurora",
- "description": "This plugin allows Flutter apps to discover network connectivity and configure themselves accordingly. It can distinguish between cellular vs WiFi connection.",
-
- "@_LIST": {},
- "item1IConnectivityTitle": "Stream status",
- "item1ConnectivityDesc": "Here the status of the stream is displayed, reacting to changes in connection type."
-}

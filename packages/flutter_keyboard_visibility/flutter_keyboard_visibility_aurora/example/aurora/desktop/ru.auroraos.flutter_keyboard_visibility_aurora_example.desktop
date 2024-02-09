@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=Keyboard visibility aurora example
+Name=Keyboard visibility
 Comment=The Aurora OS example of flutter_keyboard_visibility_aurora.
 Icon=ru.auroraos.flutter_keyboard_visibility_aurora_example
 Exec=/usr/bin/ru.auroraos.flutter_keyboard_visibility_aurora_example

@@ -2,6 +2,18 @@
 
 The Aurora implementation of [`sensors_plus`](https://pub.dev/packages/sensors_plus).
 
+## Features
+
+- orientationEvents - A broadcast stream of events from the Aurora OS device orientation.
+- accelerometerEvents - A broadcast stream of events from the device accelerometer.
+- compassEvents - A broadcast stream of events from the Aurora OS device compass.
+- tapEvents - A broadcast stream of events from the Aurora OS device tap.
+- alsEvents - A broadcast stream of events from the Aurora OS device ALS.
+- proximityEvents - A broadcast stream of events from the Aurora OS device proximity.
+- rotationEvents - A broadcast stream of events from the Aurora OS device rotation.
+- magnetometerEvents - A broadcast stream of events from the device magnetometer.
+- gyroscopeEvents - A broadcast stream of events from the device gyroscope.
+
 ## Usage
 
 This package is not an _endorsed_ implementation of `sensors_plus`.
@@ -18,18 +30,6 @@ dependencies:
       ref: sensors_plus_aurora-0.0.1
       path: packages/sensors_plus/sensors_plus_aurora
 ```
-
-## Features
-
-- orientationEvents - A broadcast stream of events from the Aurora OS device orientation.
-- accelerometerEvents - A broadcast stream of events from the device accelerometer.
-- compassEvents - A broadcast stream of events from the Aurora OS device compass.
-- tapEvents - A broadcast stream of events from the Aurora OS device tap.
-- alsEvents - A broadcast stream of events from the Aurora OS device ALS.
-- proximityEvents - A broadcast stream of events from the Aurora OS device proximity.
-- rotationEvents - A broadcast stream of events from the Aurora OS device rotation.
-- magnetometerEvents - A broadcast stream of events from the device magnetometer.
-- gyroscopeEvents - A broadcast stream of events from the device gyroscope.
 
 ***main.cpp**
 
@@ -52,6 +52,7 @@ int main(int argc, char *argv[]) {
 ```desktop
 Permissions=Sensors
 ```
+
 ***.spec**
 
 ```spec

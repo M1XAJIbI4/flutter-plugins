@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Xdga directories
+Comment=The Aurora OS example of xdga_directories.
+Icon=ru.auroraos.xdga_directories_example
+Exec=/usr/bin/ru.auroraos.xdga_directories_example
+X-Nemo-Application-Type=silica-qt5
+
+[X-Application]
+Permissions=UserDirs
+OrganizationName=ru.auroraos
+ApplicationName=xdga_directories_example

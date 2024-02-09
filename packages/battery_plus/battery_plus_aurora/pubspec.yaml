@@ -1,6 +1,5 @@
 # SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
 # SPDX-License-Identifier: BSD-3-Clause
-
 name: battery_plus_aurora
 description: The Aurora OS implementation of battery_plus.
 version: 0.0.1

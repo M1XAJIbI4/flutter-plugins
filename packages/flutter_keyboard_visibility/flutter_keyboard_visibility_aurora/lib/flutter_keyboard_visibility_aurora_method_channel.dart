@@ -1,3 +1,5 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
 import 'package:flutter/services.dart';
 
 import 'flutter_keyboard_visibility_aurora_platform_interface.dart';

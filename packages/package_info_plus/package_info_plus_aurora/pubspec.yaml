@@ -1,6 +1,5 @@
 # SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
 # SPDX-License-Identifier: BSD-3-Clause
-
 name: package_info_plus_aurora
 description: A new Flutter plugin project.
 version: 0.0.1

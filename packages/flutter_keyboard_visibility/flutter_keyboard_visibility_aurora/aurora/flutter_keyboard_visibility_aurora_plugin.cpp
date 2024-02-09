@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
 #include <flutter_keyboard_visibility_aurora/flutter_keyboard_visibility_aurora_plugin.h>
 #include <flutter/method-channel.h>
 #include <flutter/platform-events.h>

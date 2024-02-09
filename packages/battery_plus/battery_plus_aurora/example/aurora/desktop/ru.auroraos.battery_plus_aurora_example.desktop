@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=Battery plus aurora example
+Name=Battery plus
 Comment=The Aurora OS example of battery_plus_aurora.
 Icon=ru.auroraos.battery_plus_aurora_example
 Exec=/usr/bin/ru.auroraos.battery_plus_aurora_example

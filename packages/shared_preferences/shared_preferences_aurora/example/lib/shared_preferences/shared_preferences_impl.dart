@@ -36,6 +36,12 @@ class SharedPreferencesImpl {
     await (await _prefs).setString('action', action);
   }
 
+  Future<void> clearAllData() async {
+    await (await _prefs).clear();
+    _readValues!.clear();
+    _readValues = null;
+  }
+
   ///Get
   Future<void> getData() async {
     final prefs = await _prefs;

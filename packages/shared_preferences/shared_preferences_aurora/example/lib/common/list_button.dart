@@ -19,21 +19,23 @@ class ListButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: TextButton(
-        style: TextButton.styleFrom(
-          backgroundColor: color,
-          disabledBackgroundColor: Colors.black45,
-          foregroundColor: Colors.white,
-          disabledForegroundColor: Colors.white.withOpacity(0.7),
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-          shape: RoundedRectangleBorder(
-            borderRadius: AppRadius.medium,
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10.0),
+        child: TextButton(
+          style: TextButton.styleFrom(
+            backgroundColor: color,
+            disabledBackgroundColor: Colors.black45,
+            foregroundColor: Colors.white,
+            disabledForegroundColor: Colors.white.withOpacity(0.7),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+            shape: RoundedRectangleBorder(
+              borderRadius: AppRadius.medium,
+            ),
           ),
+          onPressed: onPressed,
+          child: Text(text.toUpperCase()),
         ),
-        onPressed: onPressed,
-        child: Text(text.toUpperCase()),
       ),
     );
   }

@@ -27,17 +27,33 @@ class _FormSharedState extends State<FormShared> {
   String? action;
 
   final SharedPreferencesImpl _sharedPreferencesImpl = SharedPreferencesImpl();
-  onPressed() {
+
+  void onPressed() {
     if (_formKey.currentState!.validate()) {
       FocusManager.instance.primaryFocus?.unfocus();
       _sharedPreferencesImpl.setBool(repeat!);
       _sharedPreferencesImpl.setInt(counter!);
       _sharedPreferencesImpl.setDouble(decimal!);
       _sharedPreferencesImpl.setString(action!);
-      setState(() {
-        _sharedPreferencesImpl.getData();
-      });
+      _sharedPreferencesImpl.getData();
+      setState(() {});
     }
+  }
+
+  void clear() async {
+    await _sharedPreferencesImpl.clearAllData();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    initialize();
+    super.initState();
+  }
+
+  initialize() async {
+    await _sharedPreferencesImpl.getData();
+    setState(() {});
   }
 
   @override
@@ -64,9 +80,13 @@ class _FormSharedState extends State<FormShared> {
             (currentValue) => action = currentValue,
             FieldType.stringType,
           ),
-          const SizedBox(height: 16),
-          ListButton('Save data', AppColors.primary, onPressed: onPressed),
-          const SizedBox(height: 16),
+          Row(
+            children: [
+              ListButton('Save data', AppColors.primary, onPressed: onPressed),
+              const SizedBox(width: 6.0),
+              ListButton('Clear data', AppColors.coal, onPressed: clear)
+            ],
+          ),
           ResultData(_sharedPreferencesImpl),
         ],
       ),

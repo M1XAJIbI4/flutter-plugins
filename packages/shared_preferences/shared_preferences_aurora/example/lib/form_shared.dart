@@ -75,13 +75,10 @@ class _FormSharedState extends State<FormShared> {
             (currentValue) => action = currentValue,
             FieldType.stringType,
           ),
-          Row(
-            children: [
-              ListButton('Save data', InternalColors.blue, onPressed: onPressed),
-              const SizedBox(width: 6.0),
-              ListButton('Clear data', InternalColors.coal, onPressed: clear)
-            ],
-          ),
+          ListButton('Save data', InternalColors.blue, onPressed: onPressed),
+          const SizedBox(height: 6.0),
+          ListButton('Clear data', InternalColors.coal, onPressed: clear),
+          const SizedBox(height: 6.0),
           ResultData(_sharedPreferencesImpl),
         ],
       ),

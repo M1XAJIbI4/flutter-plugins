@@ -26,12 +26,12 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text(
-            'Flutter secure storage aurora',
+            'Flutter sqflite aurora',
           ),
         ),
         body: const ListSeparated(
           children: [
-            ListItemInfo("Flutter Secure Storage provides an API for storing data in secure storage."),
+            ListItemInfo("SQLite plugin for Flutter. Supports IOS, Android, macOS and Aurora OS."),
             FormInsertWidget(),
             FormUpdateWidget(),
             FormDeleteWidget(),

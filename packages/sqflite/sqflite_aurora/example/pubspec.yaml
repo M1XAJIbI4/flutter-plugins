@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
+# SPDX-License-Identifier: BSD-3-Clause
+name: sqflite_aurora_example
+description: "The Aurora OS example of sqflite_aurora."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.2 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  internal:
+    path: ../../../../internal
+  sqflite: ^2.3.0
+  sqflite_aurora:
+    path: ../
+
+flutter:
+  uses-material-design: true

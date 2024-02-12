@@ -25,15 +25,6 @@ class _FormWidgetState extends State<FormWidget> {
   String? resultValue;
   final PluginImpl _pluginImpl = PluginImpl();
 
-  @override
-  void initState() {
-    initialize();
-    super.initState();
-  }
-
-  /// Obtaining data from shared preferences during initialization
-  void initialize() async {}
-
   void saveValue() {
     _formKey.currentState!.validate();
     if (password != null && key != null && value != null) {

@@ -19,10 +19,5 @@ dependencies:
   flutter_secure_storage_aurora:
     path: ../
 
-
-dev_dependencies:
-  flutter_lints: ^2.0.0
-
 flutter:
-  generate: true
   uses-material-design: true

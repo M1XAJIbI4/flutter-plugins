@@ -21,7 +21,7 @@ class _FormSharedState extends State<FormShared> {
   double? decimal;
   String? action;
 
-  final PluginImpl _sharedPreferencesImpl = PluginImpl();
+  final PluginImpl _pluginImpl = PluginImpl();
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _FormSharedState extends State<FormShared> {
 
   /// Obtaining data from shared preferences during initialization
   void initialize() async {
-    await _sharedPreferencesImpl.getData();
+    await _pluginImpl.getData();
     setState(() {});
   }
 
@@ -39,18 +39,18 @@ class _FormSharedState extends State<FormShared> {
   void onPressed() {
     if (_formKey.currentState!.validate()) {
       FocusManager.instance.primaryFocus?.unfocus();
-      _sharedPreferencesImpl.setBool(repeat!);
-      _sharedPreferencesImpl.setInt(counter!);
-      _sharedPreferencesImpl.setDouble(decimal!);
-      _sharedPreferencesImpl.setString(action!);
-      _sharedPreferencesImpl.getData();
+      _pluginImpl.setBool(repeat!);
+      _pluginImpl.setInt(counter!);
+      _pluginImpl.setDouble(decimal!);
+      _pluginImpl.setString(action!);
+      _pluginImpl.getData();
       setState(() {});
     }
   }
 
   /// Clearing data from shared preferences
   void clear() async {
-    await _sharedPreferencesImpl.clearAllData();
+    await _pluginImpl.clearAllData();
     setState(() {});
   }
 
@@ -82,7 +82,7 @@ class _FormSharedState extends State<FormShared> {
           const SizedBox(height: 6.0),
           ListButton('Clear data', InternalColors.coal, onPressed: clear),
           const SizedBox(height: 6.0),
-          ResultData(_sharedPreferencesImpl),
+          ResultData(_pluginImpl),
         ],
       ),
     );

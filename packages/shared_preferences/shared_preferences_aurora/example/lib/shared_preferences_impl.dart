@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Main features of the plugin FlutterKeyboardVisibility
+/// Main features of the plugin Shared preferences
 class PluginImpl {
   /// Read shared preferences
   Future<SharedPreferences> get _prefs async => await SharedPreferences.getInstance();

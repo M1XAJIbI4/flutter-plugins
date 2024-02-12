@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
+# SPDX-License-Identifier: BSD-3-Clause
+name: flutter_secure_storage_aurora_example
+description: "The Aurora OS example of flutter_secure_storage_aurora."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.2 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  crypto: any
+  internal:
+    path: ../../../../internal
+  flutter_secure_storage: ^8.0.0
+  flutter_secure_storage_aurora:
+    path: ../
+
+
+dev_dependencies:
+  flutter_lints: ^2.0.0
+
+flutter:
+  generate: true
+  uses-material-design: true

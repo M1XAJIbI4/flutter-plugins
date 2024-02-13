@@ -2,7 +2,7 @@
 %global __requires_exclude ^lib(dconf|flutter-embedder|maliit-glib|.+_platform_plugin)\\.so.*$
 
 Name: ru.auroraos.flutter_local_notifications_aurora_example
-Summary: Demonstrates how to use the .flutter_local_notifications_aurora plugin.
+Summary: Demonstrates how to use the flutter_local_notifications_aurora plugin.
 Version: 0.1.0
 Release: 1
 License: BSD 3-Clause

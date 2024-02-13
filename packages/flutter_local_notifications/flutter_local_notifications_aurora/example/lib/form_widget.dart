@@ -36,8 +36,8 @@ class _FormWidgetState extends State<FormWidget> {
         children: [
           _TextFieldWidget('Title', (currentValue) => title = currentValue),
           _TextFieldWidget('Body', (currentValue) => body = currentValue),
-          const SizedBox(height: 6.0),
-          ListButton('Show notification', InternalColors.blue, onPressed: showNotification),
+          const SizedBox(height: 16.0),
+          ListButton('Show notification', InternalColors.green, onPressed: showNotification),
         ],
       ),
     );
@@ -56,7 +56,7 @@ class _TextFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 16),
       child: TextFormField(
         onChanged: (value) => currentValue(value),
         validator: (value) {

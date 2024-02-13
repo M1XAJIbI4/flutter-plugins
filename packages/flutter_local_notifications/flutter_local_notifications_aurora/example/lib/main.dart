@@ -26,7 +26,7 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text(
-            'Flutter local notifications aurora',
+            'Flutter Local notifications aurora',
           ),
         ),
         body: const ListSeparated(

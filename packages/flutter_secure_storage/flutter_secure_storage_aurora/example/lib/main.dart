@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage_aurora_example/secure_storage_impl.dart';
 import 'package:internal/list_item_info.dart';
 import 'package:internal/list_separated.dart';
 import 'package:internal/theme/theme.dart';
@@ -19,6 +20,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final PluginImpl _pluginImpl = PluginImpl();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -29,10 +32,12 @@ class _MyAppState extends State<MyApp> {
             'Flutter secure storage aurora',
           ),
         ),
-        body: const ListSeparated(
+        body: ListSeparated(
           children: [
             ListItemInfo("Flutter Secure Storage provides an API for storing data in secure storage."),
-            FormWidget(),
+            FormWidget(pluginImpl: _pluginImpl),
+            FormGetWidget(pluginImpl: _pluginImpl),
+            ResultData(pluginImpl: _pluginImpl),
           ],
         ),
       ),

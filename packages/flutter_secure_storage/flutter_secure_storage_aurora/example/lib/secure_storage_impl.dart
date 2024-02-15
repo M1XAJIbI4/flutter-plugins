@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
@@ -9,6 +10,8 @@ import 'package:flutter_secure_storage_aurora/flutter_secure_storage_aurora.dart
 /// Main features of the plugin FlutterKeyboardVisibility
 class PluginImpl {
   final _secureStorage = const FlutterSecureStorage();
+
+  StreamController streamController = StreamController.broadcast();
 
   /// Error
   String? _error;
@@ -25,11 +28,7 @@ class PluginImpl {
   /// Public success
   bool get isSuccess => _isSuccess;
 
-  /// Value for read form secure storage
-  String _readValue = "";
-
-  /// Public read value
-  String get readValue => _readValue;
+  String readValue = "";
 
   // Get data from secure storage
   Future<void> read({
@@ -40,9 +39,10 @@ class PluginImpl {
       // Update secret key
       _updateByPassword(password);
       // Read data
-      _readValue = await _secureStorage.read(key: key) ?? "Not found";
+      readValue = await _secureStorage.read(key: key) ?? "Not found";
+      streamController.add(readValue);
     } catch (e) {
-      _readValue = "Error password";
+      readValue = "Error password";
     }
   }
 
@@ -86,6 +86,6 @@ class PluginImpl {
 
   /// Clear value if change values
   void clearReadValue() {
-    _readValue = "";
+    readValue = "";
   }
 }

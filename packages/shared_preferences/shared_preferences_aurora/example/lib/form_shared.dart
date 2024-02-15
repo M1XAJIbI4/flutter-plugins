@@ -103,7 +103,7 @@ class _TextFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 16),
       child: TextFormField(
         onChanged: (value) {
           if (_validate(value)) currentValue(value);
@@ -182,8 +182,7 @@ class ResultData extends StatelessWidget {
   Widget build(BuildContext context) {
     return sharedPreferencesImpl.readValues != null
         ? Container(
-            height: 100,
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               borderRadius: InternalRadius.large,
               color: InternalColors.green,
@@ -192,11 +191,23 @@ class ResultData extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text('Current Result: ', style: TextStyle(fontSize: 18)),
-                Text(
-                  mapEntriesToString(sharedPreferencesImpl.readValues!),
-                  softWrap: true,
-                  overflow: TextOverflow.clip,
+                const Flexible(
+                  child: Text(
+                    'Current result: ',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                Flexible(
+                  child: Text(
+                    mapEntriesToString(sharedPreferencesImpl.readValues!),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ],
             ),

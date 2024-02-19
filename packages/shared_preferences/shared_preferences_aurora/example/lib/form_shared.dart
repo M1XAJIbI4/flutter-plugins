@@ -20,6 +20,7 @@ class _FormSharedState extends State<FormShared> {
   int? counter;
   double? decimal;
   String? action;
+  List<String>? list;
 
   final PluginImpl _pluginImpl = PluginImpl();
 
@@ -43,6 +44,7 @@ class _FormSharedState extends State<FormShared> {
       _pluginImpl.setInt(counter!);
       _pluginImpl.setDouble(decimal!);
       _pluginImpl.setString(action!);
+      _pluginImpl.setValueList(list!);
       _pluginImpl.getData();
       setState(() {});
     }
@@ -50,8 +52,10 @@ class _FormSharedState extends State<FormShared> {
 
   /// Clearing data from shared preferences
   void clear() async {
-    await _pluginImpl.clearAllData();
-    setState(() {});
+    if (_pluginImpl.readValues != null) {
+      await _pluginImpl.clearAllData();
+      setState(() {});
+    }
   }
 
   @override
@@ -63,25 +67,35 @@ class _FormSharedState extends State<FormShared> {
         children: [
           const Divider(),
           _RadioButtonWidget((currentValue) => repeat = currentValue),
+          const SizedBox(height: 16.0),
           _TextFieldWidget(
-            'Enter int value',
+            'Int',
             (currentValue) => counter = int.parse(currentValue),
             FieldType.intType,
           ),
+          const SizedBox(height: 16.0),
           _TextFieldWidget(
-            'Enter double value',
-            (currentValue) => decimal = double.parse(currentValue),
+            'Double',
+            (currentValue) => decimal = double.parse(currentValue.toString().replaceAll(',', '.')),
             FieldType.doubleType,
           ),
+          const SizedBox(height: 16.0),
           _TextFieldWidget(
-            'Enter String value',
+            'String',
             (currentValue) => action = currentValue,
             FieldType.stringType,
           ),
+          const SizedBox(height: 16.0),
+          _TextFieldWidget(
+            'List',
+            (currentValue) => list = currentValue.split(','),
+            FieldType.stringType,
+          ),
+          const SizedBox(height: 16.0),
           ListButton('Save data', InternalColors.blue, onPressed: onPressed),
-          const SizedBox(height: 6.0),
+          const SizedBox(height: 16.0),
           ListButton('Clear data', InternalColors.coal, onPressed: clear),
-          const SizedBox(height: 6.0),
+          const SizedBox(height: 16.0),
           ResultData(_pluginImpl),
         ],
       ),
@@ -102,20 +116,17 @@ class _TextFieldWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: TextFormField(
-        onChanged: (value) {
-          if (_validate(value)) currentValue(value);
-        },
-        validator: (value) {
-          if (!_validate(value!)) return 'Please enter a valid value';
-          return null;
-        },
-        decoration: _buildInputDecoration(),
-        keyboardType: _getKeyboardType(),
-        inputFormatters: [_getInputFormatter()!],
-      ),
+    return TextFormField(
+      onChanged: (value) {
+        if (_validate(value)) currentValue(value);
+      },
+      validator: (value) {
+        if (!_validate(value!)) return 'Please enter a valid $label value';
+        return null;
+      },
+      decoration: _buildInputDecoration(),
+      keyboardType: _getKeyboardType(),
+      inputFormatters: [_getInputFormatter()!],
     );
   }
 
@@ -145,7 +156,7 @@ class _TextFieldWidget extends StatelessWidget {
       case FieldType.intType:
         return FilteringTextInputFormatter.digitsOnly;
       case FieldType.doubleType:
-        return FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]+(\.[0-9]*)?$'));
+        return FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]+(\.[0-9]*|,[0-9]*)?$'));
       case FieldType.stringType:
         return FilteringTextInputFormatter.singleLineFormatter;
     }
@@ -157,7 +168,7 @@ class _TextFieldWidget extends StatelessWidget {
       case FieldType.intType:
         return int.tryParse(value) != null;
       case FieldType.doubleType:
-        return double.tryParse(value) != null;
+        return double.tryParse(value.toString().replaceAll(',', '.')) != null;
       case FieldType.stringType:
         return value.isNotEmpty;
       default:
@@ -174,45 +185,37 @@ class ResultData extends StatelessWidget {
   });
 
   /// Convert to display readings in a text widget
-  String mapEntriesToString(Map<String, dynamic> map) {
-    return map.entries.map((entry) => '${entry.key}: ${entry.value}\n').join();
+  String mapEntriesToString(Map<String, dynamic>? map) {
+    if (map == null) {
+      return 'The data is empty';
+    }
+    return map.entries.map((entry) => '${entry.key} : ${entry.value};  ').join();
   }
 
   @override
   Widget build(BuildContext context) {
-    return sharedPreferencesImpl.readValues != null
-        ? Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              borderRadius: InternalRadius.large,
-              color: InternalColors.green,
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: InternalRadius.large,
+        color: InternalColors.green,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Flexible(
+            child: Text(
+              mapEntriesToString(sharedPreferencesImpl.readValues),
+              style: const TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+              ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Flexible(
-                  child: Text(
-                    'Current result: ',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Flexible(
-                  child: Text(
-                    mapEntriesToString(sharedPreferencesImpl.readValues!),
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          )
-        : const SizedBox.shrink();
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -255,6 +258,9 @@ class _RadioButtonWidgetState extends State<_RadioButtonWidget> {
                   });
                 }
               },
+            ),
+            const SizedBox(
+              width: 16,
             ),
             Text(BoolType.falseEnum.value.toString()),
             Radio<BoolType>(

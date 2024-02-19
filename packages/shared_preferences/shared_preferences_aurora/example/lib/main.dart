@@ -25,13 +25,15 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text(
-            'Shared preferences example',
+            'Shared preferences',
           ),
         ),
         body: const ListSeparated(
           children: [
-            ListItemInfo("""A lightweight data storage tool with the ability to write asynchronously to disk, 
-              but no guarantee of retention after a callback. Not suitable for mission-critical data.
+            ListItemInfo("""A lightweight data storage tool with 
+            the ability to write asynchronously to disk, 
+              but no guarantee of retention after a callback. 
+              Not suitable for mission-critical data.
               """),
             FormShared(),
           ],

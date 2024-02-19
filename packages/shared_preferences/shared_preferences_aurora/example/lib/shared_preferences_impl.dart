@@ -40,6 +40,11 @@ class PluginImpl {
     readValues = null;
   }
 
+  /// Save list value
+  Future<void> setValueList(List<String> value) async {
+    await (await _prefs).setStringList('list', value);
+  }
+
   /// Get data from shared preferences
   Future<void> getData() async {
     final prefs = await _prefs;
@@ -48,6 +53,7 @@ class PluginImpl {
       'bool': prefs.getBool('repeat'),
       'double': prefs.getDouble('decimal'),
       'string': prefs.getString('action'),
+      'list': prefs.getStringList('list'),
     };
   }
 }

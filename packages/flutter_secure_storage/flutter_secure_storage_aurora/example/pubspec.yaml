@@ -4,7 +4,7 @@ name: flutter_secure_storage_aurora_example
 description: "The Aurora OS example of flutter_secure_storage_aurora."
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 3.0.3+1
 
 environment:
   sdk: '>=3.2.2 <4.0.0'

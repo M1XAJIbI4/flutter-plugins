@@ -1,5 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
+import 'dart:async';
+
 import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart';
 
@@ -17,11 +19,10 @@ class PluginImpl {
   /// Public is error
   bool get isError => _error != null;
 
-  /// Public data
-  List<Map> get data => _data ?? [];
+  /// Data
+  List<Map>? data;
 
-  /// Private data
-  List<Map>? _data;
+  StreamController streamController = StreamController();
 
   /// Init database
   Future<void> init() async {
@@ -41,7 +42,7 @@ class PluginImpl {
         await db.execute('''CREATE TABLE Test (
               name TEXT, 
               value INTEGER, 
-              num REAL
+              num REAnumL
             )''');
       },
     );
@@ -58,7 +59,7 @@ class PluginImpl {
       // Query
       await _db?.rawDelete('DELETE FROM Test');
       // Update data
-      _data = await _allSelect();
+      data = await _allSelect();
     } catch (e) {
       _error = e.toString();
     }
@@ -76,7 +77,8 @@ class PluginImpl {
         await txn.rawInsert('INSERT INTO Test(name, value, num) VALUES(?, ?, ?)', [name, value, num]);
       });
       // Update data
-      _data = await _allSelect();
+      data = await _allSelect();
+      streamController.add(data);
     } catch (e) {
       _error = e.toString();
     }
@@ -95,8 +97,9 @@ class PluginImpl {
       count =
           await _db?.rawUpdate('UPDATE Test SET name = ?, value = ?, num = ? WHERE rowid = ?', [name, value, num, id]);
       // Update data
-      _data = await _allSelect();
-      // Check state
+      data = await _allSelect();
+      // Update data on stream
+      streamController.add(data);
     } catch (e) {
       _error = e.toString();
     }
@@ -112,7 +115,8 @@ class PluginImpl {
       // Query
       count = await _db?.rawDelete('DELETE FROM Test WHERE rowid = ?', [id]);
       // Update data
-      _data = await _allSelect();
+      data = await _allSelect();
+      streamController.add(data);
     } catch (e) {
       _error = e.toString();
     }

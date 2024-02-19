@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:internal/list_item_info.dart';
 import 'package:internal/list_separated.dart';
 import 'package:internal/theme/theme.dart';
+import 'package:sqflite_aurora_example/sqflite_impl.dart';
 
 import 'form_widget.dart';
 
@@ -19,6 +20,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final PluginImpl _pluginImpl = PluginImpl();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -29,12 +31,14 @@ class _MyAppState extends State<MyApp> {
             'Flutter sqflite aurora',
           ),
         ),
-        body: const ListSeparated(
+        body: ListSeparated(
           children: [
-            ListItemInfo("SQLite plugin for Flutter. Supports IOS, Android, macOS and Aurora OS."),
-            FormInsertWidget(),
-            FormUpdateWidget(),
-            FormDeleteWidget(),
+            const ListItemInfo("SQLite plugin for Flutter. Supports IOS, Android, macOS and Aurora OS."),
+            Divider(),
+            ResultData(pluginImpl: _pluginImpl),
+            FormInsertWidget(pluginImpl: _pluginImpl),
+            FormUpdateWidget(pluginImpl: _pluginImpl),
+            FormDeleteWidget(pluginImpl: _pluginImpl),
           ],
         ),
       ),

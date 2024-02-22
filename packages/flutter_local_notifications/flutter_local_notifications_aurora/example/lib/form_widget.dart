@@ -56,6 +56,10 @@ class _TextFieldWidget extends StatelessWidget {
     this.currentValue,
   );
 
+  String _removeSpaces(String input) {
+    return input.replaceAll(RegExp(r'\s'), '');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -63,7 +67,7 @@ class _TextFieldWidget extends StatelessWidget {
       child: TextFormField(
         onChanged: (value) => currentValue(value),
         validator: (value) {
-          if (value == null || value.isEmpty) return 'Please, enter ${enterText.toLowerCase()}';
+          if (value == null || _removeSpaces(value).isEmpty) return 'Please, enter ${enterText.toLowerCase()}';
           return null;
         },
         decoration: InputDecoration(

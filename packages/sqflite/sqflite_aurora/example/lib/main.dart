@@ -28,13 +28,17 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text(
-            'Flutter sqflite aurora',
+            'Sqflite',
           ),
         ),
         body: ListSeparated(
           children: [
             const ListItemInfo("SQLite plugin for Flutter. Supports IOS, Android, macOS and Aurora OS."),
             Divider(),
+            Text(
+              'Database status',
+              style: TextStyle(fontSize: 20),
+            ),
             ResultData(pluginImpl: _pluginImpl),
             FormInsertWidget(pluginImpl: _pluginImpl),
             FormUpdateWidget(pluginImpl: _pluginImpl),

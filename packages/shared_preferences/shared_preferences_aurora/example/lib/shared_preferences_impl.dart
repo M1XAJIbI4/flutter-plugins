@@ -49,11 +49,11 @@ class PluginImpl {
   Future<void> getData() async {
     final prefs = await _prefs;
     readValues = {
-      'int': prefs.getInt('counter'),
-      'bool': prefs.getBool('repeat'),
-      'double': prefs.getDouble('decimal'),
-      'string': prefs.getString('action'),
-      'list': prefs.getStringList('list'),
+      'Int': prefs.getInt('counter'),
+      'Bool': prefs.getBool('repeat'),
+      'Double': prefs.getDouble('decimal'),
+      'String': prefs.getString('action'),
+      'List': prefs.getStringList('list'),
     };
   }
 }

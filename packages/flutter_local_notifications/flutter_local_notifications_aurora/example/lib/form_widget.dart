@@ -21,9 +21,12 @@ class _FormWidgetState extends State<FormWidget> {
   final PluginImpl _pluginImpl = PluginImpl();
 
   void showNotification() {
-    _formKey.currentState!.validate();
-    if (title!.isNotEmpty && body!.isNotEmpty) {
-      _pluginImpl.showNotification(title: title!, body: body!);
+    if (_formKey.currentState!.validate()) {
+      if (title != null && body != null) {
+        if (title!.isNotEmpty && body!.isNotEmpty) {
+          _pluginImpl.showNotification(title: title!, body: body!);
+        }
+      }
     }
   }
 
@@ -60,9 +63,7 @@ class _TextFieldWidget extends StatelessWidget {
       child: TextFormField(
         onChanged: (value) => currentValue(value),
         validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please, enter value';
-          }
+          if (value == null || value.isEmpty) return 'Please, enter ${enterText.toLowerCase()}';
           return null;
         },
         decoration: InputDecoration(

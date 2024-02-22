@@ -22,13 +22,9 @@ class PluginImpl {
   /// Public is error
   bool get isError => _error != null;
 
-  /// Save success
-  bool _isSuccess = false;
+  String? readValue;
 
-  /// Public success
-  bool get isSuccess => _isSuccess;
-
-  String readValue = "";
+  String? currentPassword;
 
   // Get data from secure storage
   Future<void> read({
@@ -37,9 +33,9 @@ class PluginImpl {
   }) async {
     try {
       // Update secret key
-      _updateByPassword(password);
       // Read data
-      readValue = await _secureStorage.read(key: key) ?? "Not found";
+      readValue = await _secureStorage.read(key: key);
+
       streamController.add(readValue);
     } catch (e) {
       readValue = "Error password";
@@ -59,12 +55,6 @@ class PluginImpl {
       await _secureStorage.deleteAll();
       // Save new data
       await _secureStorage.write(key: key, value: value);
-      // Show success
-      _isSuccess = true;
-      // Close success
-      Future.delayed(const Duration(milliseconds: 1500), () {
-        _isSuccess = false;
-      });
     } catch (e) {
       _error = e.toString();
     }
@@ -83,6 +73,8 @@ class PluginImpl {
   String _getPasswordFromString(String password) {
     return md5.convert(utf8.encode(password)).toString();
   }
+
+  checkPassword() {}
 
   /// Clear value if change values
   void clearReadValue() {

@@ -28,10 +28,25 @@ class _FormWidgetState extends State<FormWidget> {
   String? value;
 
   void saveValue() async {
-    _formKey.currentState!.validate();
-    if (password != null && key != null && value != null) {
-      await widget.pluginImpl.write(key: key!, value: value!, password: password!);
+    if (_formKey.currentState!.validate()) {
+      if (password != null && key != null && value != null) {
+        if (password!.isNotEmpty && key!.isNotEmpty && value!.isNotEmpty) {
+          await widget.pluginImpl.write(key: key!, value: value!, password: password!);
+          _informativeMessage('Data saved');
+        }
+      }
     }
+  }
+
+  void _informativeMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
   }
 
   @override
@@ -41,14 +56,13 @@ class _FormWidgetState extends State<FormWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Divider(),
           const Text('Save value'),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 16.0),
           _TextFieldWidget('Password', (currentValue) => password = currentValue),
           _TextFieldWidget('Key', (currentValue) => key = currentValue),
           _TextFieldWidget('Value', (currentValue) => value = currentValue),
-          const SizedBox(height: 6.0),
-          ListButton('Save value', InternalColors.blue, onPressed: saveValue),
+          const SizedBox(height: 16.0),
+          ListButton('Save value', InternalColors.green, onPressed: saveValue),
           const SizedBox(height: 16.0),
         ],
       ),
@@ -70,12 +84,13 @@ class FormGetWidget extends StatefulWidget {
 
 class _FormGetWidgetState extends State<FormGetWidget> {
   final _formKey = GlobalKey<FormState>();
-  String? getPassword;
   String? getKey;
+  String? getPassword;
 
   void readValue() async {
-    _formKey.currentState!.validate();
-    await widget.pluginImpl.read(key: getKey!, password: getPassword!);
+    if (_formKey.currentState!.validate()) {
+      if (getKey != null && getPassword != null) await widget.pluginImpl.read(key: getKey!, password: getPassword!);
+    }
   }
 
   @override
@@ -89,8 +104,8 @@ class _FormGetWidgetState extends State<FormGetWidget> {
           const SizedBox(height: 16.0),
           _TextFieldWidget('Password', (currentValue) => getPassword = currentValue),
           _TextFieldWidget('Key', (currentValue) => getKey = currentValue),
-          const SizedBox(height: 6.0),
-          ListButton('Get data', InternalColors.coal, onPressed: readValue),
+          const SizedBox(height: 16.0),
+          ListButton('Get data', InternalColors.blue, onPressed: readValue),
           const SizedBox(height: 16.0),
         ],
       ),
@@ -155,6 +170,17 @@ class _ResultDataState extends State<ResultData> {
     super.dispose();
   }
 
+  void _informativeMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -162,10 +188,17 @@ class _ResultDataState extends State<ResultData> {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return _ResultDataContainerWidget(
-              result: 'No data',
+              result: 'The data is empty',
             );
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.data == null) {
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+              _informativeMessage('Key not found');
+            });
+            return _ResultDataContainerWidget(
+              result: 'The data is empty',
+            );
           } else {
             return _ResultDataContainerWidget(
               result: snapshot.data,
@@ -186,16 +219,14 @@ class _ResultDataContainerWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        borderRadius: InternalRadius.large,
-        color: InternalColors.green,
+        borderRadius: InternalRadius.small,
+        color: InternalColors.grey,
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Flexible(
             child: Text(
-              'Current Result: $result',
+              '$result',
               style: const TextStyle(
                 fontSize: 18,
                 color: Colors.white,

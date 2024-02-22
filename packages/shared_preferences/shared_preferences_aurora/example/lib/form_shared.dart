@@ -1,5 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:internal/list_button.dart';
@@ -66,7 +68,12 @@ class _FormSharedState extends State<FormShared> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Divider(),
-          _RadioButtonWidget((currentValue) => repeat = currentValue),
+          Text(
+            'Database status',
+            style: TextStyle(fontSize: 20),
+          ),
+          const SizedBox(height: 16.0),
+          ResultData(_pluginImpl),
           const SizedBox(height: 16.0),
           _TextFieldWidget(
             'Int',
@@ -87,16 +94,20 @@ class _FormSharedState extends State<FormShared> {
           ),
           const SizedBox(height: 16.0),
           _TextFieldWidget(
-            'List',
+            'List like: first, second, third',
             (currentValue) => list = currentValue.split(','),
             FieldType.stringType,
           ),
           const SizedBox(height: 16.0),
-          ListButton('Save data', InternalColors.blue, onPressed: onPressed),
+          _RadioButtonWidget((currentValue) => repeat = currentValue),
           const SizedBox(height: 16.0),
-          ListButton('Clear data', InternalColors.coal, onPressed: clear),
+          ListButton('Save data', InternalColors.green, onPressed: onPressed),
           const SizedBox(height: 16.0),
-          ResultData(_pluginImpl),
+          ListButton(
+            'Clear data',
+            _pluginImpl.readValues != null ? InternalColors.blue : InternalColors.primary,
+            onPressed: _pluginImpl.readValues != null ? clear : null,
+          ),
         ],
       ),
     );
@@ -121,7 +132,7 @@ class _TextFieldWidget extends StatelessWidget {
         if (_validate(value)) currentValue(value);
       },
       validator: (value) {
-        if (!_validate(value!)) return 'Please enter a valid $label value';
+        if (!_validate(value!)) return 'Please enter a valid value';
         return null;
       },
       decoration: _buildInputDecoration(),
@@ -156,7 +167,7 @@ class _TextFieldWidget extends StatelessWidget {
       case FieldType.intType:
         return FilteringTextInputFormatter.digitsOnly;
       case FieldType.doubleType:
-        return FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]+(\.[0-9]*|,[0-9]*)?$'));
+        return FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]+(\.[0-9]*|,[0-9]*)?'));
       case FieldType.stringType:
         return FilteringTextInputFormatter.singleLineFormatter;
     }
@@ -184,12 +195,11 @@ class ResultData extends StatelessWidget {
     super.key,
   });
 
-  /// Convert to display readings in a text widget
-  String mapEntriesToString(Map<String, dynamic>? map) {
-    if (map == null) {
-      return 'The data is empty';
-    }
-    return map.entries.map((entry) => '${entry.key} : ${entry.value};  ').join();
+  String _prettyPrintMap(Map<String, dynamic>? map) {
+    if (map == null || map.isEmpty) return 'The data is empty';
+    var jsonString = jsonEncode(map);
+    var prettyString = JsonEncoder.withIndent('  ').convert(jsonDecode(jsonString));
+    return prettyString;
   }
 
   @override
@@ -197,18 +207,16 @@ class ResultData extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        borderRadius: InternalRadius.large,
-        color: InternalColors.green,
+        borderRadius: InternalRadius.small,
+        color: InternalColors.grey,
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Flexible(
             child: Text(
-              mapEntriesToString(sharedPreferencesImpl.readValues),
+              _prettyPrintMap(sharedPreferencesImpl.readValues),
               style: const TextStyle(
-                fontSize: 18,
+                fontSize: 14,
                 color: Colors.white,
               ),
             ),
@@ -243,7 +251,7 @@ class _RadioButtonWidgetState extends State<_RadioButtonWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Choose value type "bool"'),
+        const Text('Choose value type "Bool"'),
         Row(
           children: <Widget>[
             Text(BoolType.trueEnum.value.toString()),

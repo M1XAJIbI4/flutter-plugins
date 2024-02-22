@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,7 +21,7 @@ class FormInsertWidget extends StatefulWidget {
 }
 
 class FormInsertWidgetState extends State<FormInsertWidget> {
-  String? enterName;
+  String? enterText;
   int? enterCounter;
   double? enterDecimal;
 
@@ -32,16 +33,22 @@ class FormInsertWidgetState extends State<FormInsertWidget> {
     super.initState();
   }
 
-  /// Obtaining data from shared preferences during initialization
+  /// Obtaining data from database during initialization
   void initialize() async {
     await widget.pluginImpl.init();
   }
 
-  /// Saving data to shared preferences
-  void insertData() async {
-    if (mounted) _formKey.currentState!.validate();
-    if (enterName != null && enterCounter != null && enterDecimal != null) {
-      await widget.pluginImpl.insert(enterName!, enterCounter!, enterDecimal!);
+  /// Delete spaces from our text
+  String _removeSpaces(String input) {
+    return input.replaceAll(RegExp(r'\s'), '');
+  }
+
+  /// Insert data to database by id
+  void insertDataById() async {
+    if (_formKey.currentState!.validate()) {
+      if (enterText != null && enterCounter != null && enterDecimal != null) {
+        await widget.pluginImpl.insert(_removeSpaces(enterText!), enterCounter!, enterDecimal!);
+      }
     }
   }
 
@@ -55,8 +62,8 @@ class FormInsertWidgetState extends State<FormInsertWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _TextFieldWidget(
-                'String ',
-                (currentValue) => enterName = currentValue,
+                'String',
+                (currentValue) => enterText = currentValue,
                 FieldType.stringType,
               ),
               _TextFieldWidget(
@@ -69,7 +76,7 @@ class FormInsertWidgetState extends State<FormInsertWidget> {
                 (currentValue) => enterDecimal = double.parse(currentValue.toString().replaceAll(',', '.')),
                 FieldType.doubleType,
               ),
-              ListButton('Save data', InternalColors.blue, onPressed: insertData),
+              ListButton('Insert', InternalColors.green, onPressed: insertDataById),
               const SizedBox(height: 6.0),
             ],
           ),
@@ -92,15 +99,23 @@ class FormUpdateWidget extends StatefulWidget {
 
 class _FormUpdateWidgetState extends State<FormUpdateWidget> {
   int? updateId;
-  String? updateName;
+  String? updateText;
   int? updateCounter;
   double? updateDecimal;
 
   final _formKey = GlobalKey<FormState>();
-  updateData() async {
-    _formKey.currentState!.validate();
-    if (updateId != null && updateName != null && updateCounter != null && updateDecimal != null) {
-      await widget.pluginImpl.update(updateId!, updateName!, updateCounter!, updateDecimal!);
+
+  /// Delete spaces from our text
+  String _removeSpaces(String input) {
+    return input.replaceAll(RegExp(r'\s'), '');
+  }
+
+  /// Update data from our database by id
+  updateDataById() async {
+    if (_formKey.currentState!.validate()) {
+      if (updateId != null && updateText != null && updateCounter != null && updateDecimal != null) {
+        await widget.pluginImpl.update(updateId!, _removeSpaces(updateText!), updateCounter!, updateDecimal!);
+      }
     }
   }
 
@@ -120,7 +135,7 @@ class _FormUpdateWidgetState extends State<FormUpdateWidget> {
               ),
               _TextFieldWidget(
                 'String',
-                (currentValue) => updateName = currentValue,
+                (currentValue) => updateText = currentValue,
                 FieldType.stringType,
               ),
               _TextFieldWidget(
@@ -133,7 +148,7 @@ class _FormUpdateWidgetState extends State<FormUpdateWidget> {
                 (currentValue) => updateDecimal = double.parse(currentValue.toString().replaceAll(',', '.')),
                 FieldType.doubleType,
               ),
-              ListButton('Update data', InternalColors.blue, onPressed: updateData),
+              ListButton('Update data', InternalColors.green, onPressed: updateDataById),
               const SizedBox(height: 16.0),
             ],
           ),
@@ -156,8 +171,8 @@ class _FormDeleteWidgetState extends State<FormDeleteWidget> {
 
   final _formKey = GlobalKey<FormState>();
 
-  /// Clearing data from shared preferences
-  void clear() async {
+  /// Remove data from database by id
+  void removeById() async {
     _formKey.currentState!.validate();
     if (deleteId != null) {
       await widget.pluginImpl.delete(deleteId!);
@@ -178,7 +193,7 @@ class _FormDeleteWidgetState extends State<FormDeleteWidget> {
                 (currentValue) => deleteId = int.parse(currentValue),
                 FieldType.intType,
               ),
-              ListButton('Clear data', InternalColors.coal, onPressed: clear),
+              ListButton('Remove item', InternalColors.blue, onPressed: removeById),
             ],
           ),
         ),
@@ -243,7 +258,7 @@ class _TextFieldWidget extends StatelessWidget {
       case FieldType.intType:
         return FilteringTextInputFormatter.digitsOnly;
       case FieldType.doubleType:
-        return FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]+(\.[0-9]*|,[0-9]*)?$'));
+        return FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]+(\.[0-9]*|,[0-9]*)?'));
       case FieldType.stringType:
         return FilteringTextInputFormatter.singleLineFormatter;
     }
@@ -291,6 +306,26 @@ class _ResultDataState extends State<ResultData> {
     super.dispose();
   }
 
+  /// Converter for displaying beautiful json
+  String _prettyPrintMap(Map<String, dynamic>? map) {
+    if (map == null || map.isEmpty) return 'The data is empty';
+    var jsonString = jsonEncode(map);
+    var prettyString = JsonEncoder.withIndent('  ').convert(jsonDecode(jsonString));
+    return prettyString;
+  }
+
+  /// The handler for our stream data
+  String _convertStreamDataToMap(List<Map<String, dynamic>> list) {
+    Map<String, dynamic> map = Map.fromIterable(list,
+        key: (item) => item['id'].toString(),
+        value: (item) => {
+              'name': item['name'],
+              'value': item['value'],
+              'double': item['num'],
+            });
+    return _prettyPrintMap(map);
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -298,13 +333,13 @@ class _ResultDataState extends State<ResultData> {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return _ResultDataContainerWidget(
-              result: '[]',
+              result: 'The data is empty',
             );
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             return _ResultDataContainerWidget(
-              result: snapshot.data.toString(),
+              result: _convertStreamDataToMap(snapshot.data),
             );
           }
         });
@@ -322,12 +357,10 @@ class _ResultDataContainerWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        borderRadius: InternalRadius.large,
-        color: InternalColors.green,
+        borderRadius: InternalRadius.small,
+        color: InternalColors.grey,
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Flexible(
             child: Text(

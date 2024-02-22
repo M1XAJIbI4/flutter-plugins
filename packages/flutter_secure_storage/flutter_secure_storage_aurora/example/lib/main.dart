@@ -29,15 +29,18 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text(
-            'Flutter secure storage aurora',
+            'Secure storage',
           ),
         ),
         body: ListSeparated(
           children: [
-            ListItemInfo("Flutter Secure Storage provides an API for storing data in secure storage."),
+            ListItemInfo("""Flutter Secure Storage provides an API 
+            for storing data in secure storage."""),
+            Divider(),
+            Text('Storage status', style: TextStyle(fontSize: 20)),
+            ResultData(pluginImpl: _pluginImpl),
             FormWidget(pluginImpl: _pluginImpl),
             FormGetWidget(pluginImpl: _pluginImpl),
-            ResultData(pluginImpl: _pluginImpl),
           ],
         ),
       ),

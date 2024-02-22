@@ -30,11 +30,9 @@ class _MyAppState extends State<MyApp> {
         ),
         body: const ListSeparated(
           children: [
-            ListItemInfo("""A lightweight data storage tool with 
-            the ability to write asynchronously to disk, 
-              but no guarantee of retention after a callback. 
-              Not suitable for mission-critical data.
-              """),
+            ListItemInfo("""A lightweight data storage tool with the ability to 
+            write asynchronously to disk, but no guarantee of retention after 
+            a callback. Not suitable for mission-critical data."""),
             FormShared(),
           ],
         ),

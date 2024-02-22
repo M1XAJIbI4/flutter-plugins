@@ -22,7 +22,7 @@ class PluginImpl {
   /// Data
   List<Map>? data;
 
-  StreamController streamController = StreamController();
+  StreamController streamController = StreamController<List<Map<dynamic, dynamic>>?>();
 
   /// Init database
   Future<void> init() async {
@@ -77,7 +77,7 @@ class PluginImpl {
         await txn.rawInsert('INSERT INTO Test(name, value, num) VALUES(?, ?, ?)', [name, value, num]);
       });
       // Update data
-      data = await _allSelect();
+      List<Map<dynamic, dynamic>>? data = await _allSelect();
       streamController.add(data);
     } catch (e) {
       _error = e.toString();
@@ -97,7 +97,8 @@ class PluginImpl {
       count =
           await _db?.rawUpdate('UPDATE Test SET name = ?, value = ?, num = ? WHERE rowid = ?', [name, value, num, id]);
       // Update data
-      data = await _allSelect();
+      List<Map<dynamic, dynamic>>? data = await _allSelect();
+      data;
       // Update data on stream
       streamController.add(data);
     } catch (e) {
@@ -115,7 +116,7 @@ class PluginImpl {
       // Query
       count = await _db?.rawDelete('DELETE FROM Test WHERE rowid = ?', [id]);
       // Update data
-      data = await _allSelect();
+      List<Map<dynamic, dynamic>>? data = await _allSelect();
       streamController.add(data);
     } catch (e) {
       _error = e.toString();

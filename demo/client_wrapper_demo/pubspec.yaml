@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
+# SPDX-License-Identifier: BSD-3-Clause
+name: client_wrapper_demo
+description: Demo plugin common client wrapper.
+version: 0.0.1
+
+environment:
+  sdk: '>=2.18.6 <4.0.0'
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  plugin:
+    platforms:
+      aurora:
+        dartPluginClass: ClientWrapperDemo
+        pluginClass: ClientWrapperDemoPlugin

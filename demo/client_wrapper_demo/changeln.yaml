@@ -1,0 +1,16 @@
+### Changeln Configuration Settings
+
+# Template engine is Mako - https://www.makotemplates.org/
+# Base template format is Markdown - https://python-markdown.github.io/
+---
+
+### Tag find
+tags: 'client_wrapper_demo-.*'
+
+### Group commits
+# {group name}: {regex}
+groups:
+  Bug: '\[(client_wrapper_demo)\]\[(bug)\]\s+(.+)'
+  Change: '\[(client_wrapper_demo)\]\[(change)\]\s+(.+)'
+  Feature: '\[(client_wrapper_demo)\]\[(feature)\]\s+(.+)'
+

@@ -18,7 +18,7 @@ class ListItem extends StatelessWidget {
   final String title;
   final String description;
   final Color color;
-  final String? value;
+  final dynamic value;
   final double? widthData;
 
   @override
@@ -88,14 +88,16 @@ class ListItem extends StatelessWidget {
         borderRadius: InternalRadius.medium,
         color: color,
       ),
-      child: Text(
-        value ?? 'NULL',
-        style: const TextStyle(
-          fontSize: 14,
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
+      child: value is Widget
+          ? value
+          : Text(
+              value.toString() ?? 'NULL',
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
     );
   }
 }

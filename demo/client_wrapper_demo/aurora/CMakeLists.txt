@@ -20,12 +20,15 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-psabi")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 find_package(PkgConfig REQUIRED)
+find_package(Qt5 COMPONENTS Core Multimedia REQUIRED)
 pkg_check_modules(FlutterEmbedder REQUIRED IMPORTED_TARGET flutter-embedder)
+pkg_check_modules(GLES REQUIRED IMPORTED_TARGET glesv2)
 
 add_library(${PLUGIN_NAME} SHARED client_wrapper_demo_plugin.cpp)
 
 set_target_properties(${PLUGIN_NAME} PROPERTIES CXX_VISIBILITY_PRESET hidden)
-target_link_libraries(${PLUGIN_NAME} PRIVATE PkgConfig::FlutterEmbedder)
+target_link_libraries(${PLUGIN_NAME} PRIVATE PkgConfig::FlutterEmbedder PkgConfig::GLES)
+target_link_libraries(${PLUGIN_NAME} PUBLIC Qt5::Core Qt5::Multimedia)
 
 target_include_directories(${PLUGIN_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_compile_definitions(${PLUGIN_NAME} PRIVATE PLUGIN_IMPL)

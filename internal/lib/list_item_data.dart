@@ -32,7 +32,10 @@ class ListItemData<T> extends StatelessWidget {
       (BuildContext context, AsyncSnapshot<T?> snapshot) {
         return ListItem(
           title,
-          description,
+          description
+              .replaceAll(RegExp(r"\s+"), ' ')
+              .replaceAll('\n', ' ')
+              .trim(),
           color,
           builder == null ? snapshot.data.toString() : builder!(snapshot.data),
           widthData: widthData,

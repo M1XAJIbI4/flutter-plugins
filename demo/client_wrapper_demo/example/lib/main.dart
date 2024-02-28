@@ -23,6 +23,18 @@ class _MyAppState extends State<MyApp> {
   final ClientWrapperDemo _plugin = ClientWrapperDemo();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _asyncMethod();
+    });
+  }
+
+  void _asyncMethod() async {
+    await _plugin.sendBinaryMessage();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: internalTheme,

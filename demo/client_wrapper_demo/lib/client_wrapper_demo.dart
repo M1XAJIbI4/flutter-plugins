@@ -8,4 +8,7 @@ class ClientWrapperDemo {
   /// Return texture ID
   Future<int?> createTexture() =>
       ClientWrapperDemoPlatform.instance.createTexture();
+
+  Future<void> sendBinaryMessage() =>
+      ClientWrapperDemoPlatform.instance.sendBinaryMessage();
 }

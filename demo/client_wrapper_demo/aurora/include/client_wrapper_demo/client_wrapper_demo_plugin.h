@@ -11,6 +11,11 @@
 
 #include <QImage>
 
+typedef flutter::TextureVariant TextureVariant;
+typedef flutter::TextureRegistrar TextureRegistrar;
+typedef flutter::PixelBufferTexture PixelBufferTexture;
+typedef flutter::BinaryMessenger BinaryMessenger;
+
 class PLUGIN_EXPORT ClientWrapperDemoPlugin final : public PluginInterface
 {
 public:
@@ -18,13 +23,16 @@ public:
 
 private:
     QImage m_textureImage = Helper::GetImage();
-    flutter::TextureRegistrar* m_textureRegistrar;
-    std::vector<std::shared_ptr<flutter::TextureVariant>> m_textures;
+    TextureRegistrar* m_textureRegistrar;
+    std::vector<std::shared_ptr<TextureVariant>> m_textures;
+
+    BinaryMessenger* m_messenger;
 
     void MethodRegister(PluginRegistrar &registrar);
     void MethodUnimplemented(const MethodCall &call);
 
     void onCreateTexture(const MethodCall &call);
+    void onBinaryMessenger();
 };
 
 #endif /* FLUTTER_PLUGIN_CLIENT_WRAPPER_DEMO_PLUGIN_H */

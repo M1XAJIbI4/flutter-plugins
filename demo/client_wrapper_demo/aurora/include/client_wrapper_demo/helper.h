@@ -11,11 +11,14 @@
 #include "data.h"
 
 namespace Helper {
+
+// Get [QImage] from base64 string
 QImage GetImage() {
   QByteArray data = QByteArray::fromBase64(Base64::image_150x150);
   QImage image = QImage::fromData(data, "PNG");
   return image.convertToFormat(QImage::Format_RGBA8888);
 }
+
 } // namespace Helper
 
 #endif /* FLUTTER_PLUGIN_CLIENT_WRAPPER_DEMO_PLUGIN_HELPER_H */

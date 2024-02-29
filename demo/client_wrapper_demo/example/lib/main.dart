@@ -23,6 +23,18 @@ class _MyAppState extends State<MyApp> {
   final ClientWrapperDemo _plugin = ClientWrapperDemo();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _asyncMethod();
+    });
+  }
+
+  void _asyncMethod() async {
+    await _plugin.encodable();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: internalTheme,
@@ -70,6 +82,67 @@ class _MyAppState extends State<MyApp> {
               widthData: 100,
               stream: _plugin.eventBinaryMessage(),
               builder: (value) => value == null ? null : '$value°',
+            ),
+            ListItemData(
+              'Encodable Value',
+              """
+              Example of using EncodableValue to transfer data from
+              flutter platform channels to dart.
+              """,
+              InternalColors.purple,
+              future: _plugin.encodable(),
+              builder: (value) {
+                if (value != null) {
+                  final List<DataRow> rows = [];
+                  if (value is List) {
+                    for (final item in value) {
+                      rows.add(
+                        DataRow(
+                          cells: <DataCell>[
+                            DataCell(Text(
+                              item.runtimeType
+                                  .toString()
+                                  .replaceAll('_', '')
+                                  .replaceAll('View', '')
+                                  .replaceAll('Unmodifiable', '')
+                                  .replaceAll('<Object?, Object?>', ''),
+                            )),
+                            DataCell(Text(item.toString())),
+                          ],
+                        ),
+                      );
+                    }
+                  }
+                  return SizedBox(
+                    width: double.infinity,
+                    child: Card(
+                      child: DataTable(
+                        horizontalMargin: 16,
+                        columnSpacing: 6,
+                        columns: const <DataColumn>[
+                          DataColumn(
+                            label: Expanded(
+                              child: Text(
+                                'Type',
+                                style: TextStyle(fontStyle: FontStyle.italic),
+                              ),
+                            ),
+                          ),
+                          DataColumn(
+                            label: Expanded(
+                              child: Text(
+                                'Value',
+                                style: TextStyle(fontStyle: FontStyle.italic),
+                              ),
+                            ),
+                          ),
+                        ],
+                        rows: rows,
+                      ),
+                    ),
+                  );
+                }
+              },
             ),
           ],
         ),

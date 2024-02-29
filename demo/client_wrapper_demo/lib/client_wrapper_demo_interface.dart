@@ -25,6 +25,14 @@ abstract class ClientWrapperDemoPlatform extends PlatformInterface {
     _instance = instance;
   }
 
+  /// Create texture with default image
+  /// Return texture ID
   Future<int?> createTexture();
+
+  /// Scream screen orientation angle
   Stream<int?> eventBinaryMessage();
+
+  /// EncodableValue to transfer data from
+  /// flutter platform channels to dart
+  Future<dynamic> encodable();
 }

@@ -4,17 +4,14 @@
  */
 #include <client_wrapper_demo/client_wrapper_demo_plugin.h>
 
-#include <flutter/texture_registrar.h>
-#include <flutter/binary_messenger.h>
-
 namespace MethodKeys {
   constexpr auto PluginKey = "client_wrapper_demo";
 
   constexpr auto CreateTexture = "createTexture";
   constexpr auto BinaryMessengerEnable = "binaryMessengerEnable";
   constexpr auto BinaryMessengerDisable = "binaryMessengerDisable";
+  constexpr auto Encodable = "encodable";
 } // namespace Methods
-
 
 void ClientWrapperDemoPlugin::RegisterWithRegistrar(PluginRegistrar &registrar)
 {
@@ -38,6 +35,10 @@ void ClientWrapperDemoPlugin::RegisterMethods(PluginRegistrar &registrar)
         const auto &method = call.GetMethod();
         if (method == MethodKeys::CreateTexture) {
             onCreateTexture(call);
+            return;
+        }
+        if (method == MethodKeys::Encodable) {
+            onEncodable(call);
             return;
         }
         call.SendSuccessResponse(nullptr);
@@ -73,7 +74,7 @@ void ClientWrapperDemoPlugin::RegisterBinaryMessengerHandler()
     // Client Wrapper listen headler
     m_messenger->SetMessageHandler(
         MethodKeys::PluginKey,
-        [this](const uint8_t* message, size_t message_size, flutter::BinaryReply reply) {
+        [this](const uint8_t* message, size_t message_size, flutter::BinaryReply) {
             auto data = std::string(message, message + message_size);
             // Check and run function by name
             if (data.find(MethodKeys::BinaryMessengerEnable) != std::string::npos) {
@@ -122,4 +123,39 @@ void ClientWrapperDemoPlugin::onBinaryMessengerListenDisable()
     if (m_stateListenEvent == StateListenEvent::ENABLE) {
         m_stateListenEvent = StateListenEvent::DISABLE;
     }
+}
+
+// ========== encodable_value ==========
+
+void ClientWrapperDemoPlugin::onEncodable(const MethodCall &call)
+{
+    EncodableValue m_monostate = EncodableValue(); // null
+    EncodableValue m_bool = EncodableValue(true);
+    EncodableValue m_int32_t = EncodableValue((int32_t) 32);
+    EncodableValue m_int64_t = EncodableValue((int32_t) 64);
+    EncodableValue m_double = EncodableValue((double) 0.0);
+    EncodableValue m_string = EncodableValue(std::string("Text"));
+    EncodableValue m_vector_uint8_t = EncodableValue(std::vector<uint8_t> {1,2});
+    EncodableValue m_vector_int32_t = EncodableValue(std::vector<int32_t> {1,2});
+    EncodableValue m_vector_int64_t = EncodableValue(std::vector<int64_t> {1,2});
+    EncodableValue m_vector_float = EncodableValue(std::vector<float> {1,2});
+    EncodableValue m_vector_double = EncodableValue(std::vector<double> {1,2});
+    EncodableValue m_encodable_map = EncodableValue(EncodableMap {
+        {EncodableValue("key"), EncodableValue("value")},
+    });
+
+    call.ResponseSuccess(EncodableList {
+        m_monostate,
+        m_bool,
+        m_int32_t,
+        m_int64_t,
+        m_double,
+        m_string,
+        m_vector_uint8_t,
+        m_vector_int32_t,
+        m_vector_int64_t,
+        m_vector_float,
+        m_vector_double,
+        m_encodable_map,
+    });
 }

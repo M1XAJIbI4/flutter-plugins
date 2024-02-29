@@ -15,6 +15,7 @@ enum Methods {
   createTexture,
   binaryMessengerEnable,
   binaryMessengerDisable,
+  encodable,
 }
 
 /// An implementation of [ClientWrapperDemoPlatform] that uses method channels.
@@ -23,11 +24,14 @@ class MethodChannelClientWrapperDemo extends ClientWrapperDemoPlatform {
   @visibleForTesting
   final methodsChannel = const MethodChannel(pluginKey);
 
+  /// Create texture with default image
+  /// Return texture ID
   @override
   Future<int?> createTexture() async {
     return await methodsChannel.invokeMethod<int?>(Methods.createTexture.name);
   }
 
+  /// Scream screen orientation angle
   @override
   Stream<int?> eventBinaryMessage() {
     // Init controller for enable/disable event
@@ -51,5 +55,12 @@ class MethodChannelClientWrapperDemo extends ClientWrapperDemoPlatform {
     });
     // Return stream
     return streamController.stream;
+  }
+
+  /// EncodableValue to transfer data from
+  /// flutter platform channels to dart
+  @override
+  Future<dynamic> encodable() async {
+    return await methodsChannel.invokeMethod<Object?>(Methods.encodable.name);
   }
 }

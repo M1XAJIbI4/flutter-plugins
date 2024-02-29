@@ -9,6 +9,11 @@ class ClientWrapperDemo {
   Future<int?> createTexture() =>
       ClientWrapperDemoPlatform.instance.createTexture();
 
+  /// Scream screen orientation angle
   Stream<int?> eventBinaryMessage() =>
       ClientWrapperDemoPlatform.instance.eventBinaryMessage();
+
+  /// EncodableValue to transfer data from
+  /// flutter platform channels to dart
+  Future<dynamic> encodable() => ClientWrapperDemoPlatform.instance.encodable();
 }

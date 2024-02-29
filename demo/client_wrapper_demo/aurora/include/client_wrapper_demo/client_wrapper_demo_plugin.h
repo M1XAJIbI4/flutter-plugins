@@ -9,12 +9,19 @@
 #include <client_wrapper_demo/globals.h>
 #include <client_wrapper_demo/helper.h>
 
+#include <flutter/encodable_value.h>
+#include <flutter/texture_registrar.h>
+#include <flutter/binary_messenger.h>
+
 #include <flutter/platform-methods.h>
 #include <flutter/platform-events.h>
 #include <flutter/platform-types.h>
 
 #include <QImage>
 
+typedef flutter::EncodableValue EncodableValue;
+typedef flutter::EncodableMap EncodableMap;
+typedef flutter::EncodableList EncodableList;
 typedef flutter::TextureVariant TextureVariant;
 typedef flutter::TextureRegistrar TextureRegistrar;
 typedef flutter::PixelBufferTexture PixelBufferTexture;
@@ -48,6 +55,9 @@ private:
     void onBinaryMessengerListenSend(DisplayOrientation orientation);
     void onBinaryMessengerListenEnable();
     void onBinaryMessengerListenDisable();
+
+    // Encodable Value example
+    void onEncodable(const MethodCall &call);
 
 };
 

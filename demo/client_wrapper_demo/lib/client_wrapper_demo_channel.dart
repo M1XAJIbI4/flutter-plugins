@@ -1,34 +1,27 @@
 // SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
-import 'dart:ffi';
+import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'client_wrapper_demo_interface.dart';
 
+// Platform channel plugin key registration
+const pluginKey = "client_wrapper_demo";
+
+// Platform channel plugin methods
 enum Methods {
   createTexture,
-  binaryMessenger,
-}
-
-Future<void> _onMethodCall(MethodCall call) {
-  debugPrint('--------------------');
-  debugPrint(call.method);
-  debugPrint(call.arguments);
-  debugPrint('--------------------');
-  return Future<void>.value();
+  binaryMessengerEnable,
+  binaryMessengerDisable,
 }
 
 /// An implementation of [ClientWrapperDemoPlatform] that uses method channels.
 class MethodChannelClientWrapperDemo extends ClientWrapperDemoPlatform {
   /// The method channel used to interact with the native platform.
   @visibleForTesting
-  final methodsChannel = const MethodChannel('client_wrapper_demo');
-
-  final optionalMethodChannel =
-      const OptionalMethodChannel('client_wrapper_demo', JSONMethodCodec())
-          .setMethodCallHandler(_onMethodCall);
+  final methodsChannel = const MethodChannel(pluginKey);
 
   @override
   Future<int?> createTexture() async {
@@ -36,7 +29,27 @@ class MethodChannelClientWrapperDemo extends ClientWrapperDemoPlatform {
   }
 
   @override
-  Future<void> sendBinaryMessage() async {
-    await methodsChannel.invokeMethod<Object?>(Methods.binaryMessenger.name);
+  Stream<int?> eventBinaryMessage() {
+    // Init controller for enable/disable event
+    final streamController = StreamController<int?>(
+      onPause: () => methodsChannel
+          .invokeMethod<Object?>(Methods.binaryMessengerDisable.name),
+      onResume: () => methodsChannel
+          .invokeMethod<Object?>(Methods.binaryMessengerEnable.name),
+      onCancel: () => methodsChannel
+          .invokeMethod<Object?>(Methods.binaryMessengerDisable.name),
+      onListen: () => methodsChannel
+          .invokeMethod<Object?>(Methods.binaryMessengerEnable.name),
+    );
+    // Add listen handler
+    const OptionalMethodChannel(pluginKey, JSONMethodCodec())
+        .setMethodCallHandler((MethodCall call) {
+      if (call.method == 'ChangeDisplayOrientation') {
+        streamController.add(int.parse(call.arguments));
+      }
+      return Future<void>.value();
+    });
+    // Return stream
+    return streamController.stream;
   }
 }

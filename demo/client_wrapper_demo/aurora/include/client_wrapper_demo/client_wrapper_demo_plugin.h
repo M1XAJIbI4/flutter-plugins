@@ -9,6 +9,10 @@
 #include <client_wrapper_demo/globals.h>
 #include <client_wrapper_demo/helper.h>
 
+#include <flutter/platform-methods.h>
+#include <flutter/platform-events.h>
+#include <flutter/platform-types.h>
+
 #include <QImage>
 
 typedef flutter::TextureVariant TextureVariant;
@@ -22,17 +26,29 @@ public:
     void RegisterWithRegistrar(PluginRegistrar &registrar) override;
 
 private:
-    QImage m_textureImage = Helper::GetImage();
+    // Common functions
+    void RegisterMethods(PluginRegistrar &registrar);
+
+    // Texure regisrter example
     TextureRegistrar* m_textureRegistrar;
+    QImage m_textureImage = Helper::GetImage();
     std::vector<std::shared_ptr<TextureVariant>> m_textures;
-
-    BinaryMessenger* m_messenger;
-
-    void MethodRegister(PluginRegistrar &registrar);
-    void MethodUnimplemented(const MethodCall &call);
-
     void onCreateTexture(const MethodCall &call);
-    void onBinaryMessenger();
+
+    // Binary messenger example
+    enum StateListenEvent
+    {
+        NOT_INIT,
+        ENABLE,
+        DISABLE
+    };
+    BinaryMessenger* m_messenger;
+    StateListenEvent m_stateListenEvent = StateListenEvent::NOT_INIT;
+    void RegisterBinaryMessengerHandler();
+    void onBinaryMessengerListenSend(DisplayOrientation orientation);
+    void onBinaryMessengerListenEnable();
+    void onBinaryMessengerListenDisable();
+
 };
 
 #endif /* FLUTTER_PLUGIN_CLIENT_WRAPPER_DEMO_PLUGIN_H */

@@ -3,14 +3,16 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 #include <client_wrapper_demo/client_wrapper_demo_plugin.h>
+
 #include <flutter/texture_registrar.h>
-#include <flutter/encodable_value.h>
+#include <flutter/binary_messenger.h>
 
 namespace MethodKeys {
   constexpr auto PluginKey = "client_wrapper_demo";
 
   constexpr auto CreateTexture = "createTexture";
-  constexpr auto BinaryMessenger = "binaryMessenger";
+  constexpr auto BinaryMessengerEnable = "binaryMessengerEnable";
+  constexpr auto BinaryMessengerDisable = "binaryMessengerDisable";
 } // namespace Methods
 
 
@@ -22,11 +24,14 @@ void ClientWrapperDemoPlugin::RegisterWithRegistrar(PluginRegistrar &registrar)
     // Get binary messenger
     m_messenger = registrar.messenger();
 
+    // Init hendler demo
+    RegisterBinaryMessengerHandler();
+
     // Init methods
-    MethodRegister(registrar);
+    RegisterMethods(registrar);
 }
 
-void ClientWrapperDemoPlugin::MethodRegister(PluginRegistrar &registrar)
+void ClientWrapperDemoPlugin::RegisterMethods(PluginRegistrar &registrar)
 {
     // Embedder register method
     auto methods = [this](const MethodCall &call) {
@@ -35,32 +40,12 @@ void ClientWrapperDemoPlugin::MethodRegister(PluginRegistrar &registrar)
             onCreateTexture(call);
             return;
         }
-        if (method == MethodKeys::BinaryMessenger) {
-            return;
-        }
-        MethodUnimplemented(call);
+        call.SendSuccessResponse(nullptr);
     };
 
     registrar.RegisterMethodChannel(MethodKeys::PluginKey,
                                     MethodCodecType::Standard,
                                     methods);
-
-    // Client Wrapper listen headler
-    m_messenger->SetMessageHandler(
-        MethodKeys::PluginKey,
-        [this](const uint8_t* message, size_t message_size, flutter::BinaryReply reply) {
-            auto data = std::string(message, message + message_size);
-            // Check and run function by name
-            if (data.find(MethodKeys::BinaryMessenger) != std::string::npos) {
-                onBinaryMessenger();
-            }
-        }
-    );
-}
-
-void ClientWrapperDemoPlugin::MethodUnimplemented(const MethodCall &call)
-{
-    call.SendSuccessResponse(nullptr);
 }
 
 // ========== texture_registrar ==========
@@ -83,14 +68,58 @@ void ClientWrapperDemoPlugin::onCreateTexture(const MethodCall &call)
 
 // ========== binary_messenger ==========
 
-void ClientWrapperDemoPlugin::onBinaryMessenger()
+void ClientWrapperDemoPlugin::RegisterBinaryMessengerHandler()
 {
-    std::string value = "{\"method\": \"TextInput.show\", \"args\": \"MY EVENT\"}";
-    std::vector<uint8_t> message = {value.begin(), value.end()};
+    // Client Wrapper listen headler
+    m_messenger->SetMessageHandler(
+        MethodKeys::PluginKey,
+        [this](const uint8_t* message, size_t message_size, flutter::BinaryReply reply) {
+            auto data = std::string(message, message + message_size);
+            // Check and run function by name
+            if (data.find(MethodKeys::BinaryMessengerEnable) != std::string::npos) {
+                onBinaryMessengerListenEnable();
+            }
+            else if (data.find(MethodKeys::BinaryMessengerDisable) != std::string::npos) {
+                onBinaryMessengerListenDisable();
+            }
+        }
+    );
+}
+
+void ClientWrapperDemoPlugin::onBinaryMessengerListenSend(DisplayOrientation orientation)
+{
+    std::string value = std::to_string(static_cast<int>(orientation));
+    std::string ouput = "{\"method\": \"ChangeDisplayOrientation\", \"args\": \""+value+"\"}";
+    std::vector<uint8_t> message = {ouput.begin(), ouput.end()};
 
     m_messenger->Send(
         MethodKeys::PluginKey,
         message.data(),
         message.size()
     );
+}
+
+void ClientWrapperDemoPlugin::onBinaryMessengerListenEnable()
+{
+    // Add listen if not init
+    if (m_stateListenEvent == StateListenEvent::NOT_INIT) {
+        PlatformEvents::SubscribeOrientationChanged(
+            [this](DisplayOrientation orientation) {
+                if (m_stateListenEvent == StateListenEvent::ENABLE) {
+                    onBinaryMessengerListenSend(orientation);
+                }
+            });
+    }
+    // Enable listen
+    m_stateListenEvent = StateListenEvent::ENABLE;
+    // Send orientation after start
+    onBinaryMessengerListenSend(PlatformMethods::GetOrientation());
+}
+
+void ClientWrapperDemoPlugin::onBinaryMessengerListenDisable()
+{
+    // Disable listen
+    if (m_stateListenEvent == StateListenEvent::ENABLE) {
+        m_stateListenEvent = StateListenEvent::DISABLE;
+    }
 }

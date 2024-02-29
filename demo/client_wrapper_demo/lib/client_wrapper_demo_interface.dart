@@ -26,5 +26,5 @@ abstract class ClientWrapperDemoPlatform extends PlatformInterface {
   }
 
   Future<int?> createTexture();
-  Future<void> sendBinaryMessage();
+  Stream<int?> eventBinaryMessage();
 }

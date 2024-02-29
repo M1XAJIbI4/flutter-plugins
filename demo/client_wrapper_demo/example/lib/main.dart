@@ -23,18 +23,6 @@ class _MyAppState extends State<MyApp> {
   final ClientWrapperDemo _plugin = ClientWrapperDemo();
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _asyncMethod();
-    });
-  }
-
-  void _asyncMethod() async {
-    await _plugin.sendBinaryMessage();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: internalTheme,
@@ -49,7 +37,7 @@ class _MyAppState extends State<MyApp> {
             with Flutter Embedder through the common client_wrapper.
             """),
             ListItemData(
-              'Demo Texture',
+              'Texture Registar',
               """
               The image is drawn using the GPU, textures and pixel buffer
               through the common client_wrapper.
@@ -71,6 +59,17 @@ class _MyAppState extends State<MyApp> {
                   );
                 }
               },
+            ),
+            ListItemData(
+              'Binary Messenger',
+              """
+              Implementing an event using the BinaryMessenger client_wrapper
+              to obtain the screen orientation angle.
+              """,
+              InternalColors.green,
+              widthData: 100,
+              stream: _plugin.eventBinaryMessage(),
+              builder: (value) => value == null ? null : '$value°',
             ),
           ],
         ),

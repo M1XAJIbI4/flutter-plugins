@@ -9,6 +9,6 @@ class ClientWrapperDemo {
   Future<int?> createTexture() =>
       ClientWrapperDemoPlatform.instance.createTexture();
 
-  Future<void> sendBinaryMessage() =>
-      ClientWrapperDemoPlatform.instance.sendBinaryMessage();
+  Stream<int?> eventBinaryMessage() =>
+      ClientWrapperDemoPlatform.instance.eventBinaryMessage();
 }

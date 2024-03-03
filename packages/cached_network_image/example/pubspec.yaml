@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
+# SPDX-License-Identifier: BSD-3-Clause
+name: cached_network_image_example
+description: "The Aurora OS example of cached_network_image."
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.2 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  internal:
+    path: ../../../internal
+  cached_network_image: ^3.3.1
+  path_provider: ^2.0.15
+  path_provider_aurora:
+    git:
+      url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
+      ref: path_provider_aurora-0.0.1
+      path: packages/path_provider/path_provider_aurora
+flutter:
+  uses-material-design: true

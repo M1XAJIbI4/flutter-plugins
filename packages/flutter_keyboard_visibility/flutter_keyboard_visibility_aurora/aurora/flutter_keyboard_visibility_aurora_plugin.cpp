@@ -27,11 +27,11 @@ FlutterKeyboardVisibilityAuroraPlugin::FlutterKeyboardVisibilityAuroraPlugin()
       });
 }
 
-void FlutterKeyboardVisibilityAuroraPlugin::RegisterWithRegistrar(PluginRegistrar &registrar)
+void FlutterKeyboardVisibilityAuroraPlugin::RegisterWithRegistrar(PluginRegistrarAurora &registrar)
 {
   registrar.RegisterMethodChannel("flutter_keyboard_visibility_aurora",
                                   MethodCodecType::Standard,
-                                  [this](const MethodCall &call)
+                                  [this](const MethodCallAurora &call)
                                   { this->onMethodCall(call); });
 
   registrar.RegisterEventChannel(
@@ -63,7 +63,7 @@ void FlutterKeyboardVisibilityAuroraPlugin::RegisterWithRegistrar(PluginRegistra
       });
 }
 
-void FlutterKeyboardVisibilityAuroraPlugin::onMethodCall(const MethodCall &call)
+void FlutterKeyboardVisibilityAuroraPlugin::onMethodCall(const MethodCallAurora &call)
 {
   const auto &method = call.GetMethod();
 
@@ -76,12 +76,12 @@ void FlutterKeyboardVisibilityAuroraPlugin::onMethodCall(const MethodCall &call)
   unimplemented(call);
 }
 
-void FlutterKeyboardVisibilityAuroraPlugin::onGetKeyboardHeight(const MethodCall &call)
+void FlutterKeyboardVisibilityAuroraPlugin::onGetKeyboardHeight(const MethodCallAurora &call)
 {
   call.SendSuccessResponse(PlatformMethods::GetKeyboardHeight());
 }
 
-void FlutterKeyboardVisibilityAuroraPlugin::unimplemented(const MethodCall &call)
+void FlutterKeyboardVisibilityAuroraPlugin::unimplemented(const MethodCallAurora &call)
 {
   call.SendSuccessResponse(nullptr);
 }

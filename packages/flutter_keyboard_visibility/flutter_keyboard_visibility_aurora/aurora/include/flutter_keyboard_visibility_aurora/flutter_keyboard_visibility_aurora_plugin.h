@@ -12,15 +12,15 @@ class PLUGIN_EXPORT FlutterKeyboardVisibilityAuroraPlugin final : public PluginI
 {
 public:
     FlutterKeyboardVisibilityAuroraPlugin();
-    void RegisterWithRegistrar(PluginRegistrar &registrar) override;
+    void RegisterWithRegistrar(PluginRegistrarAurora &registrar) override;
 
 private:
     bool m_sendEventVisibility = false;
     bool m_sendEventHeight = false;
 
-    void onMethodCall(const MethodCall &call);
-    void onGetKeyboardHeight(const MethodCall &call);
-    void unimplemented(const MethodCall &call);
+    void onMethodCall(const MethodCallAurora &call);
+    void onGetKeyboardHeight(const MethodCallAurora &call);
+    void unimplemented(const MethodCallAurora &call);
 };
 
 #endif /* FLUTTER_PLUGIN_FLUTTER_KEYBOARD_VISIBILITY_AURORA_PLUGIN_H */

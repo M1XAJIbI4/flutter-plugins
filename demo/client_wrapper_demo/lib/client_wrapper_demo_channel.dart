@@ -31,36 +31,40 @@ class MethodChannelClientWrapperDemo extends ClientWrapperDemoPlatform {
     return await methodsChannel.invokeMethod<int?>(Methods.createTexture.name);
   }
 
-  /// Scream screen orientation angle
-  @override
-  Stream<int?> eventBinaryMessage() {
-    // Init controller for enable/disable event
-    final streamController = StreamController<int?>(
-      onPause: () => methodsChannel
-          .invokeMethod<Object?>(Methods.binaryMessengerDisable.name),
-      onResume: () => methodsChannel
-          .invokeMethod<Object?>(Methods.binaryMessengerEnable.name),
-      onCancel: () => methodsChannel
-          .invokeMethod<Object?>(Methods.binaryMessengerDisable.name),
-      onListen: () => methodsChannel
-          .invokeMethod<Object?>(Methods.binaryMessengerEnable.name),
-    );
-    // Add listen handler
-    const OptionalMethodChannel(pluginKey, JSONMethodCodec())
-        .setMethodCallHandler((MethodCall call) {
-      if (call.method == 'ChangeDisplayOrientation') {
-        streamController.add(int.parse(call.arguments));
-      }
-      return Future<void>.value();
-    });
-    // Return stream
-    return streamController.stream;
-  }
-
   /// EncodableValue to transfer data from
   /// flutter platform channels to dart
   @override
   Future<dynamic> encodable() async {
-    return await methodsChannel.invokeMethod<Object?>(Methods.encodable.name);
+    return await methodsChannel.invokeMethod<Object?>(Methods.encodable.name, {
+      'int': 1,
+      'bool': true,
+      'string': 'text',
+    });
   }
+
+  // /// Scream screen orientation angle
+  // @override
+  // Stream<int?> eventBinaryMessage() {
+  //   // Init controller for enable/disable event
+  //   final streamController = StreamController<int?>(
+  //     onPause: () => methodsChannel
+  //         .invokeMethod<Object?>(Methods.binaryMessengerDisable.name),
+  //     onResume: () => methodsChannel
+  //         .invokeMethod<Object?>(Methods.binaryMessengerEnable.name),
+  //     onCancel: () => methodsChannel
+  //         .invokeMethod<Object?>(Methods.binaryMessengerDisable.name),
+  //     onListen: () => methodsChannel
+  //         .invokeMethod<Object?>(Methods.binaryMessengerEnable.name),
+  //   );
+  //   // Add listen handler
+  //   const OptionalMethodChannel(pluginKey, JSONMethodCodec())
+  //       .setMethodCallHandler((MethodCall call) {
+  //     if (call.method == 'ChangeDisplayOrientation') {
+  //       streamController.add(int.parse(call.arguments));
+  //     }
+  //     return Future<void>.value();
+  //   });
+  //   // Return stream
+  //   return streamController.stream;
+  // }
 }

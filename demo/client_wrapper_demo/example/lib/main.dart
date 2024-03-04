@@ -1,5 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
+import 'dart:async';
+
 import 'package:client_wrapper_demo/client_wrapper_demo.dart';
 import 'package:flutter/material.dart';
 import 'package:internal/list_item_data.dart';
@@ -22,17 +24,19 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final ClientWrapperDemo _plugin = ClientWrapperDemo();
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _asyncMethod();
-    });
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     _asyncMethod();
+  //   });
+  // }
 
-  void _asyncMethod() async {
-    await _plugin.encodable();
-  }
+  // void _asyncMethod() async {
+  //   Timer.periodic(const Duration(seconds: 3), (Timer t) async {
+  //     await _plugin.encodable();
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -72,17 +76,17 @@ class _MyAppState extends State<MyApp> {
                 }
               },
             ),
-            ListItemData(
-              'Binary Messenger',
-              """
-              Implementing an event using the BinaryMessenger client_wrapper
-              to obtain the screen orientation angle.
-              """,
-              InternalColors.green,
-              widthData: 100,
-              stream: _plugin.eventBinaryMessage(),
-              builder: (value) => value == null ? null : '$value°',
-            ),
+            // ListItemData(
+            //   'Binary Messenger',
+            //   """
+            //   Implementing an event using the BinaryMessenger client_wrapper
+            //   to obtain the screen orientation angle.
+            //   """,
+            //   InternalColors.green,
+            //   widthData: 100,
+            //   stream: _plugin.eventBinaryMessage(),
+            //   builder: (value) => value == null ? null : '$value°',
+            // ),
             ListItemData(
               'Encodable Value',
               """

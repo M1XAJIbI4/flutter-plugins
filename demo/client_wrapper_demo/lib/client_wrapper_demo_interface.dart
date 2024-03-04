@@ -29,10 +29,10 @@ abstract class ClientWrapperDemoPlatform extends PlatformInterface {
   /// Return texture ID
   Future<int?> createTexture();
 
-  /// Scream screen orientation angle
-  Stream<int?> eventBinaryMessage();
-
   /// EncodableValue to transfer data from
   /// flutter platform channels to dart
   Future<dynamic> encodable();
+
+  // /// Scream screen orientation angle
+  // Stream<int?> eventBinaryMessage();
 }

@@ -5,7 +5,6 @@
 #ifndef FLUTTER_PLUGIN_CLIENT_WRAPPER_DEMO_PLUGIN_H
 #define FLUTTER_PLUGIN_CLIENT_WRAPPER_DEMO_PLUGIN_H
 
-#include <QImage>
 #include <iostream>
 
 #include <client_wrapper_demo/globals.h>
@@ -18,6 +17,10 @@
 #include <flutter/encodable_value.h>
 #include <flutter/texture_registrar.h>
 #include <flutter/binary_messenger.h>
+
+#include <flutter/platform-types.h>
+#include <flutter/platform-events.h>
+#include <flutter/platform-methods.h>
 
 // Flutter encodable
 typedef flutter::EncodableValue EncodableValue;
@@ -52,18 +55,19 @@ public:
     );
 
 private:
-    // Binary messenger example
-    // enum StateListenEvent
-    // {
-    //     NOT_INIT,
-    //     ENABLE,
-    //     DISABLE
-    // };
-    // StateListenEvent m_stateListenEvent = StateListenEvent::NOT_INIT;
-    // void RegisterBinaryMessengerHandler();
-    // void onBinaryMessengerListenSend(DisplayOrientation orientation);
-    // void onBinaryMessengerListenEnable();
-    // void onBinaryMessengerListenDisable();
+    // Raw BinaryMessenger example
+    enum StateListenEvent
+    {
+        NOT_INIT,
+        ENABLE,
+        DISABLE
+    };
+    StateListenEvent m_stateListenEvent = StateListenEvent::NOT_INIT;
+    
+    void RegisterBinaryMessengerHandler();
+    void onBinaryMessengerListenSend(DisplayOrientation orientation);
+    void onBinaryMessengerListenEnable();
+    void onBinaryMessengerListenDisable();
 
     // Methods
     EncodableValue onCreateTexture(const MethodCall &call);

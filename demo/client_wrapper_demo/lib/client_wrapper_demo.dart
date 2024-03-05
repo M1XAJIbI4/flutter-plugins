@@ -11,9 +11,10 @@ class ClientWrapperDemo {
 
   /// EncodableValue to transfer data from
   /// flutter platform channels to dart
-  Future<dynamic> encodable() => ClientWrapperDemoPlatform.instance.encodable();
+  Future<dynamic> encodable(Map<String, dynamic> values) =>
+      ClientWrapperDemoPlatform.instance.encodable(values);
 
-  // /// Scream screen orientation angle
-  // Stream<int?> eventBinaryMessage() =>
-  //     ClientWrapperDemoPlatform.instance.eventBinaryMessage();
+  /// Scream screen orientation angle
+  Stream<int?> eventBinaryMessage() =>
+      ClientWrapperDemoPlatform.instance.eventBinaryMessage();
 }

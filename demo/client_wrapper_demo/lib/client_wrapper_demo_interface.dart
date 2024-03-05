@@ -31,8 +31,8 @@ abstract class ClientWrapperDemoPlatform extends PlatformInterface {
 
   /// EncodableValue to transfer data from
   /// flutter platform channels to dart
-  Future<dynamic> encodable();
+  Future<dynamic> encodable(Map<String, dynamic> values);
 
-  // /// Scream screen orientation angle
-  // Stream<int?> eventBinaryMessage();
+  /// Scream screen orientation angle
+  Stream<int?> eventBinaryMessage();
 }

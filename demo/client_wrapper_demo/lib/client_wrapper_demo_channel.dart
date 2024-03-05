@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: BSD-3-Clause
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'client_wrapper_demo_interface.dart';
 
-// Platform channel plugin key registration
-const pluginKey = "client_wrapper_demo";
+// Platform channel plugin keys channel
+const channelName = "client_wrapper_demo";
+const channelNameBinary = "client_wrapper_demo_binary";
 
 // Platform channel plugin methods
 enum Methods {
@@ -20,9 +20,9 @@ enum Methods {
 
 /// An implementation of [ClientWrapperDemoPlatform] that uses method channels.
 class MethodChannelClientWrapperDemo extends ClientWrapperDemoPlatform {
-  /// The method channel used to interact with the native platform.
-  @visibleForTesting
-  final methodsChannel = const MethodChannel(pluginKey);
+  /// The methods channel used to interact with the native platform.
+  final methodsChannel = const MethodChannel(channelName);
+  final methodsChannelBinary = const MethodChannel(channelNameBinary);
 
   /// Create texture with default image
   /// Return texture ID
@@ -34,37 +34,34 @@ class MethodChannelClientWrapperDemo extends ClientWrapperDemoPlatform {
   /// EncodableValue to transfer data from
   /// flutter platform channels to dart
   @override
-  Future<dynamic> encodable() async {
-    return await methodsChannel.invokeMethod<Object?>(Methods.encodable.name, {
-      'int': 1,
-      'bool': true,
-      'string': 'text',
-    });
+  Future<dynamic> encodable(Map<String, dynamic> values) async {
+    return await methodsChannel.invokeMethod<Object?>(
+        Methods.encodable.name, values);
   }
 
-  // /// Scream screen orientation angle
-  // @override
-  // Stream<int?> eventBinaryMessage() {
-  //   // Init controller for enable/disable event
-  //   final streamController = StreamController<int?>(
-  //     onPause: () => methodsChannel
-  //         .invokeMethod<Object?>(Methods.binaryMessengerDisable.name),
-  //     onResume: () => methodsChannel
-  //         .invokeMethod<Object?>(Methods.binaryMessengerEnable.name),
-  //     onCancel: () => methodsChannel
-  //         .invokeMethod<Object?>(Methods.binaryMessengerDisable.name),
-  //     onListen: () => methodsChannel
-  //         .invokeMethod<Object?>(Methods.binaryMessengerEnable.name),
-  //   );
-  //   // Add listen handler
-  //   const OptionalMethodChannel(pluginKey, JSONMethodCodec())
-  //       .setMethodCallHandler((MethodCall call) {
-  //     if (call.method == 'ChangeDisplayOrientation') {
-  //       streamController.add(int.parse(call.arguments));
-  //     }
-  //     return Future<void>.value();
-  //   });
-  //   // Return stream
-  //   return streamController.stream;
-  // }
+  /// Scream screen orientation angle
+  @override
+  Stream<int?> eventBinaryMessage() {
+    // Init controller for enable/disable event
+    final streamController = StreamController<int?>(
+      onPause: () => methodsChannelBinary
+          .invokeMethod<Object?>(Methods.binaryMessengerDisable.name),
+      onResume: () => methodsChannelBinary
+          .invokeMethod<Object?>(Methods.binaryMessengerEnable.name),
+      onCancel: () => methodsChannelBinary
+          .invokeMethod<Object?>(Methods.binaryMessengerDisable.name),
+      onListen: () => methodsChannelBinary
+          .invokeMethod<Object?>(Methods.binaryMessengerEnable.name),
+    );
+    // Add listen handler
+    const OptionalMethodChannel(channelNameBinary, JSONMethodCodec())
+        .setMethodCallHandler((MethodCall call) {
+      if (call.method == 'ChangeDisplayOrientation') {
+        streamController.add(int.parse(call.arguments));
+      }
+      return Future<void>.value();
+    });
+    // Return stream
+    return streamController.stream;
+  }
 }

@@ -76,17 +76,17 @@ class _MyAppState extends State<MyApp> {
                 }
               },
             ),
-            // ListItemData(
-            //   'Binary Messenger',
-            //   """
-            //   Implementing an event using the BinaryMessenger client_wrapper
-            //   to obtain the screen orientation angle.
-            //   """,
-            //   InternalColors.green,
-            //   widthData: 100,
-            //   stream: _plugin.eventBinaryMessage(),
-            //   builder: (value) => value == null ? null : '$value°',
-            // ),
+            ListItemData(
+              'Binary Messenger',
+              """
+              Implementing an event using the BinaryMessenger client_wrapper
+              to obtain the screen orientation angle.
+              """,
+              InternalColors.green,
+              widthData: 100,
+              stream: _plugin.eventBinaryMessage(),
+              builder: (value) => value == null ? null : '$value°',
+            ),
             ListItemData(
               'Encodable Value',
               """
@@ -94,7 +94,14 @@ class _MyAppState extends State<MyApp> {
               flutter platform channels to dart.
               """,
               InternalColors.purple,
-              future: _plugin.encodable(),
+              future: _plugin.encodable({
+                'int': 1,
+                'bool': true,
+                'string': 'text',
+                'vector_int': [1, 2],
+                'vector_double': [1.0, 2.0],
+                'map': {'key': 'value'}
+              }),
               builder: (value) {
                 if (value != null) {
                   final List<DataRow> rows = [];

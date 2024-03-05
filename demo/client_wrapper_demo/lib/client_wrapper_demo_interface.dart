@@ -31,8 +31,17 @@ abstract class ClientWrapperDemoPlatform extends PlatformInterface {
 
   /// EncodableValue to transfer data from
   /// flutter platform channels to dart
-  Future<dynamic> encodable(Map<String, dynamic> values);
+  Future<dynamic> encodable(Map<String, dynamic> values) {
+    throw UnimplementedError('encodable() has not been implemented.');
+  }
 
-  /// Scream screen orientation angle
-  Stream<int?> eventBinaryMessage();
+  /// Scream screen orientation angle with EventChannel
+  Stream<int?> listenEventChannel() {
+    throw UnimplementedError('listenEventChannel() has not been implemented.');
+  }
+
+  /// Scream screen orientation angle with BinaryMessage
+  Stream<int?> eventBinaryMessage() {
+    throw UnimplementedError('eventBinaryMessage() has not been implemented.');
+  }
 }

@@ -4,37 +4,37 @@
  */
 #include <client_wrapper_demo/client_wrapper_demo_plugin.h>
 
-constexpr auto ChannelName = "client_wrapper_demo";
-constexpr auto ChannelNameBinary = "client_wrapper_demo_binary";
+constexpr auto ChannelEvent = "client_wrapper_demo_event";
+constexpr auto ChannelMethods = "client_wrapper_demo_methods";
+constexpr auto ChannelMessageBinary = "client_wrapper_demo_binary";
 
 namespace MethodKeys {
-  constexpr auto CreateTexture = "createTexture";
-  constexpr auto BinaryMessengerEnable = "binaryMessengerEnable";
-  constexpr auto BinaryMessengerDisable = "binaryMessengerDisable";
-  constexpr auto Encodable = "encodable";
+    constexpr auto CreateTexture = "createTexture";
+    constexpr auto EventChannelEnable = "eventChannelEnable";
+    constexpr auto EventChannelDisable = "eventChannelDisable";
+    constexpr auto BinaryMessengerEnable = "binaryMessengerEnable";
+    constexpr auto BinaryMessengerDisable = "binaryMessengerDisable";
+    constexpr auto Encodable = "encodable";
 } // namespace Methods
 
 void ClientWrapperDemoPlugin::RegisterWithRegistrar(PluginRegistrar* registrar)
 {
-    // Create MethodChannel for listen query, get data etc.
-    auto channel = std::make_unique<MethodChannel>(
-        registrar->messenger(), ChannelName,
+    // Create MethodChannel with StandardMethodCodec
+    auto methodChannel = std::make_unique<MethodChannel>(
+        registrar->messenger(), ChannelMethods,
         &flutter::StandardMethodCodec::GetInstance());
 
-    auto* channel_pointer = channel.get();
+    // Create EventChannel with StandardMethodCodec
+    auto eventChannel = std::make_unique<EventChannel>(
+        registrar->messenger(), ChannelEvent,
+        &flutter::StandardMethodCodec::GetInstance());
 
     // Create plugin
-    std::unique_ptr<ClientWrapperDemoPlugin> plugin(
-        new ClientWrapperDemoPlugin(registrar, std::move(channel)));
-
-    // Listen MethodChannel
-    channel_pointer->SetMethodCallHandler(
-        [plugin_pointer = plugin.get()](const auto& call, auto result) {
-          plugin_pointer->HandleMethodCall(call, std::move(result));
-        });
-
-    // Create hendler raw BinaryMessenger
-    plugin->RegisterBinaryMessengerHandler();
+    std::unique_ptr<ClientWrapperDemoPlugin> plugin(new ClientWrapperDemoPlugin(
+        registrar,
+        std::move(methodChannel),
+        std::move(eventChannel))
+    );
 
     // Register plugin
     registrar->AddPlugin(std::move(plugin));
@@ -42,27 +42,84 @@ void ClientWrapperDemoPlugin::RegisterWithRegistrar(PluginRegistrar* registrar)
 
 ClientWrapperDemoPlugin::ClientWrapperDemoPlugin(
     PluginRegistrar* registrar,
-    std::unique_ptr<MethodChannel> channel
-) : m_channel(std::move(channel)),
+    std::unique_ptr<MethodChannel> methodChannel,
+    std::unique_ptr<EventChannel> eventChannel
+) : m_methodChannel(std::move(methodChannel)),
+    m_eventChannel(std::move(eventChannel)),
     m_messenger(registrar->messenger()),
     m_textureRegistrar(registrar->texture_registrar())
-{}
+{
+    // Create MethodHandler
+    RegisterMethodHandler();
 
-void ClientWrapperDemoPlugin::HandleMethodCall(
-    const MethodCall& method_call, 
-    std::unique_ptr<MethodResult> result
-) {
-    if (method_call.method_name().compare(MethodKeys::Encodable) == 0) {
-        auto response = onEncodable(method_call);
-        result->Success(response);
-        return;
-    }
-    else if (method_call.method_name().compare(MethodKeys::CreateTexture) == 0) {
-        auto response = onCreateTexture(method_call);
-        result->Success(response);
-        return;
-    }
-    result->Success();
+    // Create StreamHandler
+    RegisterStreamHandler();
+
+    // Create hendler raw BinaryMessenger
+    RegisterBinaryMessengerHandler();
+
+    // Listen change orientation
+    PlatformEvents::SubscribeOrientationChanged(
+        [this](DisplayOrientation orientation) {
+            if (m_stateEventChannel) {
+                onEventChannelSend(orientation);
+            }
+            if (m_stateBinaryMessenger) {
+                onBinaryMessengerSend(orientation);
+            }
+        });
+}
+
+void ClientWrapperDemoPlugin::RegisterMethodHandler()
+{
+    m_methodChannel->SetMethodCallHandler(
+        [this](const MethodCall& call, std::unique_ptr<MethodResult> result) {
+            if (call.method_name().compare(MethodKeys::Encodable) == 0) {
+                result->Success(onEncodable(call));
+            }
+            else if (call.method_name().compare(MethodKeys::CreateTexture) == 0) {
+                result->Success(onCreateTexture(call));
+            }
+            else {
+                result->Success();
+            }
+        });
+}
+
+void ClientWrapperDemoPlugin::RegisterStreamHandler()
+{
+    auto handler = std::make_unique<flutter::StreamHandlerFunctions<EncodableValue>>(
+        [&](const EncodableValue* arguments,
+            std::unique_ptr<flutter::EventSink<EncodableValue>>&& events
+        ) -> std::unique_ptr<flutter::StreamHandlerError<EncodableValue>> {
+            m_sink = std::move(events);
+            onEventChannelEnable();
+            return nullptr;
+        },
+        [&](const EncodableValue* arguments) -> std::unique_ptr<flutter::StreamHandlerError<EncodableValue>> {
+            onEventChannelDisable();
+            return nullptr;
+        }
+    );
+
+    m_eventChannel->SetStreamHandler(std::move(handler));
+}
+
+void ClientWrapperDemoPlugin::RegisterBinaryMessengerHandler()
+{
+    m_messenger->SetMessageHandler(
+        ChannelMessageBinary,
+        [this](const uint8_t* message, size_t message_size, flutter::BinaryReply) {
+            auto data = std::string(message, message + message_size);
+            // Check and run function by name
+            if (data.find(MethodKeys::BinaryMessengerEnable) != std::string::npos) {
+                onBinaryMessengerEnable();
+            }
+            else if (data.find(MethodKeys::BinaryMessengerDisable) != std::string::npos) {
+                onBinaryMessengerDisable();
+            }
+        }
+    );
 }
 
 // ========== texture_registrar ==========
@@ -110,27 +167,30 @@ EncodableValue ClientWrapperDemoPlugin::onEncodable(const MethodCall& method_cal
     return EncodableValue();
 }
 
-// ========== binary_messenger ==========
+// ========== event_channel ==========
 
-void ClientWrapperDemoPlugin::RegisterBinaryMessengerHandler()
+void ClientWrapperDemoPlugin::onEventChannelSend(DisplayOrientation orientation)
 {
-    // Client Wrapper listen headler BinaryMessenger
-    m_messenger->SetMessageHandler(
-        ChannelNameBinary,
-        [this](const uint8_t* message, size_t message_size, flutter::BinaryReply) {
-            auto data = std::string(message, message + message_size);
-            // Check and run function by name
-            if (data.find(MethodKeys::BinaryMessengerEnable) != std::string::npos) {
-                onBinaryMessengerListenEnable();
-            }
-            else if (data.find(MethodKeys::BinaryMessengerDisable) != std::string::npos) {
-                onBinaryMessengerListenDisable();
-            }
-        }
-    );
+    // Send data to EventChannel
+    m_sink->Success(static_cast<int>(orientation));
 }
 
-void ClientWrapperDemoPlugin::onBinaryMessengerListenSend(DisplayOrientation orientation)
+void ClientWrapperDemoPlugin::onEventChannelEnable()
+{
+    // Enable listen
+    m_stateEventChannel = true;
+    // Send orientation after start
+    onEventChannelSend(PlatformMethods::GetOrientation());
+}
+
+void ClientWrapperDemoPlugin::onEventChannelDisable()
+{
+    m_stateEventChannel = false;
+}
+
+// ========== binary_messenger ==========
+
+void ClientWrapperDemoPlugin::onBinaryMessengerSend(DisplayOrientation orientation)
 {
     // Send raw data to BinaryMessenger
     std::string value = std::to_string(static_cast<int>(orientation));
@@ -138,34 +198,21 @@ void ClientWrapperDemoPlugin::onBinaryMessengerListenSend(DisplayOrientation ori
     std::vector<uint8_t> message = {ouput.begin(), ouput.end()};
 
     m_messenger->Send(
-        ChannelNameBinary,
+        ChannelMessageBinary,
         message.data(),
         message.size()
     );
 }
 
-void ClientWrapperDemoPlugin::onBinaryMessengerListenEnable()
+void ClientWrapperDemoPlugin::onBinaryMessengerEnable()
 {
-    // Add listen if not init
-    if (m_stateListenEvent == StateListenEvent::NOT_INIT) {
-        PlatformEvents::SubscribeOrientationChanged(
-            [this](DisplayOrientation orientation) {
-                if (m_stateListenEvent == StateListenEvent::ENABLE) {
-                    onBinaryMessengerListenSend(orientation);
-                }
-            });
-    }
     // Enable listen
-    m_stateListenEvent = StateListenEvent::ENABLE;
+    m_stateBinaryMessenger = true;
     // Send orientation after start
-    onBinaryMessengerListenSend(PlatformMethods::GetOrientation());
+    onBinaryMessengerSend(PlatformMethods::GetOrientation());
 }
 
-void ClientWrapperDemoPlugin::onBinaryMessengerListenDisable()
+void ClientWrapperDemoPlugin::onBinaryMessengerDisable()
 {
-    // Disable listen
-    if (m_stateListenEvent == StateListenEvent::ENABLE) {
-        m_stateListenEvent = StateListenEvent::DISABLE;
-    }
+    m_stateBinaryMessenger = false;
 }
-

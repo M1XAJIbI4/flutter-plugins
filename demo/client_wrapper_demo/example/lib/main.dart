@@ -77,6 +77,17 @@ class _MyAppState extends State<MyApp> {
               },
             ),
             ListItemData(
+              'Event Channel',
+              """
+              Implementing an event using the flutter::EventChannel
+              client_wrapper to obtain the screen orientation angle.
+              """,
+              InternalColors.orange,
+              widthData: 100,
+              stream: _plugin.listenEventChannel(),
+              builder: (value) => value == null ? null : '$value°',
+            ),
+            ListItemData(
               'Binary Messenger',
               """
               Implementing an event using the BinaryMessenger client_wrapper

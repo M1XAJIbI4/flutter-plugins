@@ -12,11 +12,13 @@
 
 #include <flutter/plugin_registrar.h>
 #include <flutter/method_channel.h>
-#include <flutter/standard_message_codec.h>
-#include <flutter/standard_method_codec.h>
+#include <flutter/event_channel.h>
 #include <flutter/encodable_value.h>
 #include <flutter/texture_registrar.h>
 #include <flutter/binary_messenger.h>
+#include <flutter/standard_message_codec.h>
+#include <flutter/standard_method_codec.h>
+#include <flutter/event_stream_handler_functions.h>
 
 #include <flutter/platform-types.h>
 #include <flutter/platform-events.h>
@@ -29,9 +31,13 @@ typedef flutter::EncodableList EncodableList;
 // Flutter register
 typedef flutter::Plugin Plugin;
 typedef flutter::PluginRegistrar PluginRegistrar;
+// Flutter methods
 typedef flutter::MethodChannel<EncodableValue> MethodChannel;
 typedef flutter::MethodCall<EncodableValue> MethodCall;
 typedef flutter::MethodResult<EncodableValue> MethodResult;
+// Flutter events
+typedef flutter::EventChannel<EncodableValue> EventChannel;
+typedef flutter::EventSink<EncodableValue> EventSink;
 // Flutter texture
 typedef flutter::TextureVariant TextureVariant;
 typedef flutter::TextureRegistrar TextureRegistrar;
@@ -46,39 +52,40 @@ public:
 
     ClientWrapperDemoPlugin(
         PluginRegistrar* registrar, 
-        std::unique_ptr<MethodChannel> channel
-    );
-
-    void HandleMethodCall(
-        const MethodCall& method_call,
-        std::unique_ptr<MethodResult> result
+        std::unique_ptr<MethodChannel> methodChannel,
+        std::unique_ptr<EventChannel> eventChannel
     );
 
 private:
-    // Raw BinaryMessenger example
-    enum StateListenEvent
-    {
-        NOT_INIT,
-        ENABLE,
-        DISABLE
-    };
-    StateListenEvent m_stateListenEvent = StateListenEvent::NOT_INIT;
-    
+    // Methods register
+    void RegisterMethodHandler();
+    void RegisterStreamHandler();
     void RegisterBinaryMessengerHandler();
-    void onBinaryMessengerListenSend(DisplayOrientation orientation);
-    void onBinaryMessengerListenEnable();
-    void onBinaryMessengerListenDisable();
 
-    // Methods
+    // Methods MethodCall
     EncodableValue onCreateTexture(const MethodCall &call);
     EncodableValue onEncodable(const MethodCall& method_call);
 
-    std::unique_ptr<MethodChannel> m_channel;
+    // Methods EventChannel
+    void onEventChannelSend(DisplayOrientation orientation);
+    void onEventChannelEnable();
+    void onEventChannelDisable();
+
+    // Methods BinaryMessenger
+    void onBinaryMessengerSend(DisplayOrientation orientation);
+    void onBinaryMessengerEnable();
+    void onBinaryMessengerDisable();
+
+    std::unique_ptr<MethodChannel> m_methodChannel;
+    std::unique_ptr<EventChannel> m_eventChannel;
     BinaryMessenger* m_messenger;
     TextureRegistrar* m_textureRegistrar;
 
     QImage m_textureImage = Helper::GetImage();
+    std::unique_ptr<EventSink> m_sink;
     std::vector<std::shared_ptr<TextureVariant>> m_textures;
+    bool m_stateEventChannel = false;
+    bool m_stateBinaryMessenger = false;
 
 };
 

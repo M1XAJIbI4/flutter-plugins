@@ -15,13 +15,13 @@ FlutterKeyboardVisibilityAuroraPlugin::FlutterKeyboardVisibilityAuroraPlugin()
       {
         if (this->m_sendEventVisibility)
         {
-          EventChannel("flutter_keyboard_visibility_aurora_state", MethodCodecType::Standard)
+          EventChannelAurora("flutter_keyboard_visibility_aurora_state", MethodCodecType::Standard)
               .SendEvent(state);
         }
 
         if (this->m_sendEventHeight)
         {
-          EventChannel("flutter_keyboard_visibility_aurora_height", MethodCodecType::Standard)
+          EventChannelAurora("flutter_keyboard_visibility_aurora_height", MethodCodecType::Standard)
               .SendEvent(PlatformMethods::GetKeyboardHeight());
         }
       });

@@ -2,17 +2,21 @@
 // SPDX-License-Identifier: BSD-3-Clause
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'client_wrapper_demo_interface.dart';
 
-// Platform channel plugin keys channel
-const channelName = "client_wrapper_demo";
-const channelNameBinary = "client_wrapper_demo_binary";
+// Platform plugin keys channels
+const channelEvent = "client_wrapper_demo_event";
+const channelMethods = "client_wrapper_demo_methods";
+const channelMessageBinary = "client_wrapper_demo_binary";
 
 // Platform channel plugin methods
 enum Methods {
   createTexture,
+  eventChannelEnable,
+  eventChannelDisable,
   binaryMessengerEnable,
   binaryMessengerDisable,
   encodable,
@@ -21,8 +25,9 @@ enum Methods {
 /// An implementation of [ClientWrapperDemoPlatform] that uses method channels.
 class MethodChannelClientWrapperDemo extends ClientWrapperDemoPlatform {
   /// The methods channel used to interact with the native platform.
-  final methodsChannel = const MethodChannel(channelName);
-  final methodsChannelBinary = const MethodChannel(channelNameBinary);
+  final eventChannel = const EventChannel(channelEvent);
+  final methodsChannel = const MethodChannel(channelMethods);
+  final methodsChannelBinary = const MethodChannel(channelMessageBinary);
 
   /// Create texture with default image
   /// Return texture ID
@@ -39,7 +44,13 @@ class MethodChannelClientWrapperDemo extends ClientWrapperDemoPlatform {
         Methods.encodable.name, values);
   }
 
-  /// Scream screen orientation angle
+  /// Scream screen orientation angle with EventChannel
+  @override
+  Stream<int?> listenEventChannel() {
+    return eventChannel.receiveBroadcastStream().map((event) => event as int);
+  }
+
+  /// Scream screen orientation angle with BinaryMessage
   @override
   Stream<int?> eventBinaryMessage() {
     // Init controller for enable/disable event
@@ -54,7 +65,7 @@ class MethodChannelClientWrapperDemo extends ClientWrapperDemoPlatform {
           .invokeMethod<Object?>(Methods.binaryMessengerEnable.name),
     );
     // Add listen handler
-    const OptionalMethodChannel(channelNameBinary, JSONMethodCodec())
+    const OptionalMethodChannel(channelMessageBinary, JSONMethodCodec())
         .setMethodCallHandler((MethodCall call) {
       if (call.method == 'ChangeDisplayOrientation') {
         streamController.add(int.parse(call.arguments));

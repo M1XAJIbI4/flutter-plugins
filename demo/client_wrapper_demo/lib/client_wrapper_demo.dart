@@ -14,7 +14,11 @@ class ClientWrapperDemo {
   Future<dynamic> encodable(Map<String, dynamic> values) =>
       ClientWrapperDemoPlatform.instance.encodable(values);
 
-  /// Scream screen orientation angle
+  /// Scream screen orientation angle with EventChannel
+  Stream<int?> listenEventChannel() =>
+      ClientWrapperDemoPlatform.instance.listenEventChannel();
+
+  /// Scream screen orientation angle with BinaryMessage
   Stream<int?> eventBinaryMessage() =>
       ClientWrapperDemoPlatform.instance.eventBinaryMessage();
 }

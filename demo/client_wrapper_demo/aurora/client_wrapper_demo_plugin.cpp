@@ -4,11 +4,13 @@
  */
 #include <client_wrapper_demo/client_wrapper_demo_plugin.h>
 
-constexpr auto ChannelEvent = "client_wrapper_demo_event";
-constexpr auto ChannelMethods = "client_wrapper_demo_methods";
-constexpr auto ChannelMessageBinary = "client_wrapper_demo_binary";
+namespace Channels {
+    constexpr auto Event = "client_wrapper_demo_event";
+    constexpr auto Methods = "client_wrapper_demo_methods";
+    constexpr auto MessageBinary = "client_wrapper_demo_binary";
+} // namespace Channels
 
-namespace MethodKeys {
+namespace Methods {
     constexpr auto CreateTexture = "createTexture";
     constexpr auto EventChannelEnable = "eventChannelEnable";
     constexpr auto EventChannelDisable = "eventChannelDisable";
@@ -21,12 +23,12 @@ void ClientWrapperDemoPlugin::RegisterWithRegistrar(PluginRegistrar* registrar)
 {
     // Create MethodChannel with StandardMethodCodec
     auto methodChannel = std::make_unique<MethodChannel>(
-        registrar->messenger(), ChannelMethods,
+        registrar->messenger(), Channels::Methods,
         &flutter::StandardMethodCodec::GetInstance());
 
     // Create EventChannel with StandardMethodCodec
     auto eventChannel = std::make_unique<EventChannel>(
-        registrar->messenger(), ChannelEvent,
+        registrar->messenger(), Channels::Event,
         &flutter::StandardMethodCodec::GetInstance());
 
     // Create plugin
@@ -74,10 +76,10 @@ void ClientWrapperDemoPlugin::RegisterMethodHandler()
 {
     m_methodChannel->SetMethodCallHandler(
         [this](const MethodCall& call, std::unique_ptr<MethodResult> result) {
-            if (call.method_name().compare(MethodKeys::Encodable) == 0) {
+            if (call.method_name().compare(Methods::Encodable) == 0) {
                 result->Success(onEncodable(call));
             }
-            else if (call.method_name().compare(MethodKeys::CreateTexture) == 0) {
+            else if (call.method_name().compare(Methods::CreateTexture) == 0) {
                 result->Success(onCreateTexture(call));
             }
             else {
@@ -108,14 +110,14 @@ void ClientWrapperDemoPlugin::RegisterStreamHandler()
 void ClientWrapperDemoPlugin::RegisterBinaryMessengerHandler()
 {
     m_messenger->SetMessageHandler(
-        ChannelMessageBinary,
+        Channels::MessageBinary,
         [this](const uint8_t* message, size_t message_size, flutter::BinaryReply) {
             auto data = std::string(message, message + message_size);
             // Check and run function by name
-            if (data.find(MethodKeys::BinaryMessengerEnable) != std::string::npos) {
+            if (data.find(Methods::BinaryMessengerEnable) != std::string::npos) {
                 onBinaryMessengerEnable();
             }
-            else if (data.find(MethodKeys::BinaryMessengerDisable) != std::string::npos) {
+            else if (data.find(Methods::BinaryMessengerDisable) != std::string::npos) {
                 onBinaryMessengerDisable();
             }
         }
@@ -198,7 +200,7 @@ void ClientWrapperDemoPlugin::onBinaryMessengerSend(DisplayOrientation orientati
     std::vector<uint8_t> message = {ouput.begin(), ouput.end()};
 
     m_messenger->Send(
-        ChannelMessageBinary,
+        Channels::MessageBinary,
         message.data(),
         message.size()
     );

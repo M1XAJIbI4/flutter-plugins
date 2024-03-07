@@ -1,7 +1,5 @@
 // SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:internal/list_item_data.dart';
 import 'package:internal/list_item_info.dart';

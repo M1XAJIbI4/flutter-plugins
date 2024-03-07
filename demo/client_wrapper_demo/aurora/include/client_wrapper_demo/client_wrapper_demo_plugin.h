@@ -50,14 +50,15 @@ class PLUGIN_EXPORT ClientWrapperDemoPlugin final : public flutter::Plugin
 public:
     static void RegisterWithRegistrar(PluginRegistrar* registrar);
 
+private:
+    // Creates a plugin that communicates on the given channel.
     ClientWrapperDemoPlugin(
         PluginRegistrar* registrar, 
         std::unique_ptr<MethodChannel> methodChannel,
         std::unique_ptr<EventChannel> eventChannel
     );
 
-private:
-    // Methods register
+    // Methods register handlers channels
     void RegisterMethodHandler();
     void RegisterStreamHandler();
     void RegisterBinaryMessengerHandler();

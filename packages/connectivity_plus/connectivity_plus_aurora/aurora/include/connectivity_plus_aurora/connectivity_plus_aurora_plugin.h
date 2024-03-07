@@ -45,7 +45,7 @@ private:
         std::unique_ptr<EventChannel> eventChannel
     );
 
-    // Methods register handers channels
+    // Methods register handlers channels
     void RegisterMethodHandler();
     void RegisterStreamHandler();
 

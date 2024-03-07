@@ -5,8 +5,13 @@
 #ifndef FLUTTER_PLUGIN_SENSORS_PLUS_AURORA_PLUGIN_H
 #define FLUTTER_PLUGIN_SENSORS_PLUS_AURORA_PLUGIN_H
 
-#include <flutter/plugin-interface.h>
 #include <sensors_plus_aurora/globals.h>
+
+#include <flutter/plugin_registrar.h>
+#include <flutter/event_channel.h>
+#include <flutter/encodable_value.h>
+#include <flutter/standard_method_codec.h>
+#include <flutter/event_stream_handler_functions.h>
 
 #include <QAccelerometer>
 #include <QAmbientLightSensor>
@@ -19,65 +24,79 @@
 #include <QTapSensor>
 #include <QtCore>
 
-class PLUGIN_EXPORT SensorsPlusAuroraPlugin final : public QObject, public PluginInterface
+typedef flutter::Plugin Plugin;
+typedef flutter::PluginRegistrar PluginRegistrar;
+typedef flutter::EncodableValue EncodableValue;
+typedef flutter::EncodableList EncodableList;
+typedef flutter::EventChannel<EncodableValue> EventChannel;
+typedef flutter::EventSink<EncodableValue> EventSink;
+
+class PLUGIN_EXPORT SensorsPlusAuroraPlugin final
+    : public QObject
+    , public flutter::Plugin
 {
     Q_OBJECT
 
 public:
-    void RegisterWithRegistrar(PluginRegistrar &registrar) override;
+    static void RegisterWithRegistrar(PluginRegistrar* registrar);
 
-public slots:
-    void EventSensorOrientation();
-    void EventSensorAccelerometer();
-    void EventSensorCompass();
-    void EventSensorTap();
-    void EventSensorALS();
-    void EventSensorProximity();
-    void EventSensorRotation();
-    void EventSensorMagnetometer();
-    void EventSensorGyroscope();
-
-private:
-    void EventChannelNull(const std::string &channel);
-    void EventChannelData(const std::string &channel, const Encodable::List &result);
-
-    void EnableSensorOrientation();
-    void DisableSensorOrientation();
-
-    void EnableSensorAccelerometer();
-    void DisableSensorAccelerometer();
-
-    void EnableSensorCompass();
-    void DisableSensorCompass();
-
-    void EnableSensorTap();
-    void DisableSensorTap();
-
-    void EnableSensorALS();
-    void DisableSensorALS();
-
-    void EnableSensorProximity();
-    void DisableSensorProximity();
-
-    void EnableSensorRotation();
-    void DisableSensorRotation();
-
-    void EnableSensorMagnetometer();
-    void DisableSensorMagnetometer();
-
-    void EnableSensorGyroscope();
-    void DisableSensorGyroscope();
+    enum SensorType
+    {
+        ORIENTATION,
+        ACCELEROMETER,
+        COMPASS,
+        TAP,
+        ALS,
+        PROXIMITY,
+        ROTATION,
+        MAGNETOMETER,
+        GYROSCOPE,
+    };
 
 private:
-    QScopedPointer<QOrientationSensor> m_orientation;
-    QScopedPointer<QAccelerometer> m_accelerometer;
-    QScopedPointer<QCompass> m_compass;
-    QScopedPointer<QTapSensor> m_tap;
-    QScopedPointer<QAmbientLightSensor> m_ambientLight;
-    QScopedPointer<QProximitySensor> m_proximity;
-    QScopedPointer<QRotationSensor> m_rotation;
-    QScopedPointer<QMagnetometer> m_magnetometer;
-    QScopedPointer<QGyroscope> m_gyroscope;
+    // Creates a plugin that communicates on the given channel.
+    SensorsPlusAuroraPlugin(
+        std::unique_ptr<EventChannel> eventChannelOrientation,
+        std::unique_ptr<EventChannel> eventChannelAccelerometer,
+        std::unique_ptr<EventChannel> eventChannelCompass,
+        std::unique_ptr<EventChannel> eventChannelTap,
+        std::unique_ptr<EventChannel> eventChannelAmbientLight,
+        std::unique_ptr<EventChannel> eventChannelProximity,
+        std::unique_ptr<EventChannel> eventChannelRotation,
+        std::unique_ptr<EventChannel> eventChannelMagnetometer,
+        std::unique_ptr<EventChannel> eventChannelGyroscope
+    );
+
+    // Methods register handlers channels
+    void RegisterStreamHandler(
+        QSensor* sensor,
+        SensorType sensorType,
+        std::unique_ptr<EventChannel> eventChannel
+    );
+
+    // Other methods
+    void onEventChannelSend(SensorType sensorType);
+    void onEventChannelSaveSink(SensorType sensorType, std::unique_ptr<EventSink> events);
+
+    std::unique_ptr<QOrientationSensor> m_sensorOrientation;
+    std::unique_ptr<QAccelerometer> m_sensorAccelerometer;
+    std::unique_ptr<QCompass> m_sensorCompass;
+    std::unique_ptr<QTapSensor> m_sensorTap;
+    std::unique_ptr<QAmbientLightSensor> m_sensorAmbientLight;
+    std::unique_ptr<QProximitySensor> m_sensorProximity;
+    std::unique_ptr<QRotationSensor> m_sensorRotation;
+    std::unique_ptr<QMagnetometer> m_sensorMagnetometer;
+    std::unique_ptr<QGyroscope> m_sensorGyroscope;
+
+    std::unique_ptr<EventSink> m_sinkOrientation;
+    std::unique_ptr<EventSink> m_sinkAccelerometer;
+    std::unique_ptr<EventSink> m_sinkCompass;
+    std::unique_ptr<EventSink> m_sinkTap;
+    std::unique_ptr<EventSink> m_sinkAmbientLight;
+    std::unique_ptr<EventSink> m_sinkProximity;
+    std::unique_ptr<EventSink> m_sinkRotation;
+    std::unique_ptr<EventSink> m_sinkMagnetometer;
+    std::unique_ptr<EventSink> m_sinkGyroscope;
 };
 
 #endif /* FLUTTER_PLUGIN_SENSORS_PLUS_AURORA_PLUGIN_H */

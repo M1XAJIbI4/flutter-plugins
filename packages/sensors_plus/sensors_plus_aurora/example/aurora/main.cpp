@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 #include <flutter/application.h>
-#include <flutter/compatibility.h> // <- Add for Qt
+#include <flutter/compatibility_qt.h> // <- Add for Qt
 #include "generated_plugin_registrant.h"
 
 int main(int argc, char *argv[]) {

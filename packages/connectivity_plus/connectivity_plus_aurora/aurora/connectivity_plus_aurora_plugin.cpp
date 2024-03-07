@@ -3,137 +3,147 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 #include <connectivity_plus_aurora/connectivity_plus_aurora_plugin.h>
-#include <flutter/method-channel.h>
 
-namespace Method {
 
-constexpr auto Channel = "dev.fluttercommunity.plus/connectivity";
-constexpr auto Check = "check";
+namespace Channels {
+    constexpr auto Event = "dev.fluttercommunity.plus/connectivity_status";
+    constexpr auto Methods = "dev.fluttercommunity.plus/connectivity";
+} // namespace Channels
 
-} /* namespace Method */
-
-namespace Event {
-
-constexpr auto Channel = "dev.fluttercommunity.plus/connectivity_status";
-
-} /* namespace Event */
+namespace Methods {
+    constexpr auto Check = "check";
+} // namespace Methods
 
 namespace ConnectionType {
+    constexpr auto Bluetooth = "bluetooth";
+    constexpr auto Wifi = "wifi";
+    constexpr auto Ethernet = "ethernet";
+    constexpr auto Mobile = "mobile";
+    constexpr auto Vpn = "vpn";
+    constexpr auto Other = "other";
+    constexpr auto None = "none";
+} // namespace ConnectionType
 
-constexpr auto Bluetooth = "bluetooth";
-constexpr auto Wifi = "wifi";
-constexpr auto Ethernet = "ethernet";
-constexpr auto Mobile = "mobile";
-constexpr auto Vpn = "vpn";
-constexpr auto Other = "other";
-constexpr auto None = "none";
-
-} /* namespace ConnectionType */
-
-ConnectivityPlusAuroraPlugin::ConnectivityPlusAuroraPlugin()
-    : m_sendEvents(false)
-    , m_connectionType(ConnectionType::None)
-{}
-
-void ConnectivityPlusAuroraPlugin::RegisterWithRegistrar(PluginRegistrar &registrar)
+void ConnectivityPlusAuroraPlugin::RegisterWithRegistrar(PluginRegistrar* registrar)
 {
-    registrar.RegisterMethodChannel(Method::Channel,
-                                    MethodCodecType::Standard,
-                                    [this](const MethodCall &call) {
-                                        this->onMethodCall(call);
-                                    });
+    // Create MethodChannel with StandardMethodCodec
+    auto methodChannel = std::make_unique<MethodChannel>(
+        registrar->messenger(), Channels::Methods,
+        &flutter::StandardMethodCodec::GetInstance());
 
-    registrar.RegisterEventChannel(Event::Channel,
-                                    MethodCodecType::Standard,
-                                    [this](const Encodable &) {
-                                        this->onListen();
-                                        return EventResponse();
-                                    },
-                                    [this](const Encodable &) {
-                                        this->onCancel();
-                                        return EventResponse();
-                                    });
+    // Create EventChannel with StandardMethodCodec
+    auto eventChannel = std::make_unique<EventChannel>(
+        registrar->messenger(), Channels::Event,
+        &flutter::StandardMethodCodec::GetInstance());
+
+    // Create plugin
+    std::unique_ptr<ConnectivityPlusAuroraPlugin> plugin(new ConnectivityPlusAuroraPlugin(
+        std::move(methodChannel),
+        std::move(eventChannel))
+    );
+
+    // Register plugin
+    registrar->AddPlugin(std::move(plugin));
 }
 
-void ConnectivityPlusAuroraPlugin::onMethodCall(const MethodCall &call)
+ConnectivityPlusAuroraPlugin::ConnectivityPlusAuroraPlugin(
+    std::unique_ptr<MethodChannel> methodChannel,
+    std::unique_ptr<EventChannel> eventChannel
+) : m_methodChannel(std::move(methodChannel)),
+    m_eventChannel(std::move(eventChannel))
 {
-    if (call.GetMethod() == Method::Check) {
-        onCheck(call);
-        return;
+    // Create MethodHandler
+    RegisterMethodHandler();
+
+    // Create StreamHandler
+    RegisterStreamHandler();
+}
+
+void ConnectivityPlusAuroraPlugin::RegisterMethodHandler()
+{
+    m_methodChannel->SetMethodCallHandler(
+        [&](const MethodCall& call, std::unique_ptr<MethodResult> result) {
+            if (call.method_name().compare(Methods::Check) == 0) {
+                result->Success(getConnectionActiveName());
+            }
+            else {
+                result->Success();
+            }
+        });
+}
+
+void ConnectivityPlusAuroraPlugin::RegisterStreamHandler()
+{
+    auto handler = std::make_unique<flutter::StreamHandlerFunctions<EncodableValue>>(
+        [&](const EncodableValue* arguments,
+            std::unique_ptr<flutter::EventSink<EncodableValue>>&& events
+        ) -> std::unique_ptr<flutter::StreamHandlerError<EncodableValue>> {
+            m_sink = std::move(events);
+            onEventChannelEnable();
+            return nullptr;
+        },
+        [&](const EncodableValue* arguments) -> std::unique_ptr<flutter::StreamHandlerError<EncodableValue>> {
+            onEventChannelDisable();
+            return nullptr;
+        }
+    );
+
+    m_eventChannel->SetStreamHandler(std::move(handler));
+}
+
+void ConnectivityPlusAuroraPlugin::onEventChannelSend()
+{
+    auto connectionActiveName = getConnectionActiveName();
+    if (m_connectionActiveName != connectionActiveName && m_stateEventChannel) {
+        m_connectionActiveName = connectionActiveName;
+        m_sink->Success(connectionActiveName);
     }
-
-    unimplemented(call);
 }
 
-void ConnectivityPlusAuroraPlugin::onListen()
+void ConnectivityPlusAuroraPlugin::onEventChannelEnable()
 {
+    // Enable listen
+    m_stateEventChannel = true;
+    // Send orientation after start
+    onEventChannelSend();
+    // Disconnect listen connection
     m_onlineStateChangedConnection =
         QObject::connect(&m_manager,
                          &QNetworkConfigurationManager::onlineStateChanged,
                          this,
-                         &ConnectivityPlusAuroraPlugin::sendConnectionType);
+                         &ConnectivityPlusAuroraPlugin::onEventChannelSend);
 
     m_configurationAddedConnection =
         QObject::connect(&m_manager,
                          &QNetworkConfigurationManager::configurationAdded,
                          this,
-                         &ConnectivityPlusAuroraPlugin::sendConnectionType);
+                         &ConnectivityPlusAuroraPlugin::onEventChannelSend);
 
     m_configurationChangedConnection =
         QObject::connect(&m_manager,
                          &QNetworkConfigurationManager::configurationChanged,
                          this,
-                         &ConnectivityPlusAuroraPlugin::sendConnectionType);
+                         &ConnectivityPlusAuroraPlugin::onEventChannelSend);
 
     m_configurationRemovedConnection =
         QObject::connect(&m_manager,
                          &QNetworkConfigurationManager::configurationRemoved,
                          this,
-                         &ConnectivityPlusAuroraPlugin::sendConnectionType);
-
-    m_sendEvents = true;
-
-    sendConnectionType();
+                         &ConnectivityPlusAuroraPlugin::onEventChannelSend);
 }
 
-void ConnectivityPlusAuroraPlugin::onCancel()
+void ConnectivityPlusAuroraPlugin::onEventChannelDisable()
 {
-    m_sendEvents = false;
-
+    // Disable liste
+    m_stateEventChannel = false;
+    // Disconnect listen connection
     QObject::disconnect(m_onlineStateChangedConnection);
     QObject::disconnect(m_configurationAddedConnection);
     QObject::disconnect(m_configurationChangedConnection);
     QObject::disconnect(m_configurationRemovedConnection);
 }
 
-void ConnectivityPlusAuroraPlugin::onCheck(const MethodCall &call)
-{
-    auto m_connectionType = getConnectionType();
-
-    call.SendSuccessResponse(m_connectionType);
-}
-
-void ConnectivityPlusAuroraPlugin::sendConnectionType()
-{
-    auto connectionType = getConnectionType();
-
-    if (m_connectionType == connectionType) {
-        return;
-    }
-
-    m_connectionType = connectionType;
-
-    if (m_sendEvents) {
-        EventChannel(Event::Channel, MethodCodecType::Standard).SendEvent(m_connectionType);
-    }
-}
-
-void ConnectivityPlusAuroraPlugin::unimplemented(const MethodCall &call)
-{
-    call.SendSuccessResponse(nullptr);
-}
-
-std::string ConnectivityPlusAuroraPlugin::getConnectionType()
+std::string ConnectivityPlusAuroraPlugin::getConnectionActiveName()
 {
     if (m_manager.isOnline()) {
         const QNetworkConfiguration conf = m_manager.defaultConfiguration();

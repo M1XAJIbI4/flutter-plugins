@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Open Mobile Platform LLC <community@omp.ru>
+# SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
 # SPDX-License-Identifier: BSD-3-Clause
 cmake_minimum_required(VERSION 3.10)
 project(ru.auroraos.path_provider_aurora_example LANGUAGES CXX)

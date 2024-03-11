@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Open Mobile Platform LLC <community@omp.ru>
+# SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
 # SPDX-License-Identifier: BSD-3-Clause
 name: connectivity_plus_aurora
 description: "The Aurora OS implementation of connectivity_plus_aurora."

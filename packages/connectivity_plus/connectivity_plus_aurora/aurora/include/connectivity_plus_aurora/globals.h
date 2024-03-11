@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: 2024 Open Mobile Platform LLC <community@omp.ru>
+ * SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
  * SPDX-License-Identifier: BSD-3-Clause
  */
 #ifndef FLUTTER_PLUGIN_CONNECTIVITY_PLUS_AURORA_PLUGIN_GLOBALS_H

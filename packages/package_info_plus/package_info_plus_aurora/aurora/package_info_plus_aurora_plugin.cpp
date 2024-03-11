@@ -3,45 +3,53 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 #include <package_info_plus_aurora/package_info_plus_aurora_plugin.h>
-#include <flutter/method-channel.h>
 #include <flutter/platform-methods.h>
-#include <sys/utsname.h>
 
-void PackageInfoPlusAuroraPlugin::RegisterWithRegistrar(PluginRegistrar &registrar)
+namespace Channels {
+    constexpr auto Methods = "package_info_plus_aurora";
+} // namespace Channels
+
+namespace Methods {
+    constexpr auto AppOrg = "getApplicationOrg";
+    constexpr auto AppName = "getApplicationName";
+} // namespace Methods
+
+void PackageInfoPlusAuroraPlugin::RegisterWithRegistrar(PluginRegistrar* registrar)
 {
-    registrar.RegisterMethodChannel("package_info_plus_aurora",
-                                    MethodCodecType::Standard,
-                                    [this](const MethodCall &call) { this->onMethodCall(call); });
+    // Create MethodChannel with StandardMethodCodec
+    auto methodChannel = std::make_unique<MethodChannel>(
+        registrar->messenger(), Channels::Methods,
+        &flutter::StandardMethodCodec::GetInstance());
+
+    // Create plugin
+    std::unique_ptr<PackageInfoPlusAuroraPlugin> plugin(new PackageInfoPlusAuroraPlugin(
+        std::move(methodChannel)
+    ));
+
+    // Register plugin
+    registrar->AddPlugin(std::move(plugin));
 }
 
-void PackageInfoPlusAuroraPlugin::onMethodCall(const MethodCall &call)
+PackageInfoPlusAuroraPlugin::PackageInfoPlusAuroraPlugin(
+    std::unique_ptr<MethodChannel> methodChannel
+) : m_methodChannel(std::move(methodChannel))
 {
-    const auto &method = call.GetMethod();
-
-    if (method == "getApplicationOrg") {
-        onGetApplicationOrg(call);
-        return;
-    }
-    
-    if (method == "getApplicationName") {
-        onGetApplicationName(call);
-        return;
-    }
-
-    unimplemented(call);
+    // Create MethodHandler
+    RegisterMethodHandler();
 }
 
-void PackageInfoPlusAuroraPlugin::onGetApplicationOrg(const MethodCall &call)
+void PackageInfoPlusAuroraPlugin::RegisterMethodHandler()
 {
-    call.SendSuccessResponse(PlatformMethods::GetOrgname());
-}
-
-void PackageInfoPlusAuroraPlugin::onGetApplicationName(const MethodCall &call)
-{
-    call.SendSuccessResponse(PlatformMethods::GetAppname());
-}
-
-void PackageInfoPlusAuroraPlugin::unimplemented(const MethodCall &call)
-{
-    call.SendSuccessResponse(nullptr);
+    m_methodChannel->SetMethodCallHandler(
+        [&](const MethodCall& call, std::unique_ptr<MethodResult> result) {
+            if (call.method_name().compare(Methods::AppOrg) == 0) {
+                result->Success(PlatformMethods::GetOrgname());
+            }
+            else if (call.method_name().compare(Methods::AppName) == 0) {
+                result->Success(PlatformMethods::GetAppname());
+            }
+            else {
+                result->Success();
+            }
+        });
 }

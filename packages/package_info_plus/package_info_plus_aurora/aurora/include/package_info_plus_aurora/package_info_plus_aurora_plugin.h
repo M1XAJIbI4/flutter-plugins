@@ -5,24 +5,33 @@
 #ifndef FLUTTER_PLUGIN_PACKAGE_INFO_PLUS_AURORA_PLUGIN_H
 #define FLUTTER_PLUGIN_PACKAGE_INFO_PLUS_AURORA_PLUGIN_H
 
-#include <flutter/plugin-interface.h>
+#include <package_info_plus_aurora/globals.h>
 
-#ifdef PLUGIN_IMPL
-#define PLUGIN_EXPORT __attribute__((visibility("default")))
-#else
-#define PLUGIN_EXPORT
-#endif
+#include <flutter/plugin_registrar.h>
+#include <flutter/method_channel.h>
+#include <flutter/encodable_value.h>
+#include <flutter/standard_method_codec.h>
 
-class PLUGIN_EXPORT PackageInfoPlusAuroraPlugin final : public PluginInterface
+typedef flutter::Plugin Plugin;
+typedef flutter::PluginRegistrar PluginRegistrar;
+typedef flutter::EncodableValue EncodableValue;
+typedef flutter::MethodChannel<EncodableValue> MethodChannel;
+typedef flutter::MethodCall<EncodableValue> MethodCall;
+typedef flutter::MethodResult<EncodableValue> MethodResult;
+
+class PLUGIN_EXPORT PackageInfoPlusAuroraPlugin final : public flutter::Plugin
 {
 public:
-    void RegisterWithRegistrar(PluginRegistrar &registrar) override;
+    static void RegisterWithRegistrar(PluginRegistrar* registrar);
 
 private:
-    void onMethodCall(const MethodCall &call);
-    void onGetApplicationOrg(const MethodCall &call);
-    void onGetApplicationName(const MethodCall &call);
-    void unimplemented(const MethodCall &call);
+    // Creates a plugin that communicates on the given channel.
+    PackageInfoPlusAuroraPlugin(std::unique_ptr<MethodChannel> methodChannel);
+
+    // Methods register handlers channels
+    void RegisterMethodHandler();
+
+    std::unique_ptr<MethodChannel> m_methodChannel;
 };
 
 #endif /* FLUTTER_PLUGIN_PACKAGE_INFO_PLUS_AURORA_PLUGIN_H */

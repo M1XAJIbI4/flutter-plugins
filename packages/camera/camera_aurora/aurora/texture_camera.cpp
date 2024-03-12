@@ -7,15 +7,14 @@
 #include <camera_aurora/yuv_i420.h>
 #include <camera_aurora/yuv_nv12.h>
 
-#include <flutter/platform-types.h>
-#include <flutter/platform-methods.h>
+#include <iostream>
 
 #include "ZXing/ReadBarcode.h"
 
-TextureCamera::TextureCamera(const TextureRegistrar &plugin,
+TextureCamera::TextureCamera(TextureRegistrar* texture_registrar,
                              const CameraErrorHandler &onError,
                              const ChangeQRHandler &onChangeQR)
-    : m_plugin(plugin)
+    : m_textures(texture_registrar)
     , m_onError(onError)
     , m_onChangeQR(onChangeQR)
     , m_manager(StreamCameraManager())
@@ -28,15 +27,15 @@ void TextureCamera::GetImageBase64(const TakeImageBase64Handler &takeImageBase64
     m_isTakeImageBase64 = true;
 }
 
-std::vector<Encodable> TextureCamera::GetAvailableCameras()
+EncodableList TextureCamera::GetAvailableCameras()
 {
-    std::vector<Encodable> cameras;
+    EncodableList cameras;
     auto count = m_manager->getNumberOfCameras();
 
     for (int index = 0; index < count; index++) {
         Aurora::StreamCamera::CameraInfo info;
         if (m_manager->getCameraInfo(index, info)) {
-            cameras.push_back(std::map<Encodable, Encodable>{
+            cameras.push_back(EncodableMap{
                 {"id", info.id},
                 {"name", info.name},
                 {"provider", info.provider},
@@ -48,10 +47,10 @@ std::vector<Encodable> TextureCamera::GetAvailableCameras()
     return cameras;
 }
 
-std::map<Encodable, Encodable> TextureCamera::GetState()
+EncodableMap TextureCamera::GetState()
 {
     if (m_camera) {
-        return std::map<Encodable, Encodable>{
+        return EncodableMap{
             {"id", m_info.id},
             {"textureId", m_textureId},
             {"width", m_captureWidth},
@@ -62,7 +61,7 @@ std::map<Encodable, Encodable> TextureCamera::GetState()
         };
     }
 
-    return std::map<Encodable, Encodable>{{"error", m_error}};
+    return EncodableMap{{"error", m_error}};
 }
 
 bool TextureCamera::CreateCamera(std::string cameraName)
@@ -102,7 +101,7 @@ void TextureCamera::SendError(std::string error)
     m_onError();
 }
 
-std::map<Encodable, Encodable> TextureCamera::StartCapture(int width, int height)
+EncodableMap TextureCamera::StartCapture(int width, int height)
 {
     if (m_camera && !m_camera->captureStarted()) {
         m_viewWidth = width;
@@ -140,16 +139,18 @@ void TextureCamera::StopCapture()
     }
 }
 
-std::map<Encodable, Encodable> TextureCamera::Register(std::string cameraName)
+EncodableMap TextureCamera::Register(std::string cameraName)
 {
-    m_textureId = m_plugin.RegisterTexture(
-        [this](size_t, size_t) -> std::optional<BufferVariant> {
-            if (m_bits && m_captureWidth != 0 && m_captureHeight != 0) {
-                return std::make_optional(BufferVariant(
-                    FlutterPixelBuffer{m_bits, (size_t) m_captureWidth, (size_t) m_captureHeight}));
-            }
-            return std::nullopt;
-        });
+    m_textureVariant = std::make_shared<TextureVariant>(PixelBufferTexture(
+        [this](size_t, size_t) -> const FlutterDesktopPixelBuffer* {
+            return new FlutterDesktopPixelBuffer {
+                m_bits.get(),
+                (size_t) m_captureWidth,
+                (size_t) m_captureHeight
+            };
+        }));
+
+    m_textureId = m_textures->RegisterTexture(m_textureVariant.get());
 
     if (CreateCamera(cameraName) && m_viewWidth != 0) {
         StartCapture(m_viewWidth, m_viewHeight);
@@ -158,7 +159,7 @@ std::map<Encodable, Encodable> TextureCamera::Register(std::string cameraName)
     return GetState();
 }
 
-std::map<Encodable, Encodable> TextureCamera::Unregister()
+EncodableMap TextureCamera::Unregister()
 {
     m_bits = nullptr;
 
@@ -169,7 +170,7 @@ std::map<Encodable, Encodable> TextureCamera::Unregister()
         m_camera = nullptr;
     }
 
-    m_plugin.UnregisterTexture(m_textureId);
+    m_textures->UnregisterTexture(m_textureId);
 
     m_error = "";
     m_counter = 0;
@@ -181,7 +182,7 @@ std::map<Encodable, Encodable> TextureCamera::Unregister()
     return GetState();
 }
 
-std::map<Encodable, Encodable> TextureCamera::ResizeFrame(int width, int height)
+EncodableMap TextureCamera::ResizeFrame(int width, int height)
 {
     if (m_isStart && !(width == m_captureWidth || height == m_captureHeight)) {
         ResizeFrame(width, height, m_info, m_cap, m_captureWidth, m_captureHeight);
@@ -300,7 +301,7 @@ void TextureCamera::onCameraFrame(std::shared_ptr<Aurora::StreamCamera::GraphicB
             m_bits = yuv::NV12ToARGB(result.y, result.uv, result.width, result.height);
         }
 
-        m_plugin.MarkTextureAvailable(m_textureId);
+        m_textures->MarkTextureFrameAvailable(m_textureId);
     }
 }
 

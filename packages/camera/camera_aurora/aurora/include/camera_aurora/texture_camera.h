@@ -5,11 +5,23 @@
 #ifndef TEXTURE_CAMERA_BUFFER_H
 #define TEXTURE_CAMERA_BUFFER_H
 
-#include <flutter/plugin-interface.h>
-#include <streamcamera/streamcamera.h>
+#include <camera_aurora/encodable_helper.h>
 
+#include <flutter/encodable_value.h>
+#include <flutter/texture_registrar.h>
+
+#include <flutter/platform-types.h>
+#include <flutter/platform-events.h>
+#include <flutter/platform-methods.h>
+
+#include <streamcamera/streamcamera.h>
 #include <chrono>
 #include <thread>
+#include <functional>
+
+typedef flutter::TextureVariant TextureVariant;
+typedef flutter::TextureRegistrar TextureRegistrar;
+typedef flutter::PixelBufferTexture PixelBufferTexture;
 
 typedef std::function<void()> CameraErrorHandler;
 typedef std::function<void(std::string)> TakeImageBase64Handler;
@@ -18,7 +30,7 @@ typedef std::function<void(std::string)> ChangeQRHandler;
 class TextureCamera : public Aurora::StreamCamera::CameraListener
 {
 public:
-    TextureCamera(const TextureRegistrar &plugin,
+    TextureCamera(flutter::TextureRegistrar* texture_registrar,
                   const CameraErrorHandler &onError,
                   const ChangeQRHandler &onChangeQR);
 
@@ -27,14 +39,14 @@ public:
     void onCameraParameterChanged(Aurora::StreamCamera::CameraParameter,
                                   const std::string &value) override;
 
-    std::vector<Encodable> GetAvailableCameras();
-    std::map<Encodable, Encodable> Register(std::string cameraName);
-    std::map<Encodable, Encodable> Unregister();
-    std::map<Encodable, Encodable> StartCapture(int width, int height);
+    EncodableList GetAvailableCameras();
+    EncodableMap Register(std::string cameraName);
+    EncodableMap Unregister();
+    EncodableMap StartCapture(int width, int height);
     void StopCapture();
-    std::map<Encodable, Encodable> GetState();
+    EncodableMap GetState();
     void GetImageBase64(const TakeImageBase64Handler &takeImageBase64);
-    std::map<Encodable, Encodable> ResizeFrame(int width, int height);
+    EncodableMap ResizeFrame(int width, int height);
     void EnableSearchQr(bool state);
 
 private:
@@ -51,7 +63,8 @@ private:
         std::shared_ptr<Aurora::StreamCamera::GraphicBuffer> buffer);
 
 private:
-    TextureRegistrar m_plugin;
+    TextureRegistrar* m_textures;
+    std::shared_ptr<TextureVariant> m_textureVariant;
 
     TakeImageBase64Handler m_takeImageBase64;
     CameraErrorHandler m_onError;

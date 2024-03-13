@@ -60,20 +60,6 @@ class _MyAppState extends State<MyApp> {
                     ).toString(),
             ),
             ListItemData(
-              'Compass',
-              'Sensor status display compass',
-              InternalColors.purple,
-              stream: _impl.compass(),
-              builder: (value) => value?.toString(),
-            ),
-            ListItemData(
-              'Motion Detector',
-              'Sensor status display tapsensor',
-              InternalColors.green,
-              stream: _impl.tap(),
-              builder: (value) => value?.toString(),
-            ),
-            ListItemData(
               'ALS',
               'Sensor status display ambient light',
               InternalColors.grey,
@@ -86,19 +72,6 @@ class _MyAppState extends State<MyApp> {
               InternalColors.royal,
               stream: _impl.proximity(),
               builder: (value) => value?.toString(),
-            ),
-            ListItemData(
-              'Rotation',
-              'Sensor status display rotation',
-              InternalColors.coal,
-              stream: _impl.rotation(),
-              builder: (value) => value == null
-                  ? null
-                  : RotationEvent(
-                      double.parse(value.x.toStringAsFixed(6)),
-                      double.parse(value.y.toStringAsFixed(6)),
-                      double.parse(value.z.toStringAsFixed(6)),
-                    ).toString(),
             ),
             ListItemData(
               'Magnetometer',
@@ -125,6 +98,33 @@ class _MyAppState extends State<MyApp> {
                       double.parse(value.y.toStringAsFixed(6)),
                       double.parse(value.z.toStringAsFixed(6)),
                     ).toString(),
+            ),
+            ListItemData(
+              'Rotation',
+              'Sensor status display rotation',
+              InternalColors.coal,
+              stream: _impl.rotation(),
+              builder: (value) => value == null
+                  ? null
+                  : RotationEvent(
+                double.parse(value.x.toStringAsFixed(6)),
+                double.parse(value.y.toStringAsFixed(6)),
+                double.parse(value.z.toStringAsFixed(6)),
+              ).toString(),
+            ),
+            ListItemData(
+              'Compass',
+              'Sensor status display compass',
+              InternalColors.purple,
+              stream: _impl.compass(),
+              builder: (value) => value?.toString(),
+            ),
+            ListItemData(
+              'Motion Detector',
+              'Sensor status display tapsensor',
+              InternalColors.green,
+              stream: _impl.tap(),
+              builder: (value) => value?.toString(),
             ),
           ],
         ),

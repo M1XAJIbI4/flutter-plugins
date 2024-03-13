@@ -8,12 +8,4 @@ class PluginImpl {
   Future<PackageInfo> getPackageInfo() async {
     return await PackageInfo.fromPlatform();
   }
-
-  /// Format value output
-  String? formatValue(String? value) {
-    if (value == null) {
-      return null;
-    }
-    return value.isEmpty ? '-' : value;
-  }
 }

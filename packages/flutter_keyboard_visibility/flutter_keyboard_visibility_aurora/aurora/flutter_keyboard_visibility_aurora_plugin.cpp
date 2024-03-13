@@ -77,14 +77,14 @@ void FlutterKeyboardVisibilityAuroraPlugin::RegisterStreamHandler()
 {
     // Event Visibility
     auto handlerVisibility = std::make_unique<flutter::StreamHandlerFunctions<EncodableValue>>(
-        [&](const EncodableValue* arguments,
+        [&](const EncodableValue*,
             std::unique_ptr<flutter::EventSink<EncodableValue>>&& events
         ) -> std::unique_ptr<flutter::StreamHandlerError<EncodableValue>> {
             m_sinkVisibility = std::move(events);
             m_stateEventChannelVisibility = true;
             return nullptr;
         },
-        [&](const EncodableValue* arguments) -> std::unique_ptr<flutter::StreamHandlerError<EncodableValue>> {
+        [&](const EncodableValue*) -> std::unique_ptr<flutter::StreamHandlerError<EncodableValue>> {
             m_stateEventChannelVisibility = false;
             return nullptr;
         }
@@ -93,14 +93,14 @@ void FlutterKeyboardVisibilityAuroraPlugin::RegisterStreamHandler()
 
     // Event Height
     auto handlerHeight = std::make_unique<flutter::StreamHandlerFunctions<EncodableValue>>(
-        [&](const EncodableValue* arguments,
+        [&](const EncodableValue*,
             std::unique_ptr<flutter::EventSink<EncodableValue>>&& events
         ) -> std::unique_ptr<flutter::StreamHandlerError<EncodableValue>> {
             m_sinkHeight = std::move(events);
             m_stateEventChannelHeight = true;
             return nullptr;
         },
-        [&](const EncodableValue* arguments) -> std::unique_ptr<flutter::StreamHandlerError<EncodableValue>> {
+        [&](const EncodableValue*) -> std::unique_ptr<flutter::StreamHandlerError<EncodableValue>> {
             m_stateEventChannelHeight = false;
             return nullptr;
         }

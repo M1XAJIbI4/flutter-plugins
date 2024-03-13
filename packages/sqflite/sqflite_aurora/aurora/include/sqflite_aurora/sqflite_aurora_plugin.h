@@ -5,38 +5,56 @@
 #ifndef FLUTTER_PLUGIN_SQFLITE_H
 #define FLUTTER_PLUGIN_SQFLITE_H
 
-#include <flutter/plugin-interface.h>
-
+#include <sqflite_aurora/encodable_helper.h>
 #include <sqflite_aurora/async_queue.h>
 #include <sqflite_aurora/database.h>
 #include <sqflite_aurora/globals.h>
+
+#include <flutter/plugin_registrar.h>
+#include <flutter/method_channel.h>
+#include <flutter/encodable_value.h>
+#include <flutter/standard_message_codec.h>
+#include <flutter/standard_method_codec.h>
 
 #include <memory>
 #include <mutex>
 #include <unordered_map>
 
-class PLUGIN_EXPORT SqfliteAuroraPlugin final : public PluginInterface
+typedef flutter::Plugin Plugin;
+typedef flutter::PluginRegistrar PluginRegistrar;
+typedef flutter::MethodChannel<EncodableValue> MethodChannel;
+typedef flutter::MethodCall<EncodableValue> MethodCall;
+typedef flutter::MethodResult<EncodableValue> MethodResult;
+
+class PLUGIN_EXPORT SqfliteAuroraPlugin final : public flutter::Plugin
 {
 public:
-    SqfliteAuroraPlugin();
-    void RegisterWithRegistrar(PluginRegistrar &registrar) override;
+    static void RegisterWithRegistrar(PluginRegistrar* registrar);
 
 private:
-    void onMethodCall(const MethodCall &call);
-    void onPlatformVersionCall(const MethodCall &call);
-    void onOpenDatabaseCall(const MethodCall &call);
-    void onCloseDatabaseCall(const MethodCall &call);
-    void onDeleteDatabaseCall(const MethodCall &call);
-    void onDatabaseExistsCall(const MethodCall &call);
-    void onGetDatabasesPathCall(const MethodCall &call);
-    void onOptionsCall(const MethodCall &call);
-    void onDebugCall(const MethodCall &call);
-    void onExecuteCall(const MethodCall &call);
-    void onQueryCall(const MethodCall &call);
-    void onQueryCursorNextCall(const MethodCall &call);
-    void onUpdateCall(const MethodCall &call);
-    void onInsertCall(const MethodCall &call);
-    void onBatchCall(const MethodCall &call);
+    // Creates a plugin that communicates on the given channel.
+    SqfliteAuroraPlugin(std::unique_ptr<MethodChannel> methodChannel);
+
+    // Methods register handlers channels
+    void RegisterMethodHandler();
+
+    // Methods return
+    EncodableValue onPlatformVersionCall(const MethodCall &call);
+    EncodableValue onDatabaseExistsCall(const MethodCall &call);
+    EncodableValue onGetDatabasesPathCall(const MethodCall &call);
+    EncodableValue onOptionsCall(const MethodCall &calloc);
+    EncodableValue onDebugCall(const MethodCall &call);
+
+    // Methods async
+    void onOpenDatabaseCall(const MethodCall &call, std::shared_ptr<MethodResult> result);
+    void onCloseDatabaseCall(const MethodCall &call, std::shared_ptr<MethodResult> result);
+    void onDeleteDatabaseCall(const MethodCall &call, std::shared_ptr<MethodResult> result);
+    void onExecuteCall(const MethodCall &call, std::shared_ptr<MethodResult> result);
+    void onQueryCall(const MethodCall &call, std::shared_ptr<MethodResult> result);
+    void onQueryCursorNextCall(const MethodCall &call, std::shared_ptr<MethodResult> result);
+    void onUpdateCall(const MethodCall &call, std::shared_ptr<MethodResult> result);
+    void onInsertCall(const MethodCall &call, std::shared_ptr<MethodResult> result);
+    void onBatchCall(const MethodCall &call, std::shared_ptr<MethodResult> result);
 
     std::shared_ptr<Database> databaseByPath(const std::string &path);
     std::shared_ptr<Database> databaseByID(int64_t id);
@@ -44,14 +62,13 @@ private:
     void databaseRemove(std::shared_ptr<Database> db);
     void databaseAdd(std::shared_ptr<Database> db);
 
-    void sendSuccess(const MethodCall &call, const Encodable &result = nullptr);
-    void sendError(const MethodCall &call,
-                   const std::string &error,
-                   const std::string &message,
-                   const std::string &desc = "",
-                   const Encodable &details = nullptr);
+    std::string formatError(
+        const std::string &error,
+        const std::string &message,
+        const std::string &desc = ""
+    );
 
-    Encodable::Map makeOpenResult(int64_t dbID, bool recovered, bool recoveredInTransaction);
+    EncodableMap makeOpenResult(int64_t dbID, bool recovered, bool recoveredInTransaction);
 
 private:
     std::mutex m_mutex;
@@ -61,6 +78,7 @@ private:
     Logger m_logger;
     bool m_queryAsMapList = false;
     AsyncQueue m_asyncQueue;
+    std::unique_ptr<MethodChannel> m_methodChannel;
 };
 
 #endif /* FLUTTER_PLUGIN_SQFLITE_H */

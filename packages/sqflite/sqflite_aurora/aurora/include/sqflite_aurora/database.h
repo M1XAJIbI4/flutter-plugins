@@ -5,8 +5,7 @@
 #ifndef FLUTTER_PLUGIN_SQFLITE_DATABASE_H
 #define FLUTTER_PLUGIN_SQFLITE_DATABASE_H
 
-#include <flutter/encodable.h>
-#include <flutter/method-call.h>
+#include <sqflite_aurora/encodable_helper.h>
 
 #include <sqflite_aurora/globals.h>
 #include <sqflite_aurora/logger.h>
@@ -21,11 +20,6 @@
 class PLUGIN_EXPORT Database final
 {
 public:
-    enum TransactionID {
-        None = -2,
-        Force = -1,
-    };
-
     struct Cursor
     {
         int64_t id;
@@ -37,7 +31,7 @@ public:
     {
         std::string method;
         std::string sql;
-        Encodable::List arguments;
+        EncodableList arguments;
     };
 
 public:
@@ -48,18 +42,18 @@ public:
     utils::error open();
     utils::error openReadOnly();
     utils::error close();
-    utils::error execute(const std::string &sql, const Encodable::List &args);
-    utils::error queryCursorNext(int cursorID, bool cancel, Encodable::Map &result);
-    utils::error query(const std::string &sql, const Encodable::List &args, Encodable::Map &result);
+    utils::error execute(const std::string &sql, const EncodableList &args);
+    utils::error queryCursorNext(int cursorID, bool cancel, EncodableMap &result);
+    utils::error query(const std::string &sql, const EncodableList &args, EncodableMap &result);
     utils::error queryWithPageSize(const std::string &sql,
-                                   const Encodable::List &args,
+                                   const EncodableList &args,
                                    int64_t pageSize,
-                                   Encodable::Map &result);
-    utils::error insert(const std::string &sql, const Encodable::List &args, int &insertID);
-    utils::error update(const std::string &sql, const Encodable::List &args, int &updated);
+                                   EncodableMap &result);
+    utils::error insert(const std::string &sql, const EncodableList &args, int &insertID);
+    utils::error update(const std::string &sql, const EncodableList &args, int &updated);
     utils::error batch(const std::vector<Operation> &operations,
                        bool continueOnError,
-                       Encodable::List &results);
+                       EncodableList &results);
 
     void enterInTransaction();
     void leaveTransaction();
@@ -82,10 +76,10 @@ public:
 private:
     std::string currentErrorMessage();
     utils::error createParentDir();
-    utils::error bindStmtArgs(sqlite3_stmt *stmt, const Encodable::List &args);
+    utils::error bindStmtArgs(sqlite3_stmt *stmt, const EncodableList &args);
 
     void closeCursor(const Cursor &cursor);
-    utils::error resultFromCursor(const Cursor &cursor, Encodable::Map &result);
+    utils::error resultFromCursor(const Cursor &cursor, EncodableMap &result);
 
 private:
     int64_t m_id;

@@ -10,19 +10,19 @@
 
 namespace {
 
-void addError(Encodable::List &results, const utils::error &error)
+void addError(EncodableList &results, const utils::error &error)
 {
     if (error) {
-        results.emplace_back(Encodable::Map{
-            {"error", Encodable::Map{{"message", error.message()}}},
+        results.emplace_back(EncodableMap{
+            {"error", EncodableMap{{"message", error.message()}}},
         });
     }
 }
 
 template<typename T>
-void addResult(Encodable::List &results, const T &result)
+void addResult(EncodableList &results, const T &result)
 {
-    results.emplace_back(Encodable::Map{{"result", result}});
+    results.emplace_back(EncodableMap{{"result", result}});
 }
 
 } /* namespace */
@@ -33,7 +33,7 @@ Database::Database(int id, const std::string &path, bool singleInstance, const L
     , m_isSingleInstance(singleInstance)
     , m_logger(logger.logLevel(), logger.tag() + "-db-" + std::to_string(id))
     , m_transactionID(0)
-    , m_currentTransactionID(TransactionID::None)
+    , m_currentTransactionID(DatabaseTransaction::ID::None)
     , m_cursorID(0)
     , m_db(nullptr)
 {}
@@ -85,7 +85,7 @@ utils::error Database::close()
     return utils::error::none();
 }
 
-utils::error Database::execute(const std::string &sql, const Encodable::List &args)
+utils::error Database::execute(const std::string &sql, const EncodableList &args)
 {
     sqlite3_stmt *stmt = nullptr;
 
@@ -116,10 +116,11 @@ utils::error Database::execute(const std::string &sql, const Encodable::List &ar
     return utils::error::none();
 }
 
-utils::error Database::query(const std::string &sql,
-                                           const Encodable::List &args,
-                                           Encodable::Map &result)
-{
+utils::error Database::query(
+    const std::string &sql,
+    const EncodableList &args,
+    EncodableMap &result
+) {
     sqlite3_stmt *stmt = nullptr;
 
     if (sqlite3_prepare_v2(m_db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK)
@@ -132,18 +133,18 @@ utils::error Database::query(const std::string &sql,
         return error;
     }
 
-    Encodable::List columns;
+    EncodableList columns;
 
     for (int idx = 0; idx < sqlite3_column_count(stmt); idx++)
         columns.emplace_back(sqlite3_column_name(stmt, idx));
 
-    Encodable::List rows;
+    EncodableList rows;
 
     while (true) {
         int status = sqlite3_step(stmt);
 
         if (status == SQLITE_ROW) {
-            Encodable::List row;
+            EncodableList row;
 
             for (size_t idx = 0; idx < columns.size(); idx++) {
                 switch (sqlite3_column_type(stmt, idx)) {
@@ -167,7 +168,7 @@ utils::error Database::query(const std::string &sql,
                     const char *columnDecltype = sqlite3_column_decltype(stmt, idx);
 
                     if (columnDecltype != NULL && std::string("BLOB") == columnDecltype)
-                        row.emplace_back(Encodable::Uint8List{});
+                        row.emplace_back(std::vector<uint8_t>());
                     else
                         row.emplace_back(nullptr);
 
@@ -189,16 +190,16 @@ utils::error Database::query(const std::string &sql,
         return utils::error(currentErrorMessage());
     }
 
-    result = Encodable::Map{{"columns", columns}, {"rows", rows}};
+    result = EncodableMap{{"columns", columns}, {"rows", rows}};
 
     sqlite3_finalize(stmt);
     return utils::error::none();
 }
 
 utils::error Database::queryWithPageSize(const std::string &sql,
-                                                       const Encodable::List &args,
+                                                       const EncodableList &args,
                                                        int64_t pageSize,
-                                                       Encodable::Map &result)
+                                                       EncodableMap &result)
 {
     sqlite3_stmt *stmt = nullptr;
 
@@ -218,7 +219,7 @@ utils::error Database::queryWithPageSize(const std::string &sql,
 
 utils::error Database::queryCursorNext(int cursorID,
                                                      bool cancel,
-                                                     Encodable::Map &result)
+                                                     EncodableMap &result)
 {
     m_logger.verb() << "querying cursor next (ID=" << cursorID << "; CANCEL=" << cancel << ")"
                     << std::endl;
@@ -237,7 +238,7 @@ utils::error Database::queryCursorNext(int cursorID,
 }
 
 utils::error Database::insert(const std::string &sql,
-                                            const Encodable::List &args,
+                                            const EncodableList &args,
                                             int &insertID)
 {
     if (m_isReadOnly)
@@ -264,7 +265,7 @@ utils::error Database::insert(const std::string &sql,
 }
 
 utils::error Database::update(const std::string &sql,
-                                            const Encodable::List &args,
+                                            const EncodableList &args,
                                             int &updated)
 {
     if (m_isReadOnly)
@@ -283,15 +284,15 @@ utils::error Database::update(const std::string &sql,
 
 void Database::processSqlCommand(int transactionID, const SqlCommandCallback &callback)
 {
-    if (m_currentTransactionID == TransactionID::None) {
+    if (m_currentTransactionID == DatabaseTransaction::ID::None) {
         callback();
         return;
     }
 
-    if (transactionID == m_currentTransactionID || transactionID == TransactionID::Force) {
+    if (transactionID == m_currentTransactionID || transactionID == DatabaseTransaction::ID::Force) {
         callback();
 
-        if (m_currentTransactionID == TransactionID::None) {
+        if (m_currentTransactionID == DatabaseTransaction::ID::None) {
             while (!m_pendingSqlCallbacks.empty() && isOpen()) {
                 const auto &pendingCallback = m_pendingSqlCallbacks.front();
                 pendingCallback();
@@ -313,7 +314,7 @@ void Database::enterInTransaction()
 
 void Database::leaveTransaction()
 {
-    m_currentTransactionID = TransactionID::None;
+    m_currentTransactionID = DatabaseTransaction::ID::None;
 }
 
 int Database::currentTransactionID()
@@ -343,7 +344,7 @@ bool Database::isReadOnly() const
 
 bool Database::isInTransaction() const
 {
-    return m_currentTransactionID != TransactionID::None;
+    return m_currentTransactionID != DatabaseTransaction::ID::None;
 }
 
 int64_t Database::id() const
@@ -385,77 +386,87 @@ utils::error Database::createParentDir()
     return utils::error("couldn't create parent directory");
 }
 
-utils::error Database::bindStmtArgs(sqlite3_stmt *stmt, const Encodable::List &args)
+utils::error Database::bindStmtArgs(sqlite3_stmt *stmt, const EncodableList &args)
 {
     int result = SQLITE_OK;
 
     for (size_t i = 0; i < args.size(); i++) {
         auto idx = i + 1;
-        auto &arg = args[i];
+        EncodableValue arg = args[i];
 
         if (arg.IsNull()) {
             result = sqlite3_bind_null(stmt, idx);
-        } else if (arg.IsBoolean()) {
-            result = sqlite3_bind_int(stmt, idx, static_cast<int>(arg.GetBoolean()));
-        } else if (arg.IsInt()) {
-            const int64_t value = arg.GetInt();
+        } 
+        else if (Val::TypeIs<bool>(arg)) {
+            result = sqlite3_bind_int(stmt, idx, static_cast<int>(Val::GetValue<bool>(arg)));
+        } 
+        else if (Val::TypeIs<int>(arg)) {
+            const int64_t value = Val::GetValue<int>(arg);
 
             const int32_t i32min = std::numeric_limits<int32_t>::min();
             const int32_t i32max = std::numeric_limits<int32_t>::max();
 
             if (value < i32min || value > i32max)
-                result = sqlite3_bind_int64(stmt, idx, arg.GetInt());
+                result = sqlite3_bind_int64(stmt, idx, Val::GetValue<int>(arg));
             else
-                result = sqlite3_bind_int64(stmt, idx, static_cast<int32_t>(arg.GetInt()));
-        } else if (arg.IsFloat()) {
-            result = sqlite3_bind_double(stmt, idx, arg.GetFloat());
-        } else if (arg.IsString()) {
-            const auto &string = arg.GetString();
+                result = sqlite3_bind_int64(stmt, idx, static_cast<int32_t>(Val::GetValue<int>(arg)));
+        } 
+        else if (Val::TypeIs<double>(arg)) {
+            result = sqlite3_bind_double(stmt, idx, Val::GetValue<double>(arg));
+        } 
+        else if (Val::TypeIs<std::string>(arg)) {
+            const auto &string = Val::GetValue<std::string>(arg);
             result = sqlite3_bind_text(stmt, idx, string.c_str(), string.size(), SQLITE_TRANSIENT);
-        } else if (arg.IsUint8List()) {
-            const auto &container = arg.GetUint8List();
+        } 
+        else if (Val::TypeIs<std::vector<uint8_t>>(arg)) {
+            const auto container = Val::GetVector<uint8_t>(arg);
             result = sqlite3_bind_blob(stmt,
                                        idx,
                                        container.data(),
                                        container.size(),
                                        SQLITE_TRANSIENT);
-        } else if (arg.IsInt32List()) {
-            const auto &container = arg.GetInt32List();
+        } 
+        else if (Val::TypeIs<std::vector<int32_t>>(arg)) {
+            const auto container = Val::GetVector<int32_t>(arg);
             result = sqlite3_bind_blob(stmt,
                                        idx,
                                        container.data(),
                                        container.size() * sizeof(int32_t),
                                        SQLITE_TRANSIENT);
-        } else if (arg.IsInt64List()) {
-            const auto &container = arg.GetInt64List();
+        } 
+        else if (Val::TypeIs<std::vector<int64_t>>(arg)) {
+            const auto container = Val::GetVector<int64_t>(arg);
             result = sqlite3_bind_blob(stmt,
                                        idx,
                                        container.data(),
                                        container.size() * sizeof(int64_t),
                                        SQLITE_TRANSIENT);
-        } else if (arg.IsFloat32List()) {
-            const auto &container = arg.GetFloat32List();
+        } 
+        else if (Val::TypeIs<std::vector<float>>(arg)) {
+            const auto container = Val::GetVector<float>(arg);
             result = sqlite3_bind_blob(stmt,
                                        idx,
                                        container.data(),
                                        container.size() * sizeof(float),
                                        SQLITE_TRANSIENT);
-        } else if (arg.IsFloat64List()) {
-            const auto &container = arg.GetFloat64List();
+        }
+        else if (Val::TypeIs<std::vector<double>>(arg)) {
+            const auto container = Val::GetVector<double>(arg);
             result = sqlite3_bind_blob(stmt,
                                        idx,
                                        container.data(),
                                        container.size() * sizeof(double),
                                        SQLITE_TRANSIENT);
-        } else if (arg.IsList()) {
+        } 
+        else if (Val::TypeIs<EncodableList>(arg)) {
             /* only bytes list is supported */
             std::vector<uint8_t> container;
 
-            for (const auto &entry : arg.GetList()) {
-                if (!entry.IsInt())
+            for (const auto &entry : Val::GetValue<EncodableList>(arg)) {
+                if (!Val::TypeIs<int>(entry))
                     return utils::error("only list of bytes is supported for statement parameter");
 
-                const auto value = entry.GetInt();
+                const auto value = Val::GetValue<int>(entry);
 
                 if (value < 0 || value > 255)
                     return utils::error("only list of bytes is supported for statement parameter");
@@ -468,7 +479,8 @@ utils::error Database::bindStmtArgs(sqlite3_stmt *stmt, const Encodable::List &a
                                        container.data(),
                                        container.size(),
                                        SQLITE_TRANSIENT);
-        } else {
+        }
+        else {
             return utils::error("statement parameter has invalid type");
         }
 
@@ -487,21 +499,21 @@ void Database::closeCursor(const Cursor &cursor)
     m_cursors.erase(cursor.id);
 }
 
-utils::error Database::resultFromCursor(const Cursor &cursor, Encodable::Map &result)
+utils::error Database::resultFromCursor(const Cursor &cursor, EncodableMap &result)
 {
-    Encodable::List columns;
+    EncodableList columns;
 
     for (int idx = 0; idx < sqlite3_column_count(cursor.stmt); idx++)
         columns.emplace_back(sqlite3_column_name(cursor.stmt, idx));
 
-    Encodable::List rows;
+    EncodableList rows;
     int status = SQLITE_ROW;
 
     while (static_cast<int64_t>(rows.size()) < cursor.pageSize) {
         status = sqlite3_step(cursor.stmt);
 
         if (status == SQLITE_ROW) {
-            Encodable::List row;
+            EncodableList row;
 
             for (size_t idx = 0; idx < columns.size(); idx++) {
                 switch (sqlite3_column_type(cursor.stmt, idx)) {
@@ -526,7 +538,7 @@ utils::error Database::resultFromCursor(const Cursor &cursor, Encodable::Map &re
                     const char *columnDecltype = sqlite3_column_decltype(cursor.stmt, idx);
 
                     if (columnDecltype != NULL && std::string("BLOB") == columnDecltype)
-                        row.emplace_back(Encodable::Uint8List{});
+                        row.emplace_back(std::vector<uint8_t>());
                     else
                         row.emplace_back(nullptr);
 
@@ -550,22 +562,22 @@ utils::error Database::resultFromCursor(const Cursor &cursor, Encodable::Map &re
         return utils::error(currentErrorMessage());
     }
 
-    result = Encodable::Map{{"columns", columns}, {"rows", rows}};
+    result = EncodableMap{{"columns", columns}, {"rows", rows}};
 
     if (status != SQLITE_DONE)
-        result.insert({ARG_CURSOR_ID, cursor.id});
+        result.insert({Arguments::CursorId, cursor.id});
 
     return utils::error::none();
 }
 
 utils::error Database::batch(const std::vector<Operation> &operations,
                                            bool continueOnError,
-                                           Encodable::List &results)
+                                           EncodableList &results)
 {
     for (const auto &operation : operations) {
         const auto &method = operation.method;
 
-        if (method == METHOD_INSERT) {
+        if (method == Methods::Insert) {
             int insertID = 0;
             const auto error = insert(operation.sql, operation.arguments, insertID);
 
@@ -585,7 +597,7 @@ utils::error Database::batch(const std::vector<Operation> &operations,
             continue;
         }
 
-        if (method == METHOD_EXECUTE) {
+        if (method == Methods::Execute) {
             const auto error = execute(operation.sql, operation.arguments);
 
             if (error) {
@@ -600,8 +612,8 @@ utils::error Database::batch(const std::vector<Operation> &operations,
             continue;
         }
 
-        if (method == METHOD_QUERY) {
-            Encodable::Map result;
+        if (method == Methods::Query) {
+            EncodableMap result;
             const auto error = query(operation.sql, operation.arguments, result);
 
             if (error) {
@@ -616,7 +628,7 @@ utils::error Database::batch(const std::vector<Operation> &operations,
             continue;
         }
 
-        if (method == METHOD_UPDATE) {
+        if (method == Methods::Update) {
             int updated = 0;
             const auto error = update(operation.sql, operation.arguments, updated);
 

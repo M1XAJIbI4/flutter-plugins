@@ -10,6 +10,7 @@
 #include <client_wrapper_demo/globals.h>
 #include <client_wrapper_demo/helper.h>
 
+#include <flutter/flutter_aurora.h>
 #include <flutter/plugin_registrar.h>
 #include <flutter/method_channel.h>
 #include <flutter/event_channel.h>
@@ -19,10 +20,6 @@
 #include <flutter/standard_message_codec.h>
 #include <flutter/standard_method_codec.h>
 #include <flutter/event_stream_handler_functions.h>
-
-#include <flutter/platform-types.h>
-#include <flutter/platform-events.h>
-#include <flutter/platform-methods.h>
 
 // Flutter encodable
 typedef flutter::EncodableValue EncodableValue;

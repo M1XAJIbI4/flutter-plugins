@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 #include <flutter_keyboard_visibility_aurora/flutter_keyboard_visibility_aurora_plugin.h>
-#include <flutter/platform-events.h>
-#include <flutter/platform-methods.h>
 
 namespace Channels {
     constexpr auto EventVisibility = "flutter_keyboard_visibility_aurora_state";
@@ -50,12 +48,12 @@ FlutterKeyboardVisibilityAuroraPlugin::FlutterKeyboardVisibilityAuroraPlugin(
     RegisterStreamHandler();
 
     // Listen change state keyboard
-    PlatformEvents::SubscribeKeyboardVisibilityChanged([&](bool state) {
+    aurora::SubscribeKeyboardVisibilityChanged([&](bool state) {
       if (m_stateEventChannelVisibility) {
         m_sinkVisibility->Success(state);
       }
       if (m_stateEventChannelHeight) {
-        m_sinkHeight->Success(PlatformMethods::GetKeyboardHeight());
+        m_sinkHeight->Success(aurora::GetKeyboardHeight());
       }
     });
 }
@@ -65,7 +63,7 @@ void FlutterKeyboardVisibilityAuroraPlugin::RegisterMethodHandler()
     m_methodChannel->SetMethodCallHandler(
         [&](const MethodCall& call, std::unique_ptr<MethodResult> result) {
             if (call.method_name().compare(Methods::KeyboardHeight) == 0) {
-                result->Success(PlatformMethods::GetKeyboardHeight());
+                result->Success(aurora::GetKeyboardHeight());
             }
             else {
                 result->Success();

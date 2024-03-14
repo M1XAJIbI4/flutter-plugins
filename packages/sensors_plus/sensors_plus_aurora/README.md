@@ -35,14 +35,13 @@ dependencies:
 
 ```desktop
 #include <flutter/application.h>
-#include <flutter/compatibility_qt.h> // <- Add for Qt
 #include "generated_plugin_registrant.h"
 
 int main(int argc, char *argv[]) {
-    Application::Initialize(argc, argv);
-    EnableQtCompatibility(); // <- Add for Qt
-    RegisterPlugins();
-    Application::Launch();
+    aurora::Initialize(argc, argv);
+    aurora::EnableQtCompatibility(); // <- Enable Qt
+    aurora::RegisterPlugins();
+    aurora::Launch();
     return 0;
 }
 ```

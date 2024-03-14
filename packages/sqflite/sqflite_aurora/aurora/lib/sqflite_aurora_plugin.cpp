@@ -2,8 +2,7 @@
  * SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#include <flutter/platform-methods.h>
-#include <flutter/logger.h>
+#include <flutter/flutter_logger.h>
 
 #include <sqflite_aurora/constants.h>
 #include <sqflite_aurora/sqflite_aurora_plugin.h>
@@ -112,8 +111,8 @@ EncodableValue SqfliteAuroraPlugin::onDatabaseExistsCall(const MethodCall &call)
 EncodableValue SqfliteAuroraPlugin::onGetDatabasesPathCall(const MethodCall &)
 {
     const auto home = std::getenv("HOME");
-    const auto orgname = PlatformMethods::GetOrgname();
-    const auto appname = PlatformMethods::GetAppname();
+    const auto orgname = aurora::GetOrgname();
+    const auto appname = aurora::GetAppname();
     const auto directory = std::filesystem::path(home) / ".local/share" / orgname / appname;
     return directory.generic_string();
 }

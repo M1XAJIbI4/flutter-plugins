@@ -7,16 +7,14 @@
 
 #include <camera_aurora/encodable_helper.h>
 
+#include <flutter/flutter_aurora.h>
 #include <flutter/encodable_value.h>
 #include <flutter/texture_registrar.h>
-
-#include <flutter/platform-types.h>
-#include <flutter/platform-events.h>
-#include <flutter/platform-methods.h>
 
 #include <streamcamera/streamcamera.h>
 #include <chrono>
 #include <thread>
+#include <optional>
 #include <functional>
 
 typedef flutter::TextureVariant TextureVariant;

@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 #include <package_info_plus_aurora/package_info_plus_aurora_plugin.h>
-#include <flutter/platform-methods.h>
 
 namespace Channels {
     constexpr auto Methods = "package_info_plus_aurora";
@@ -43,10 +42,10 @@ void PackageInfoPlusAuroraPlugin::RegisterMethodHandler()
     m_methodChannel->SetMethodCallHandler(
         [&](const MethodCall& call, std::unique_ptr<MethodResult> result) {
             if (call.method_name().compare(Methods::AppOrg) == 0) {
-                result->Success(PlatformMethods::GetOrgname());
+                result->Success(aurora::GetOrgname());
             }
             else if (call.method_name().compare(Methods::AppName) == 0) {
-                result->Success(PlatformMethods::GetAppname());
+                result->Success(aurora::GetAppname());
             }
             else {
                 result->Success();

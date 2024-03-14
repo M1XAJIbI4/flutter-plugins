@@ -7,6 +7,7 @@
 
 #include <package_info_plus_aurora/globals.h>
 
+#include <flutter/flutter_aurora.h>
 #include <flutter/plugin_registrar.h>
 #include <flutter/method_channel.h>
 #include <flutter/encodable_value.h>

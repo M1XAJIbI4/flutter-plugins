@@ -182,7 +182,7 @@ void ClientWrapperDemoPlugin::onEventChannelEnable()
     // Enable listen
     m_stateEventChannel = true;
     // Send orientation after start
-    onEventChannelSend(PlatformMethods::GetOrientation());
+    onEventChannelSend(aurora::GetOrientation());
 }
 
 void ClientWrapperDemoPlugin::onEventChannelDisable()
@@ -211,7 +211,7 @@ void ClientWrapperDemoPlugin::onBinaryMessengerEnable()
     // Enable listen
     m_stateBinaryMessenger = true;
     // Send orientation after start
-    onBinaryMessengerSend(PlatformMethods::GetOrientation());
+    onBinaryMessengerSend(aurora::GetOrientation());
 }
 
 void ClientWrapperDemoPlugin::onBinaryMessengerDisable()

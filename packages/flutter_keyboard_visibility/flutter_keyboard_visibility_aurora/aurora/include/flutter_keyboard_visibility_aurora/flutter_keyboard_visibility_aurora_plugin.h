@@ -7,6 +7,7 @@
 
 #include <flutter_keyboard_visibility_aurora/globals.h>
 
+#include <flutter/flutter_aurora.h>
 #include <flutter/plugin_registrar.h>
 #include <flutter/method_channel.h>
 #include <flutter/event_channel.h>

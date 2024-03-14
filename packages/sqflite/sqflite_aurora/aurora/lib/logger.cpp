@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#include <flutter/logger.h>
+#include <flutter/flutter_logger.h>
 #include <sqflite_aurora/logger.h>
 
 Logger::Logger(Level level, const std::string &tag)

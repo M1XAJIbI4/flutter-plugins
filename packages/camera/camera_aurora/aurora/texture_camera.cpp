@@ -56,7 +56,7 @@ EncodableMap TextureCamera::GetState()
             {"width", m_captureWidth},
             {"height", m_captureHeight},
             {"mountAngle", m_info.mountAngle},
-            {"rotationDisplay", static_cast<int>(PlatformMethods::GetOrientation())},
+            {"rotationDisplay", static_cast<int>(aurora::GetOrientation())},
             {"error", m_error},
         };
     }
@@ -233,7 +233,7 @@ std::optional<std::shared_ptr<const Aurora::StreamCamera::YCbCrFrame>> TextureCa
                                       frame->cb,
                                       frame->width,
                                       frame->height,
-                                      static_cast<int>(PlatformMethods::GetOrientation()),
+                                      static_cast<int>(aurora::GetOrientation()),
                                       m_info.mountAngle,
                                       m_info.id.find("front") != std::string::npos ? -1 : 1);
         }
@@ -244,7 +244,7 @@ std::optional<std::shared_ptr<const Aurora::StreamCamera::YCbCrFrame>> TextureCa
                                       nullptr,
                                       frame->width,
                                       frame->height,
-                                      static_cast<int>(PlatformMethods::GetOrientation()),
+                                      static_cast<int>(aurora::GetOrientation()),
                                       m_info.mountAngle,
                                       m_info.id.find("front") != std::string::npos ? -1 : 1);
         }

@@ -9,6 +9,7 @@
 #include <camera_aurora/texture_camera.h>
 #include <camera_aurora/encodable_helper.h>
 
+#include <flutter/flutter_aurora.h>
 #include <flutter/plugin_registrar.h>
 #include <flutter/method_channel.h>
 #include <flutter/event_channel.h>
@@ -16,10 +17,6 @@
 #include <flutter/standard_message_codec.h>
 #include <flutter/standard_method_codec.h>
 #include <flutter/event_stream_handler_functions.h>
-
-#include <flutter/platform-types.h>
-#include <flutter/platform-events.h>
-#include <flutter/platform-methods.h>
 
 #include <QImage>
 #include <QtCore>

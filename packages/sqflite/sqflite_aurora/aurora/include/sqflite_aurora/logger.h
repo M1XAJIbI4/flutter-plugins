@@ -5,7 +5,7 @@
 #ifndef FLUTTER_PLUGIN_SQFLITE_LOGGER_H
 #define FLUTTER_PLUGIN_SQFLITE_LOGGER_H
 
-#include <flutter/logger.h>
+#include <flutter/flutter_logger.h>
 #include <sqflite_aurora/globals.h>
 #include <string>
 

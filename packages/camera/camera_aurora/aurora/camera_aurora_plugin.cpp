@@ -79,7 +79,7 @@ CameraAuroraPlugin::CameraAuroraPlugin(
         });
 
     // Listen change orientation
-    PlatformEvents::SubscribeOrientationChanged([&](DisplayOrientation) {
+    aurora::SubscribeOrientationChanged([&](aurora::DisplayOrientation) {
         if (m_stateEventChannelChange) {
             m_sinkChange->Success(m_textureCamera->GetState());
         }

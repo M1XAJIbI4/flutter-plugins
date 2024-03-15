@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Keys form demo
-enum ValueKeys { int, bool, double, string, list }
+enum ValueKeys { string, int, double, bool, list }
 
 /// Main features of the plugin shared_preferences
 class PluginImpl {

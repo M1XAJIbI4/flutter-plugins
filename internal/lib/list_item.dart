@@ -91,7 +91,7 @@ class ListItem extends StatelessWidget {
       child: value is Widget
           ? value
           : Text(
-              value.toString() ?? 'NULL',
+              value == null ? 'NULL' : value .toString(),
               style: const TextStyle(
                 fontSize: 14,
                 color: Colors.white,

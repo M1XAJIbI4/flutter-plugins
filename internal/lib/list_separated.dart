@@ -11,9 +11,11 @@ class ListSeparated extends StatefulWidget {
   const ListSeparated({
     super.key,
     required this.children,
+    this.controller,
     this.scroll = true,
   });
 
+  final ScrollController? controller;
   final List<Widget> children;
   final bool scroll;
 
@@ -48,6 +50,7 @@ class _ListSeparatedState extends State<ListSeparated> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+        controller: widget.controller ?? ScrollController(),
         padding: EdgeInsets.only(bottom: _keyboardHeight),
         child: SizedBox(
           width: double.infinity,

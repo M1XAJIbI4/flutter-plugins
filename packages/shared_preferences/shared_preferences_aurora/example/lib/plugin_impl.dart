@@ -22,10 +22,8 @@ class PluginImpl {
   Stream<bool> isEmptyStream() {
     if (_streamController == null) {
       _streamController = StreamController<bool>(
-        onListen: () async {
-          _streamController!.add((await getValue(ValueKeys.int)) == null);
-        },
-      );
+          onListen: () async =>
+              _streamController!.add((await getValue(ValueKeys.int)) == null));
     }
     return _streamController!.stream;
   }
@@ -43,8 +41,6 @@ class PluginImpl {
         return (await _prefs).getString(key.name);
       case ValueKeys.list:
         return (await _prefs).getStringList(key.name);
-      default:
-        return null;
     }
   }
 

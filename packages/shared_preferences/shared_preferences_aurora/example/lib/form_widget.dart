@@ -21,13 +21,12 @@ class FormWidget extends StatefulWidget {
 class _FormWidgetState extends State<FormWidget> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _stringController = TextEditingController();
-  final TextEditingController _intController = TextEditingController();
-  final TextEditingController _doubleController = TextEditingController();
+  final TextEditingController _stringEdit = TextEditingController();
+  final TextEditingController _intEdit = TextEditingController();
+  final TextEditingController _doubleEdit = TextEditingController();
 
   bool _boolValue = true;
-  bool _listValue1 = false;
-  bool _listValue2 = false;
+  List<bool> _listValues = [false, false];
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +37,7 @@ class _FormWidgetState extends State<FormWidget> {
         children: [
           /// Field ValueKeys.string
           TextFormField(
-            controller: _stringController,
+            controller: _stringEdit,
             decoration: InputDecoration(
               labelText: 'Specify type "${ValueKeys.string.name}"',
             ),
@@ -56,7 +55,7 @@ class _FormWidgetState extends State<FormWidget> {
 
           /// Field ValueKeys.int
           TextFormField(
-            controller: _intController,
+            controller: _intEdit,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
               labelText: 'Specify type "${ValueKeys.int.name}"',
@@ -72,7 +71,7 @@ class _FormWidgetState extends State<FormWidget> {
 
           /// Field ValueKeys.double
           TextFormField(
-            controller: _doubleController,
+            controller: _doubleEdit,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
               labelText: 'Specify type "${ValueKeys.double.name}"',
@@ -91,27 +90,19 @@ class _FormWidgetState extends State<FormWidget> {
             'Specify type "${ValueKeys.bool.name}"',
             'The value will be stored as a boolean.',
             InternalColors.blue,
-            value: true,
             builder: (value) {
               return Card(
                 clipBehavior: Clip.antiAlias,
                 child: Column(
-                  children: [
-                    RadioListTile(
-                      title: const Text('True'),
-                      value: true,
-                      groupValue: _boolValue,
-                      onChanged: (bool? value) =>
-                          setState(() => _boolValue = value ?? false),
-                    ),
-                    RadioListTile(
-                      title: const Text('False'),
-                      value: false,
-                      groupValue: _boolValue,
-                      onChanged: (bool? value) =>
-                          setState(() => _boolValue = value ?? false),
-                    ),
-                  ],
+                  children: ['True', 'False']
+                      .map((e) => RadioListTile(
+                            title: Text(e.toString()),
+                            value: bool.parse(e.toLowerCase()),
+                            groupValue: _boolValue,
+                            onChanged: (bool? value) =>
+                                setState(() => _boolValue = value ?? false),
+                          ))
+                      .toList(),
                 ),
               );
             },
@@ -123,26 +114,18 @@ class _FormWidgetState extends State<FormWidget> {
             'Specify type "${ValueKeys.list.name}"',
             'The value will be stored as a string list.',
             InternalColors.blue,
-            value: true,
             builder: (value) {
               return Card(
                 clipBehavior: Clip.antiAlias,
                 child: Column(
-                  children: [
-                    CheckboxListTile(
-                      title: const Text('Value 1'),
-                      value: _listValue1,
-                      onChanged: (bool? value) =>
-                          setState(() => _listValue1 = value ?? false),
-                    ),
-                    CheckboxListTile(
-                      title: const Text('Value 2'),
-                      value: _listValue2,
-                      onChanged: (bool? value) =>
-                          setState(() => _listValue2 = value ?? false),
-                    ),
-                  ],
-                ),
+                    children: _listValues
+                        .mapIndexed((index, e) => CheckboxListTile(
+                              title: Text('Value ${index + 1}'),
+                              value: e,
+                              onChanged: (bool? value) => setState(
+                                  () => _listValues[index] = value ?? false),
+                            ))
+                        .toList()),
               );
             },
           ),
@@ -152,21 +135,20 @@ class _FormWidgetState extends State<FormWidget> {
           ListButton(
             'Save data',
             InternalColors.green,
-            onPressed: () async {
+            onPressed: () async => setState(() async {
               if (_formKey.currentState?.validate() == true) {
                 // Get values
-                final valueInt = int.parse(_intController.text);
+                final valueInt = int.parse(_intEdit.text);
                 final valueBool = _boolValue;
-                final valueString = _stringController.text;
-                final valueDouble = double.parse(
-                  _doubleController.text.replaceAll(',', '.'),
-                );
-                final valueList = [
-                  _listValue1 ? 'val1' : null,
-                  _listValue2 ? 'val2' : null,
-                ].whereNotNull().toList();
+                final valueString = _stringEdit.text;
+                final valueDouble =
+                    double.parse(_doubleEdit.text.replaceAll(',', '.'));
+                final valueList = _listValues
+                    .mapIndexed((index, e) => e ? 'val${index + 1}' : null)
+                    .whereNotNull()
+                    .toList();
 
-                // Save data
+                // Save values
                 await widget.impl.setValue(ValueKeys.int, valueInt);
                 await widget.impl.setValue(ValueKeys.bool, valueBool);
                 await widget.impl.setValue(ValueKeys.string, valueString);
@@ -174,18 +156,16 @@ class _FormWidgetState extends State<FormWidget> {
                 await widget.impl.setValue(ValueKeys.list, valueList);
 
                 // Clear form
-                setState(() {
-                  _stringController.clear();
-                  _intController.clear();
-                  _doubleController.clear();
-                  _boolValue = true;
-                  _listValue1 = false;
-                  _listValue2 = false;
-                });
+                _stringEdit.clear();
+                _intEdit.clear();
+                _doubleEdit.clear();
+                _boolValue = true;
+                _listValues = [false, false];
 
+                // Close keyboard
                 FocusScope.of(context).unfocus();
               }
-            },
+            }),
           ),
         ],
       ),

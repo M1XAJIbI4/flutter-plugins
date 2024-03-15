@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:internal/list_button.dart';
 import 'package:internal/list_item_data.dart';
+import 'package:internal/list_item_form_success.dart';
 import 'package:internal/list_item_info.dart';
 import 'package:internal/list_separated.dart';
 import 'package:internal/theme/colors.dart';
@@ -33,13 +34,9 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-
-    /// Listen change data
     _impl.isEmptyStream().listen((event) {
       // Update data is empty
-      setState(() {
-        _dataIsEmpty = event;
-      });
+      setState(() => _dataIsEmpty = event);
       // Check is not init show success
       if (_showSuccess != null) {
         setState(() {
@@ -49,11 +46,8 @@ class _MyAppState extends State<MyApp> {
             curve: Curves.easeOut,
             duration: const Duration(milliseconds: 500),
           );
-          Future.delayed(const Duration(seconds: 2), () {
-            setState(() {
-              _showSuccess = false;
-            });
-          });
+          Future.delayed(const Duration(seconds: 2),
+              () => setState(() => _showSuccess = false));
         });
       } else {
         _showSuccess = false;
@@ -79,23 +73,7 @@ class _MyAppState extends State<MyApp> {
 
             /// Success update data
             if (_showSuccess == true)
-              SizedBox(
-                width: double.infinity,
-                child: Card(
-                  color: InternalColors.green,
-                  child: Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Text(
-                      'Data updated successfully!',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              ListItemFormSuccess('Data updated successfully!'),
 
             /// Show list date SharedPreferences
             ListItemData(
@@ -113,24 +91,15 @@ class _MyAppState extends State<MyApp> {
                     child: DataTable(
                       horizontalMargin: 16,
                       columnSpacing: 6,
-                      columns: const <DataColumn>[
-                        DataColumn(
-                          label: Expanded(
-                            child: Text(
-                              'Name',
-                              style: TextStyle(fontStyle: FontStyle.italic),
-                            ),
-                          ),
-                        ),
-                        DataColumn(
-                          label: Expanded(
-                            child: Text(
-                              'Value',
-                              style: TextStyle(fontStyle: FontStyle.italic),
-                            ),
-                          ),
-                        ),
-                      ],
+                      columns: ['Name', 'Value']
+                          .map((name) => DataColumn(
+                                label: Expanded(
+                                  child: Text(name,
+                                      style: TextStyle(
+                                          fontStyle: FontStyle.italic)),
+                                ),
+                              ))
+                          .toList(),
                       rows: [
                         for (final key in ValueKeys.values)
                           DataRow(

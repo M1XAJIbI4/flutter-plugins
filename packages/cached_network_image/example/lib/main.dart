@@ -20,6 +20,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final urlImage =
+      'https://omprussia.gitlab.io/flutter/flutter/assets/images/preview.png';
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -42,8 +45,7 @@ class _MyAppState extends State<MyApp> {
               if there is a cache, from the cache.
               """,
               InternalColors.purple,
-              value:
-                  'https://omprussia.gitlab.io/flutter/flutter/assets/images/preview.png',
+              value: urlImage,
               builder: (value) {
                 if (value == null) {
                   return const SizedBox.shrink();

@@ -11,6 +11,7 @@ class ListItemData<T> extends StatelessWidget {
     this.description,
     this.color, {
     super.key,
+    this.loader,
     this.widthData,
     this.value,
     this.future,
@@ -22,6 +23,7 @@ class ListItemData<T> extends StatelessWidget {
   final String description;
   final Color color;
 
+  final bool? loader;
   final double? widthData;
   final T? value;
   final Stream<T>? stream;
@@ -30,6 +32,9 @@ class ListItemData<T> extends StatelessWidget {
 
   AsyncWidgetBuilder<T?> get widgetBuilder =>
       (BuildContext context, AsyncSnapshot<T?> snapshot) {
+        final value = builder == null
+            ? snapshot.data.toString()
+            : builder!(snapshot.data);
         return ListItem(
           title,
           description
@@ -37,7 +42,15 @@ class ListItemData<T> extends StatelessWidget {
               .replaceAll('\n', ' ')
               .trim(),
           color,
-          builder == null ? snapshot.data.toString() : builder!(snapshot.data),
+          snapshot.connectionState == ConnectionState.waiting && loader == true
+              ? const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Icon(
+                    Icons.sync,
+                    color: Colors.white,
+                  ),
+                )
+              : value,
           widthData: widthData,
         );
       };

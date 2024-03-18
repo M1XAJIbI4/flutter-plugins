@@ -35,5 +35,8 @@ Permissions=UserDirs;Internet
 ```dart
 /// Import cached_network_image
 import 'package:cached_network_image/cached_network_image.dart';
+
+/// Use widget
+CachedNetworkImage(imageUrl: '{url}')
 ```
 

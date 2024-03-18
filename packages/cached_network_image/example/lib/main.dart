@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:internal/list_item_data.dart';
 import 'package:internal/list_item_info.dart';
 import 'package:internal/list_separated.dart';
 import 'package:internal/theme/colors.dart';
@@ -25,39 +26,57 @@ class _MyAppState extends State<MyApp> {
       theme: internalTheme,
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Cached network image'.toUpperCase()),
+          title: const Text('Cached network image'),
         ),
-        body: ListSeparated(children: [
-          const ListItemInfo("""
+        body: ListSeparated(
+          children: [
+            const ListItemInfo("""
             A Flutter package to use cached network image.
             """),
-          ImageBlock(
-            color: InternalColors.grey,
-            height: 350,
-            child: CachedNetworkImage(
-              imageUrl: "https://static.tildacdn.com/tild3531-3361-4438-b333-323661366430/_.PNG",
-              errorWidget: (context, url, error) => const Icon(Icons.error),
+
+            /// Show image
+            ListItemData(
+              'Image',
+              """
+              Receiving and displaying images from the network or,
+              if there is a cache, from the cache.
+              """,
+              InternalColors.purple,
+              value:
+                  'https://omprussia.gitlab.io/flutter/flutter/assets/images/preview.png',
+              builder: (value) {
+                if (value == null) {
+                  return const SizedBox.shrink();
+                }
+                return SizedBox(
+                  width: double.infinity,
+                  child: Card(
+                    child: Center(
+                      child: CachedNetworkImage(
+                        imageUrl: value,
+                        placeholder: (context, url) => Padding(
+                          padding: EdgeInsets.all(16),
+                          child: const Icon(
+                            Icons.sync,
+                            color: Colors.black,
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Padding(
+                          padding: EdgeInsets.all(16),
+                          child: const Icon(
+                            Icons.error,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
-          ),
-        ]),
+          ],
+        ),
       ),
-    );
-  }
-}
-
-class ImageBlock extends StatelessWidget {
-  const ImageBlock({super.key, required this.color, required this.child, required this.height});
-
-  final Color color;
-  final double height;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: height,
-      child: Padding(padding: const EdgeInsets.all(16), child: child),
     );
   }
 }

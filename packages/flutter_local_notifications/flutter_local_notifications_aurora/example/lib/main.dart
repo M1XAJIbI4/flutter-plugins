@@ -6,6 +6,7 @@ import 'package:internal/list_separated.dart';
 import 'package:internal/theme/theme.dart';
 
 import 'form_widget.dart';
+import 'plugin_impl.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,20 +20,24 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final PluginImpl _impl = PluginImpl();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: internalTheme,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text(
-            'Flutter Local notifications, like desktop',
-          ),
+          title: const Text('Local notifications'),
         ),
-        body: const ListSeparated(
+        body: ListSeparated(
           children: [
-            ListItemInfo("Cross-platform plugin for displaying local notifications."),
-            FormWidget(),
+            const ListItemInfo("""
+            Cross-platform plugin for displaying local notifications.
+            """),
+
+            /// Form for notification data
+            FormWidget(impl: _impl),
           ],
         ),
       ),

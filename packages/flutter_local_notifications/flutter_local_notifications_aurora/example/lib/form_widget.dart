@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:internal/list_button.dart';
 import 'package:internal/theme/colors.dart';
 
-import 'local_notifications_impl.dart';
+import 'plugin_impl.dart';
 
+/// Form focus input
 class FormWidget extends StatefulWidget {
-  const FormWidget({Key? key}) : super(key: key);
+  const FormWidget({super.key, required this.impl});
+
+  final PluginImpl impl;
 
   @override
   State<FormWidget> createState() => _FormWidgetState();
@@ -15,17 +18,11 @@ class FormWidget extends StatefulWidget {
 
 class _FormWidgetState extends State<FormWidget> {
   final _formKey = GlobalKey<FormState>();
-  String? title;
-  String? body;
 
-  final PluginImpl _pluginImpl = PluginImpl();
-
-  void showNotification() {
-    _formKey.currentState!.validate();
-    if (title!.isNotEmpty && body!.isNotEmpty) {
-      _pluginImpl.showNotification(title: title!, body: body!);
-    }
-  }
+  List<Map<String, dynamic>> _formItems = [
+    {'label': 'Title', 'controller': TextEditingController()},
+    {'label': 'Body', 'controller': TextEditingController()},
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -34,41 +31,48 @@ class _FormWidgetState extends State<FormWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _TextFieldWidget('Title', (currentValue) => title = currentValue),
-          _TextFieldWidget('Body', (currentValue) => body = currentValue),
-          const SizedBox(height: 16.0),
-          ListButton('Show notification', InternalColors.green, onPressed: showNotification),
+          /// Fields
+          for (final item in _formItems)
+            Padding(
+              padding: EdgeInsets.only(bottom: 16),
+              child: TextFormField(
+                controller: item['controller'],
+                decoration: InputDecoration(
+                  labelText: item['label'],
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'The parameter "${item['label']}" not must be empty.';
+                  }
+                  if (value.length > 50) {
+                    return 'The parameter "${item['label']}" max length 10 symbols.';
+                  }
+                  return null;
+                },
+              ),
+            ),
+
+          /// Button submit
+          ListButton(
+            'Show notification',
+            InternalColors.green,
+            onPressed: () async => setState(() async {
+              if (_formKey.currentState?.validate() == true) {
+                // Save values
+                await widget.impl.showNotification(
+                  title: _formItems[0]['controller'].text,
+                  body: _formItems[1]['controller'].text,
+                );
+                // Clear form
+                for (final item in _formItems) {
+                  item['controller'].clear();
+                }
+                // Close keyboard
+                FocusScope.of(context).unfocus();
+              }
+            }),
+          ),
         ],
-      ),
-    );
-  }
-}
-
-class _TextFieldWidget extends StatelessWidget {
-  final String enterText;
-  final ValueChanged<dynamic> currentValue;
-
-  const _TextFieldWidget(
-    this.enterText,
-    this.currentValue,
-  );
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: TextFormField(
-        onChanged: (value) => currentValue(value),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please, enter value';
-          }
-          return null;
-        },
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(),
-          labelText: enterText,
-        ),
       ),
     );
   }

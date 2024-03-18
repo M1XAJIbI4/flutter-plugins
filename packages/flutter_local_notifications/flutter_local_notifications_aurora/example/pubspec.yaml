@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
+# SPDX-License-Identifier: BSD-3-Clause
+name: flutter_local_notifications_aurora_example
+description: "The Aurora OS example of flutter_local_notifications_aurora."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.2 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  crypto: any
+  internal:
+    path: ../../../../internal
+  flutter_local_notifications: ^14.1.1
+  flutter_local_notifications_aurora:
+    path: ../
+
+flutter:
+  uses-material-design: true

@@ -280,11 +280,9 @@ packages:
   package_info_plus_aurora:
     dependency: transitive
     description:
-      path: "packages/package_info_plus/package_info_plus_aurora"
-      ref: "package_info_plus_aurora-0.0.1"
-      resolved-ref: "5d3895d6b876a7c5239d66569ee1c59175713d34"
-      url: "https://gitlab.com/omprussia/flutter/flutter-plugins.git"
-    source: git
+      path: "../../../package_info_plus/package_info_plus_aurora"
+      relative: true
+    source: path
     version: "0.0.1"
   package_info_plus_platform_interface:
     dependency: transitive
@@ -321,11 +319,9 @@ packages:
   path_provider_aurora:
     dependency: transitive
     description:
-      path: "packages/path_provider/path_provider_aurora"
-      ref: "path_provider_aurora-0.0.1"
-      resolved-ref: "4f2de1bfd4d111803553794327208609f1512016"
-      url: "https://gitlab.com/omprussia/flutter/flutter-plugins.git"
-    source: git
+      path: "../../../path_provider/path_provider_aurora"
+      relative: true
+    source: path
     version: "0.0.1"
   path_provider_foundation:
     dependency: transitive
@@ -455,11 +451,9 @@ packages:
   xdga_directories:
     dependency: transitive
     description:
-      path: "packages/xdga_directories"
-      ref: "xdga_directories-0.0.1"
-      resolved-ref: "1869a4da50d080a8a7e8cc159783d83674a3490a"
-      url: "https://gitlab.com/omprussia/flutter/flutter-plugins.git"
-    source: git
+      path: "../../../xdga_directories"
+      relative: true
+    source: path
     version: "0.0.1"
 sdks:
   dart: ">=3.2.2 <4.0.0"

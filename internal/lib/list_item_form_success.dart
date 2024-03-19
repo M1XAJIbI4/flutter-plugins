@@ -19,12 +19,12 @@ class ListItemFormSuccess extends StatelessWidget {
       child: Card(
         color: InternalColors.green,
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(8),
           child: Text(
             text.replaceAll(RegExp(r"\s+"), ' ').replaceAll('\n', ' ').trim(),
             textAlign: TextAlign.center,
             style: const TextStyle(
-              fontSize: 16,
+              fontSize: 14,
               color: Colors.white,
             ),
           ),

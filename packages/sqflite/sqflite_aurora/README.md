@@ -34,5 +34,23 @@ BuildRequires: pkgconfig(sqlite3)
 
 ```dart
 import 'package:sqflite/sqflite.dart';
+
+// Get a location using getDatabasesPath
+var databasesPath = await getDatabasesPath();
+String path = p.join(databasesPath, 'demo.db');
+
+// Open the database
+Database db = await openDatabase(
+    path,
+    version: 1,
+    onCreate: (Database db, int version) async {
+    // When creating the db, create the table
+    await db.execute('''CREATE TABLE ${table} (
+                  val_int INTEGER,
+                  val_double REAL,
+                  val_str TEXT
+                )''');
+    },
+);
 ```
 

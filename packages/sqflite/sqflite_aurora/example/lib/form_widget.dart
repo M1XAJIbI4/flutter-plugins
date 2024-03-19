@@ -1,351 +1,164 @@
 // SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:internal/list_button.dart';
 import 'package:internal/theme/colors.dart';
-import 'package:internal/theme/radius.dart';
 
-import 'sqflite_impl.dart';
+import 'plugin_impl.dart';
 
-class FormInsertWidget extends StatefulWidget {
-  final PluginImpl pluginImpl;
+/// Keys form demo
+enum FormTypeKeys { insert, update }
 
-  const FormInsertWidget({required this.pluginImpl, Key? key}) : super(key: key);
+/// Form focus input
+class FormWidget extends StatefulWidget {
+  const FormWidget({super.key, required this.impl, required this.type});
+
+  final PluginImpl impl;
+  final FormTypeKeys type;
 
   @override
-  State<FormInsertWidget> createState() => FormInsertWidgetState();
+  State<FormWidget> createState() => _FormWidgetState();
 }
 
-class FormInsertWidgetState extends State<FormInsertWidget> {
-  String? enterName;
-  int? enterCounter;
-  double? enterDecimal;
-
+class _FormWidgetState extends State<FormWidget> {
   final _formKey = GlobalKey<FormState>();
+  bool _errorUpdate = false;
 
-  @override
-  void initState() {
-    initialize();
-    super.initState();
-  }
-
-  /// Obtaining data from shared preferences during initialization
-  void initialize() async {
-    await widget.pluginImpl.init();
-  }
-
-  /// Saving data to shared preferences
-  void insertData() async {
-    if (mounted) _formKey.currentState!.validate();
-    if (enterName != null && enterCounter != null && enterDecimal != null) {
-      await widget.pluginImpl.insert(enterName!, enterCounter!, enterDecimal!);
-    }
-  }
+  final TextEditingController _idEdit = TextEditingController();
+  final TextEditingController _intEdit = TextEditingController();
+  final TextEditingController _doubleEdit = TextEditingController();
+  final TextEditingController _stringEdit = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _TextFieldWidget(
-                'String ',
-                (currentValue) => enterName = currentValue,
-                FieldType.stringType,
-              ),
-              _TextFieldWidget(
-                'Int',
-                (currentValue) => enterCounter = int.parse(currentValue),
-                FieldType.intType,
-              ),
-              _TextFieldWidget(
-                'Double',
-                (currentValue) => enterDecimal = double.parse(currentValue.toString().replaceAll(',', '.')),
-                FieldType.doubleType,
-              ),
-              ListButton('Save data', InternalColors.blue, onPressed: insertData),
-              const SizedBox(height: 6.0),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class FormUpdateWidget extends StatefulWidget {
-  final PluginImpl pluginImpl;
-  const FormUpdateWidget({
-    required this.pluginImpl,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<FormUpdateWidget> createState() => _FormUpdateWidgetState();
-}
-
-class _FormUpdateWidgetState extends State<FormUpdateWidget> {
-  int? updateId;
-  String? updateName;
-  int? updateCounter;
-  double? updateDecimal;
-
-  final _formKey = GlobalKey<FormState>();
-  updateData() async {
-    _formKey.currentState!.validate();
-    if (updateId != null && updateName != null && updateCounter != null && updateDecimal != null) {
-      await widget.pluginImpl.update(updateId!, updateName!, updateCounter!, updateDecimal!);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _TextFieldWidget(
-                'Id',
-                (currentValue) => updateId = int.parse(currentValue),
-                FieldType.intType,
-              ),
-              _TextFieldWidget(
-                'String',
-                (currentValue) => updateName = currentValue,
-                FieldType.stringType,
-              ),
-              _TextFieldWidget(
-                'Int',
-                (currentValue) => updateCounter = int.parse(currentValue),
-                FieldType.intType,
-              ),
-              _TextFieldWidget(
-                'Double',
-                (currentValue) => updateDecimal = double.parse(currentValue.toString().replaceAll(',', '.')),
-                FieldType.doubleType,
-              ),
-              ListButton('Update data', InternalColors.blue, onPressed: updateData),
-              const SizedBox(height: 16.0),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class FormDeleteWidget extends StatefulWidget {
-  final PluginImpl pluginImpl;
-  const FormDeleteWidget({required this.pluginImpl, Key? key}) : super(key: key);
-
-  @override
-  State<FormDeleteWidget> createState() => _FormDeleteWidgetState();
-}
-
-class _FormDeleteWidgetState extends State<FormDeleteWidget> {
-  int? deleteId;
-
-  final _formKey = GlobalKey<FormState>();
-
-  /// Clearing data from shared preferences
-  void clear() async {
-    _formKey.currentState!.validate();
-    if (deleteId != null) {
-      await widget.pluginImpl.delete(deleteId!);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _TextFieldWidget(
-                'Int',
-                (currentValue) => deleteId = int.parse(currentValue),
-                FieldType.intType,
-              ),
-              ListButton('Clear data', InternalColors.coal, onPressed: clear),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _TextFieldWidget extends StatelessWidget {
-  final String label;
-  final ValueChanged<dynamic> currentValue;
-  final FieldType fieldType;
-
-  const _TextFieldWidget(
-    this.label,
-    this.currentValue,
-    this.fieldType,
-  );
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: TextFormField(
-        onChanged: (value) {
-          if (_validate(value)) currentValue(value);
-        },
-        validator: (value) {
-          if (!_validate(value!)) return 'Please enter a valid ${label.toUpperCase()} value';
-          return null;
-        },
-        decoration: _buildInputDecoration(),
-        keyboardType: _getKeyboardType(),
-        inputFormatters: [_getInputFormatter()!],
-      ),
-    );
-  }
-
-  InputDecoration _buildInputDecoration() {
-    return InputDecoration(
-      hintText: label,
-    );
-  }
-
-  /// Setting the keyboard type
-  TextInputType? _getKeyboardType() {
-    switch (fieldType) {
-      case FieldType.intType:
-        return TextInputType.number;
-      case FieldType.doubleType:
-        return TextInputType.number;
-      case FieldType.stringType:
-        return TextInputType.text;
-      default:
-        return TextInputType.text;
-    }
-  }
-
-  /// Setting the input formatter
-  TextInputFormatter? _getInputFormatter() {
-    switch (fieldType) {
-      case FieldType.intType:
-        return FilteringTextInputFormatter.digitsOnly;
-      case FieldType.doubleType:
-        return FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]+(\.[0-9]*|,[0-9]*)?$'));
-      case FieldType.stringType:
-        return FilteringTextInputFormatter.singleLineFormatter;
-    }
-  }
-
-  /// Validating our text field
-  bool _validate(String value) {
-    switch (fieldType) {
-      case FieldType.intType:
-        return int.tryParse(value) != null;
-      case FieldType.doubleType:
-        return double.tryParse(value.toString().replaceAll(',', '.')) != null;
-      case FieldType.stringType:
-        return value.isNotEmpty;
-      default:
-        return false;
-    }
-  }
-}
-
-class ResultData extends StatefulWidget {
-  ResultData({
-    super.key,
-    required this.pluginImpl,
-  });
-
-  final PluginImpl pluginImpl;
-  @override
-  _ResultDataState createState() => _ResultDataState();
-}
-
-class _ResultDataState extends State<ResultData> {
-  late final StreamController _streamController;
-
-  @override
-  void initState() {
-    super.initState();
-    _streamController = widget.pluginImpl.streamController;
-  }
-
-  @override
-  void dispose() {
-    // Cancel the subscription when not needed
-    _streamController.close();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: _streamController.stream,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return _ResultDataContainerWidget(
-              result: '[]',
-            );
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            return _ResultDataContainerWidget(
-              result: snapshot.data.toString(),
-            );
-          }
-        });
-  }
-}
-
-class _ResultDataContainerWidget extends StatelessWidget {
-  final String result;
-  const _ResultDataContainerWidget({
-    required this.result,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        borderRadius: InternalRadius.large,
-        color: InternalColors.green,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.center,
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Flexible(
-            child: Text(
-              '$result',
-              style: const TextStyle(
-                fontSize: 18,
-                color: Colors.white,
+          /// Field ID
+          if (widget.type == FormTypeKeys.update)
+            Padding(
+              padding: EdgeInsets.only(bottom: 16),
+              child: TextFormField(
+                controller: _idEdit,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Specify "${ValueKeys.id.name.toUpperCase()}"',
+                ),
+                validator: (value) {
+                  if (_errorUpdate) {
+                    return '${ValueKeys.id.name.toUpperCase()} not found.';
+                  }
+                  if (int.tryParse(value ?? '') == null) {
+                    return 'The parameter type must be "${ValueKeys.int.name}"';
+                  }
+                  return null;
+                },
               ),
             ),
+
+          /// Field ValueKeys.int
+          TextFormField(
+            controller: _intEdit,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              labelText: 'Specify type "${ValueKeys.int.name}"',
+            ),
+            validator: (value) {
+              if (int.tryParse(value ?? '') == null) {
+                return 'The parameter type must be "${ValueKeys.int.name}"';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16.0),
+
+          /// Field ValueKeys.double
+          TextFormField(
+            controller: _doubleEdit,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              labelText: 'Specify type "${ValueKeys.double.name}"',
+            ),
+            validator: (value) {
+              if (double.tryParse(value?.replaceAll(',', '.') ?? '') == null) {
+                return 'The parameter type must be "${ValueKeys.double.name}"';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16),
+
+          /// Field ValueKeys.string
+          TextFormField(
+            controller: _stringEdit,
+            decoration: InputDecoration(
+              labelText: 'Specify type "${ValueKeys.string.name}"',
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'The parameter "${ValueKeys.string.name}" not must be empty.';
+              }
+              if (value.length > 10) {
+                return 'The parameter "${ValueKeys.string.name}" max length 10 symbols.';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16.0),
+
+          /// Button submit
+          ListButton(
+            '${widget.type.name} data',
+            InternalColors.green,
+            onPressed: () async => setState(() async {
+              // Clear error update
+              _errorUpdate = false;
+              // Validate all form
+              if (_formKey.currentState?.validate() == true) {
+                // Get values
+                final ID = _idEdit.text;
+                final valueInt = _intEdit.text;
+                final valueDouble = _doubleEdit.text.replaceAll(',', '.');
+                final valueString = _stringEdit.text;
+
+                // Update database data
+                if (widget.type == FormTypeKeys.insert) {
+                  await widget.impl.insert(
+                    valueInt: int.parse(valueInt),
+                    valueDouble: double.parse(valueDouble),
+                    valueString: valueString,
+                  );
+                }
+                if (widget.type == FormTypeKeys.update) {
+                  // Update with result
+                  _errorUpdate = !await widget.impl.update(
+                    id: int.parse(ID),
+                    valueInt: int.parse(valueInt),
+                    valueDouble: double.parse(valueDouble),
+                    valueString: valueString,
+                  );
+                  // Validate after update
+                  _formKey.currentState?.validate();
+                }
+
+                // If not error update clear form
+                if (!_errorUpdate) {
+                  // Clear form
+                  _idEdit.clear();
+                  _intEdit.clear();
+                  _doubleEdit.clear();
+                  _stringEdit.clear();
+
+                  // Close keyboard
+                  FocusScope.of(context).unfocus();
+                }
+              }
+            }),
           ),
         ],
       ),
     );
   }
-}
-
-enum FieldType {
-  intType,
-  doubleType,
-  stringType,
 }

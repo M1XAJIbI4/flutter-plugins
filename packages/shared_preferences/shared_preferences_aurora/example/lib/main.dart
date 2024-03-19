@@ -75,6 +75,14 @@ class _MyAppState extends State<MyApp> {
             if (_showSuccess == true)
               ListItemFormSuccess('Data updated successfully!'),
 
+            /// Button for clear SharedPreferences
+            if (_dataIsEmpty == false && _showSuccess != true)
+              ListButton(
+                'Clear data',
+                InternalColors.coal,
+                onPressed: () async => await _impl.clear(),
+              ),
+
             /// Show list date SharedPreferences
             ListItemData(
               'Save Data',
@@ -125,14 +133,6 @@ class _MyAppState extends State<MyApp> {
                 );
               },
             ),
-
-            /// Button for clear SharedPreferences
-            if (_dataIsEmpty == false && _showSuccess != true)
-              ListButton(
-                'Clear data',
-                InternalColors.coal,
-                onPressed: () async => await _impl.clear(),
-              ),
 
             Divider(),
 

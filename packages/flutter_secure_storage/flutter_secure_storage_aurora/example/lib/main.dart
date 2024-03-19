@@ -71,6 +71,14 @@ class _MyAppState extends State<MyApp> {
             if (_showSuccess == true)
               ListItemFormSuccess('Data updated successfully!'),
 
+            /// Button for clear SecureStorage
+            if (_data != null && _showSuccess != true)
+              ListButton(
+                'Clear data',
+                InternalColors.coal,
+                onPressed: () async => await _impl.clear(),
+              ),
+
             /// Show list date SecureStorage
             ListItemData(
               'Secure Storage data',
@@ -97,14 +105,6 @@ class _MyAppState extends State<MyApp> {
                 );
               },
             ),
-
-            /// Button for clear SecureStorage
-            if (_data != null && _showSuccess != true)
-              ListButton(
-                'Clear data',
-                InternalColors.coal,
-                onPressed: () async => await _impl.clear(),
-              ),
 
             Divider(),
 

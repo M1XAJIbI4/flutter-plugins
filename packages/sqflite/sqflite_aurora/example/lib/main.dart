@@ -67,8 +67,8 @@ class _MyAppState extends State<MyApp> {
           controller: _scroll,
           children: [
             const ListItemInfo("""
-            A lightweight data storage tool with the ability to write
-            asynchronously to disk.
+            SQLite plugin for Flutter. Supports iOS, Android, MacOS
+            and Aurora OS.
             """),
 
             /// Success update data

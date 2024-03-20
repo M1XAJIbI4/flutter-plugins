@@ -41,15 +41,15 @@ class _MyAppState extends State<MyApp> {
             """),
             ListItemData(
               'Orientation',
-              'Sensor status display orientation',
               InternalColors.pink,
+              description: 'Sensor status display orientation',
               stream: _impl.orientation(),
               builder: (value) => value?.toString(),
             ),
             ListItemData(
               'Accelerometer',
-              'Sensor status display accelerometer',
               InternalColors.orange,
+              description: 'Sensor status display accelerometer',
               stream: _impl.accelerometer(),
               builder: (value) => value == null
                   ? null
@@ -61,22 +61,22 @@ class _MyAppState extends State<MyApp> {
             ),
             ListItemData(
               'ALS',
-              'Sensor status display ambient light',
               InternalColors.grey,
+              description: 'Sensor status display ambient light',
               stream: _impl.als(),
               builder: (value) => value?.toString(),
             ),
             ListItemData(
               'Approach Detector',
-              'Sensor status display proximity',
               InternalColors.royal,
+              description: 'Sensor status display proximity',
               stream: _impl.proximity(),
               builder: (value) => value?.toString(),
             ),
             ListItemData(
               'Magnetometer',
-              'Sensor status display magnetometer',
               InternalColors.midnight,
+              description: 'Sensor status display magnetometer',
               stream: _impl.magnetometer(),
               builder: (value) => value == null
                   ? null
@@ -88,8 +88,8 @@ class _MyAppState extends State<MyApp> {
             ),
             ListItemData(
               'Gyroscope',
-              'Sensor status display gyroscope',
               InternalColors.blue,
+              description: 'Sensor status display gyroscope',
               stream: _impl.gyroscope(),
               builder: (value) => value == null
                   ? null
@@ -101,8 +101,8 @@ class _MyAppState extends State<MyApp> {
             ),
             ListItemData(
               'Rotation',
-              'Sensor status display rotation',
               InternalColors.coal,
+              description: 'Sensor status display rotation',
               stream: _impl.rotation(),
               builder: (value) => value == null
                   ? null
@@ -114,15 +114,15 @@ class _MyAppState extends State<MyApp> {
             ),
             ListItemData(
               'Compass',
-              'Sensor status display compass',
               InternalColors.purple,
+              description: 'Sensor status display compass',
               stream: _impl.compass(),
               builder: (value) => value?.toString(),
             ),
             ListItemData(
               'Motion Detector',
-              'Sensor status display tapsensor',
               InternalColors.green,
+              description: 'Sensor status display tapsensor',
               stream: _impl.tap(),
               builder: (value) => value?.toString(),
             ),

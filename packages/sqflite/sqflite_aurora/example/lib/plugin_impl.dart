@@ -11,7 +11,7 @@ enum ValueKeys { id, int, double, string }
 /// Table name
 const table = 'Test';
 
-/// Main features of the plugin shared_preferences
+/// Main features of the plugin sqflite
 class PluginImpl {
   /// Get instance Database
   Database? _db;

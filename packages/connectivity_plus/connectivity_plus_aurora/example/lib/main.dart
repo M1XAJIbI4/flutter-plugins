@@ -40,8 +40,11 @@ class _MyAppState extends State<MyApp> {
             """),
             ListItemData(
               'Stream status',
-              'Here the status of the stream is displayed, reacting to changes in connection type',
               InternalColors.pink,
+              description: """
+              Here the status of the stream is displayed, reacting to changes
+              in connection type
+              """,
               widthData: 140,
               stream: _impl.connectivityResult(),
               builder: (value) => value?.name.toUpperCase(),

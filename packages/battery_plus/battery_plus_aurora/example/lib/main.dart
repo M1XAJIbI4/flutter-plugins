@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:internal/abb_bar_action_refresh.dart';
+import 'package:internal/abb_bar_action.dart';
 import 'package:internal/list_item_data.dart';
 import 'package:internal/list_item_info.dart';
 import 'package:internal/list_separated.dart';
@@ -51,7 +51,7 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Battery plus'),
-          actions: [AppBarActionRefresh(onPressed: _init)],
+          actions: [AppBarAction(onPressed: _init)],
         ),
         body: ListSeparated(
           children: [
@@ -61,24 +61,24 @@ class _MyAppState extends State<MyApp> {
             """),
             ListItemData(
               'Battery Level',
-              'Returns the current battery level as a percentage.',
               InternalColors.orange,
+              description: 'Returns the current battery level as a percentage.',
               widthData: 140,
               future: _batteryLevel,
               builder: (value) => '$value%',
             ),
             ListItemData(
               'Battery Status',
-              'Returns true if the device is in battery saving mode.',
               InternalColors.purple,
+              description: 'Returns true if the device is in battery saving mode.',
               widthData: 140,
               future: _isInBatterySaveMode,
               builder: (value) => value.toString().toUpperCase(),
             ),
             ListItemData(
               'Battery State',
-              'Returns a stream that updates when the battery state changes.',
               InternalColors.green,
+              description: 'Returns a stream that updates when the battery state changes.',
               widthData: 140,
               stream: _onBatteryStateChanged,
               builder: (value) => value?.name.toUpperCase(),

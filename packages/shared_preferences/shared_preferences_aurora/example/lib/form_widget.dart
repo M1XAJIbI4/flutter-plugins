@@ -88,7 +88,6 @@ class _FormWidgetState extends State<FormWidget> {
           /// Field ValueKeys.bool
           ListItemData(
             'Specify type "${ValueKeys.bool.name}"',
-            'The value will be stored as a boolean.',
             InternalColors.blue,
             builder: (value) {
               return Card(
@@ -112,7 +111,6 @@ class _FormWidgetState extends State<FormWidget> {
           /// Field ValueKeys.list
           ListItemData(
             'Specify type "${ValueKeys.list.name}"',
-            'The value will be stored as a string list.',
             InternalColors.blue,
             builder: (value) {
               return Card(

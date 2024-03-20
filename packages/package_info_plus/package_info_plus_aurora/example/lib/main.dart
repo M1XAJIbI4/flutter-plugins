@@ -56,15 +56,15 @@ class _MyAppState extends State<MyApp> {
             """),
             ListItemData(
               'App name',
-              'Bundle Display Name',
               InternalColors.pink,
+              description: 'Bundle Display Name',
               future: _packageInfo,
               builder: (value) => value?.appName,
             ),
             ListItemData(
               'Package name',
-              'Here display bundle Identifier',
               InternalColors.orange,
+              description: 'Here display bundle Identifier',
               future: _packageInfo,
               builder: (value) => value?.packageName,
             ),

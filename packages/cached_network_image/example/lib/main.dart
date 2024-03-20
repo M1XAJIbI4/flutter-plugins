@@ -40,11 +40,11 @@ class _MyAppState extends State<MyApp> {
             /// Show image
             ListItemData(
               'Image',
-              """
+              InternalColors.purple,
+              description: """
               Receiving and displaying images from the network or,
               if there is a cache, from the cache.
               """,
-              InternalColors.purple,
               value: urlImage,
               builder: (value) {
                 if (value == null) {

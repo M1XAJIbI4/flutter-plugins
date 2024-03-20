@@ -86,8 +86,8 @@ class _MyAppState extends State<MyApp> {
             /// Show list date SharedPreferences
             ListItemData(
               'Save Data',
-              'Data saved via form in SharedPreferences.',
               InternalColors.purple,
+              description: 'Data saved via form in SharedPreferences.',
               value: _dataIsEmpty,
               builder: (value) {
                 if (value == true) {

@@ -41,16 +41,16 @@ class _MyAppState extends State<MyApp> {
             const FormWidget(),
             ListItemData(
               'Keyboard status stream',
-              'Displays the status of whether the keyboard is open or closed',
               InternalColors.purple,
+              description: 'Displays the status of whether the keyboard is open or closed',
               widthData: 140,
               stream: _impl.onChange(),
               builder: (value) => value?.toString().toUpperCase(),
             ),
             ListItemData(
               'Keyboard height stream',
-              'Displays keyboard height changes',
               InternalColors.royal,
+              description: 'Displays keyboard height changes',
               widthData: 140,
               stream: _impl.onChangeHeight(),
               builder: (value) => value?.toInt().toString(),

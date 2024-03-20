@@ -82,11 +82,11 @@ class _MyAppState extends State<MyApp> {
             /// Show list date SecureStorage
             ListItemData(
               'Secure Storage data',
-              """
+              InternalColors.purple,
+              description: """
               The value that is stored in SecureStorage encrypted with your
               password.
               """,
-              InternalColors.purple,
               value: _data,
               builder: (value) {
                 if (value == null) {

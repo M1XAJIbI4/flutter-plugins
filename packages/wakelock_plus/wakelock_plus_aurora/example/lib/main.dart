@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
 import 'package:flutter/material.dart';
-import 'package:internal/abb_bar_action_refresh.dart';
+import 'package:internal/abb_bar_action.dart';
 import 'package:internal/list_button.dart';
 import 'package:internal/list_item_data.dart';
 import 'package:internal/list_item_info.dart';
@@ -48,7 +48,7 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Wakelock plus'),
-          actions: [AppBarActionRefresh(onPressed: _init)],
+          actions: [AppBarAction(onPressed: _init)],
         ),
         body: ListSeparated(
           children: [
@@ -58,8 +58,8 @@ class _MyAppState extends State<MyApp> {
             """),
             ListItemData(
               'State Wakelock',
-              'Displays the sleep lock status of the device',
               InternalColors.purple,
+              description: 'Displays the sleep lock status of the device',
               widthData: 140,
               value: _isEnable,
               builder: (value) => value?.toString().toUpperCase(),

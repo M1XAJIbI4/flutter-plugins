@@ -42,11 +42,11 @@ class _MyAppState extends State<MyApp> {
             /// Show image
             ListItemData(
               'File',
-              """
+              InternalColors.purple,
+              description: """
               The work of the flutter_cache_manager plugin, receiving
               the file and displaying its location.
               """,
-              InternalColors.purple,
               loader: true,
               future: _impl.getSingleFile(urlFile),
               builder: (value) {

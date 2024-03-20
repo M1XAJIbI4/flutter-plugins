@@ -68,8 +68,8 @@ class _MyAppState extends State<MyApp> {
             // information in the formats: stream, future, value.
             ListItemData(
               'Check Aurora OS',
-              'Displays whether the current system is Aurora OS',
               InternalColors.purple,
+              description: 'Displays whether the current system is Aurora OS',
               widthData: 140,
               stream: _impl.onIsAurora(),
               builder: (value) => value?.toString().toUpperCase(),
@@ -78,8 +78,8 @@ class _MyAppState extends State<MyApp> {
             // We will demonstrate how the refresh feature works
             ListItemData(
               'Random number',
-              'This random number should be updated after the refresh',
               InternalColors.coal,
+              description: 'This random number should be updated after refresh',
               // If you do not specify the size, the data block will be displayed as a list
               widthData: null,
               future: _randomNumber,

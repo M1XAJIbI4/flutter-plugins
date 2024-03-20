@@ -24,20 +24,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final ClientWrapperDemo _plugin = ClientWrapperDemo();
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     _asyncMethod();
-  //   });
-  // }
-
-  // void _asyncMethod() async {
-  //   Timer.periodic(const Duration(seconds: 3), (Timer t) async {
-  //     await _plugin.encodable();
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -54,11 +40,11 @@ class _MyAppState extends State<MyApp> {
             """),
             ListItemData(
               'Texture Registar',
-              """
+              InternalColors.pink,
+              description: """
               The image is drawn using the GPU, textures and pixel buffer
               through the common client_wrapper.
               """,
-              InternalColors.pink,
               widthData: 100,
               future: _plugin.createTexture(),
               builder: (value) {
@@ -78,33 +64,33 @@ class _MyAppState extends State<MyApp> {
             ),
             ListItemData(
               'Event Channel',
-              """
+              InternalColors.orange,
+              description: """
               Implementing an event using the flutter::EventChannel
               client_wrapper to obtain the screen orientation angle.
               """,
-              InternalColors.orange,
               widthData: 100,
               stream: _plugin.listenEventChannel(),
               builder: (value) => value == null ? null : '$value°',
             ),
             ListItemData(
               'Binary Messenger',
-              """
+              InternalColors.green,
+              description: """
               Implementing an event using the BinaryMessenger client_wrapper
               to obtain the screen orientation angle.
               """,
-              InternalColors.green,
               widthData: 100,
               stream: _plugin.eventBinaryMessage(),
               builder: (value) => value == null ? null : '$value°',
             ),
             ListItemData(
               'Encodable Value',
-              """
+              InternalColors.purple,
+              description: """
               Example of using EncodableValue to transfer data from
               flutter platform channels to dart.
               """,
-              InternalColors.purple,
               future: _plugin.encodable({
                 'int': 1,
                 'bool': true,

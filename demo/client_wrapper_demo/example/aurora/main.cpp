@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[]) {
     aurora::Initialize(argc, argv);
-    RegisterPlugins();
+    aurora::RegisterPlugins();
     aurora::Launch();
     return 0;
 }

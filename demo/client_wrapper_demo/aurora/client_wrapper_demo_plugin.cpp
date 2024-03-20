@@ -61,8 +61,8 @@ ClientWrapperDemoPlugin::ClientWrapperDemoPlugin(
     RegisterBinaryMessengerHandler();
 
     // Listen change orientation
-    PlatformEvents::SubscribeOrientationChanged(
-        [this](DisplayOrientation orientation) {
+    aurora::SubscribeOrientationChanged(
+        [this](aurora::DisplayOrientation orientation) {
             if (m_stateEventChannel) {
                 onEventChannelSend(orientation);
             }
@@ -171,7 +171,7 @@ EncodableValue ClientWrapperDemoPlugin::onEncodable(const MethodCall& method_cal
 
 // ========== event_channel ==========
 
-void ClientWrapperDemoPlugin::onEventChannelSend(DisplayOrientation orientation)
+void ClientWrapperDemoPlugin::onEventChannelSend(aurora::DisplayOrientation orientation)
 {
     // Send data to EventChannel
     m_sink->Success(static_cast<int>(orientation));
@@ -192,7 +192,7 @@ void ClientWrapperDemoPlugin::onEventChannelDisable()
 
 // ========== binary_messenger ==========
 
-void ClientWrapperDemoPlugin::onBinaryMessengerSend(DisplayOrientation orientation)
+void ClientWrapperDemoPlugin::onBinaryMessengerSend(aurora::DisplayOrientation orientation)
 {
     // Send raw data to BinaryMessenger
     std::string value = std::to_string(static_cast<int>(orientation));

@@ -65,12 +65,12 @@ private:
     EncodableValue onEncodable(const MethodCall& method_call);
 
     // Methods EventChannel
-    void onEventChannelSend(DisplayOrientation orientation);
+    void onEventChannelSend(aurora::DisplayOrientation orientation);
     void onEventChannelEnable();
     void onEventChannelDisable();
 
     // Methods BinaryMessenger
-    void onBinaryMessengerSend(DisplayOrientation orientation);
+    void onBinaryMessengerSend(aurora::DisplayOrientation orientation);
     void onBinaryMessengerEnable();
     void onBinaryMessengerDisable();
 

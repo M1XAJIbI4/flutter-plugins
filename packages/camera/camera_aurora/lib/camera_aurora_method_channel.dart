@@ -53,7 +53,7 @@ class MethodChannelCameraAurora extends CameraAuroraPlatform {
     await methodsChannel
         .invokeMethod<Object?>(CameraAuroraMethods.resizeFrame.name, {
       'width': width.round(),
-      'height': height.round(),
+      'height': height.isInfinite ? -1 : height.round(),
     });
   }
 
@@ -99,7 +99,7 @@ class MethodChannelCameraAurora extends CameraAuroraPlatform {
     await methodsChannel
         .invokeMethod<Object?>(CameraAuroraMethods.startCapture.name, {
       'width': width.round(),
-      'height': height.round(),
+      'height': height.isInfinite ? -1 : height.round(),
     });
   }
 

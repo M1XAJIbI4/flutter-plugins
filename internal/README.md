@@ -4,7 +4,7 @@ A package to simplify and organize plugins example.
 
 ## Features
 
-* AppBarActionRefresh - Button for AppBar for refresh
+* AppBarAction - Action button for AppBar
 * ListItemData - Data block with `stream`, `future`, `value`
 * ListItem - Widget block for `ListItemData`
 * ListItemInfo - Info about plugin for example

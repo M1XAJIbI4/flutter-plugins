@@ -48,7 +48,7 @@ abstract class CameraAuroraPlatform extends PlatformInterface {
   }
 
   Future<void> stopCapture() {
-    throw UnimplementedError('startCapture() has not been implemented.');
+    throw UnimplementedError('stopCapture() has not been implemented.');
   }
 
   Future<CameraState> createCamera(String cameraName) {

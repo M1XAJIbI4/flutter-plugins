@@ -4,9 +4,9 @@ import 'dart:async';
 
 import 'package:camera_aurora/camera_viewfinder.dart';
 import 'package:camera_platform_interface/camera_platform_interface.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/foundation.dart';
 
 import 'camera_aurora_platform_interface.dart';
 
@@ -81,12 +81,13 @@ class CameraAurora extends CameraPlatform {
         BuildContext context,
         BoxConstraints constraints,
       ) {
-        if (constraints.maxWidth.isNaN || constraints.maxHeight.isNaN) {
+        double width = constraints.maxWidth;
+        double height = constraints.maxHeight;
+
+        if (width.isNaN || height.isNaN || width.isInfinite) {
           return const SizedBox.shrink();
         }
-
-        CameraAuroraPlatform.instance
-            .resizeFrame(constraints.maxWidth, constraints.maxHeight);
+        CameraAuroraPlatform.instance.resizeFrame(width, height);
         return CameraViewfinder(
           width: constraints.maxWidth,
           height: constraints.maxHeight,

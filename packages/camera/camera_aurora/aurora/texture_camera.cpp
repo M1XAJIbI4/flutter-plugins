@@ -197,11 +197,22 @@ void TextureCamera::ResizeFrame(int width,
                                 int &captureWidth,
                                 int &captureHeight)
 {
+    auto inWidth = width;
+    auto inHeight = height;
+
+    if (inHeight < 0) {
+        if (info.mountAngle == 270 || info.mountAngle == 90) {
+            inHeight = ((cap.width * inWidth) / cap.height) - 1;
+        } else {
+            inHeight = ((cap.height * inWidth) / cap.width) - 1;
+        }
+    }
+
     auto cw = cap.width;
     auto ch = cap.height;
 
-    auto dw = width < 500 ? 500 : width + 100;
-    auto dh = height < 500 ? 500 : height + 100;
+    auto dw = inWidth < 500 ? 500 : inWidth + 100;
+    auto dh = inHeight < 500 ? 500 : inHeight + 100;
 
     if (info.mountAngle == 270 || info.mountAngle == 90) {
         cw = cap.height;

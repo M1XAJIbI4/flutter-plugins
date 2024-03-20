@@ -53,7 +53,7 @@ class _ListSeparatedState extends State<ListSeparated> {
         controller: widget.controller ?? ScrollController(),
         padding: EdgeInsets.only(bottom: _keyboardHeight),
         child: SizedBox(
-          width: double.infinity,
+          width: MediaQuery.of(context).size.width,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
             child: Column(

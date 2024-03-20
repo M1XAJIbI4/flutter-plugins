@@ -8,9 +8,11 @@ class ListItemFormSuccess extends StatelessWidget {
   const ListItemFormSuccess(
     this.text, {
     super.key,
+    this.replace = true,
   });
 
   final String text;
+  final bool replace;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,12 @@ class ListItemFormSuccess extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8),
           child: Text(
-            text.replaceAll(RegExp(r"\s+"), ' ').replaceAll('\n', ' ').trim(),
+            replace
+                ? text
+                    .replaceAll(RegExp(r"\s+"), ' ')
+                    .replaceAll('\n', ' ')
+                    .trim()
+                : text,
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 14,

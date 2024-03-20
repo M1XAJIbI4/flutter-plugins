@@ -16,7 +16,7 @@ class ListItem extends StatelessWidget {
   });
 
   final String title;
-  final String description;
+  final String? description;
   final Color color;
   final dynamic value;
   final double? widthData;
@@ -66,14 +66,17 @@ class ListItem extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 6),
-          Text(
-            description,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.grey,
-            ),
-          ),
+          if (description != null && description!.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: Text(
+                description!,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                ),
+              ),
+            )
         ],
       ),
     );
@@ -91,7 +94,7 @@ class ListItem extends StatelessWidget {
       child: value is Widget
           ? value
           : Text(
-              value == null ? 'NULL' : value .toString(),
+              value == null ? 'NULL' : value.toString(),
               style: const TextStyle(
                 fontSize: 14,
                 color: Colors.white,

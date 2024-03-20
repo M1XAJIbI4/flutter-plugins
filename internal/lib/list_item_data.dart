@@ -8,23 +8,25 @@ import 'list_item.dart';
 class ListItemData<T> extends StatelessWidget {
   const ListItemData(
     this.title,
-    this.description,
     this.color, {
     super.key,
     this.loader,
     this.widthData,
+    this.description,
     this.value,
     this.future,
     this.stream,
     this.builder,
+    this.replace = true,
   });
 
   final String title;
-  final String description;
   final Color color;
 
   final bool? loader;
+  final bool replace;
   final double? widthData;
+  final String? description;
   final T? value;
   final Stream<T>? stream;
   final Future<T>? future;
@@ -37,10 +39,12 @@ class ListItemData<T> extends StatelessWidget {
             : builder!(snapshot.data);
         return ListItem(
           title,
-          description
-              .replaceAll(RegExp(r"\s+"), ' ')
-              .replaceAll('\n', ' ')
-              .trim(),
+          replace
+              ? description
+                  ?.replaceAll(RegExp(r"\s+"), ' ')
+                  .replaceAll('\n', ' ')
+                  .trim()
+              : description,
           color,
           snapshot.connectionState == ConnectionState.waiting && loader == true
               ? const Padding(

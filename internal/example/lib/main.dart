@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
 import 'package:flutter/material.dart';
-import 'package:internal/abb_bar_action_refresh.dart';
+import 'package:internal/abb_bar_action.dart';
 import 'package:internal/list_button.dart';
 import 'package:internal/list_item_data.dart';
 import 'package:internal/list_item_info.dart';
@@ -54,7 +54,7 @@ class _MyAppState extends State<MyApp> {
           // Title
           title: const Text('Internal'),
           // Add button for refresh data.
-          actions: [AppBarActionRefresh(onPressed: _init)],
+          actions: [AppBarAction(onPressed: _init)],
         ),
         // Custom list for widgets with separated.
         body: ListSeparated(

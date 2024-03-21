@@ -2,8 +2,6 @@
 
 The Aurora implementation of [`device_info_plus`](https://pub.dev/packages/device_info_plus).
 
-Permission: `DeviceInfo`.
-
 Information available:
 
 - `id` - Target platform.
@@ -37,12 +35,18 @@ Therefore, you have to include `device_info_plus_aurora` alongside `device_info_
 
 ```yaml
 dependencies:
-  device_info_plus: ^8.2.2
+  device_info_plus: ^10.0.1
   device_info_plus_aurora:
     git:
       url: https://gitlab.com/omprussia/flutter/flutter-plugins.git
       ref: device_info_plus_aurora-0.0.1
       path: packages/device_info_plus/device_info_plus_aurora
+```
+
+***.desktop**
+
+```desktop
+Permissions=DeviceInfo
 ```
 
 ***.dart**

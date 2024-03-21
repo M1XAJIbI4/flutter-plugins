@@ -1,11 +1,11 @@
 // SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
 import 'package:dbus/dbus.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:device_info_plus_aurora/ru_omp_deviceinfo_features.dart';
 import 'package:device_info_plus_aurora/ru_omp_deviceinfo_sim.dart';
 import 'package:device_info_plus_aurora/ru_omp_deviceinfo_storages.dart';
 import 'package:device_info_plus_platform_interface/device_info_plus_platform_interface.dart';
+
 import 'aurora_device_info.dart';
 
 class DeviceInfoPlusAurora extends DeviceInfoPlatform {
@@ -14,13 +14,31 @@ class DeviceInfoPlusAurora extends DeviceInfoPlatform {
     DeviceInfoPlatform.instance = DeviceInfoPlusAurora();
   }
 
+  /// Get client with check connect session bus
+  Future<DBusClient> _getClient() async {
+    final session = DBusClient.session();
+    try {
+      await RuOmpDeviceinfoFeatures(
+        session,
+        'ru.omp.deviceinfo',
+        DBusObjectPath('/ru/omp/deviceinfo/Features'),
+      ).callgetOsVersion();
+      return session;
+    } on Exception {
+      return DBusClient.system();
+    }
+  }
+
   @override
   Future<BaseDeviceInfo> deviceInfo() async {
-    final client = DBusClient.session();
+    final client = await _getClient();
 
     // Features
-    final features = RuOmpDeviceinfoFeatures(client, 'ru.omp.deviceinfo',
-        DBusObjectPath('/ru/omp/deviceinfo/Features'));
+    final features = RuOmpDeviceinfoFeatures(
+      client,
+      'ru.omp.deviceinfo',
+      DBusObjectPath('/ru/omp/deviceinfo/Features'),
+    );
 
     final hasGNSS = await features.callhasGNSS();
     final hasNFC = await features.callhasNFC();
@@ -86,6 +104,6 @@ class DeviceInfoPlusAurora extends DeviceInfoPlatform {
       externalStorage: externalStorage,
       internalStorage: internalStorage,
       simCards: simCards,
-    );
+    ) as BaseDeviceInfo;
   }
 }

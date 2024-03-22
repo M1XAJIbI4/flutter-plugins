@@ -104,6 +104,6 @@ class DeviceInfoPlusAurora extends DeviceInfoPlatform {
       externalStorage: externalStorage,
       internalStorage: internalStorage,
       simCards: simCards,
-    ) as BaseDeviceInfo;
+    );
   }
 }

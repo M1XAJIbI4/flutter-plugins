@@ -18,16 +18,14 @@ class PathProviderAurora extends PathProviderPlatform {
   @override
   Future<String?> getApplicationSupportPath() async {
     PackageInfo info = await PackageInfo.fromPlatform();
+    String path = xdga_directories.getAppDataLocation();
 
     final appName = info.packageName.split('.').last;
     final orgName = info.packageName.replaceAll('.$appName', '');
 
     // QStandardPaths::AppDataLocation
-    return p.join(
-      xdga_directories.getAppDataLocation(),
-      orgName,
-      appName,
-    );
+    // Check if xdga_directories return app & org name
+    return path.contains(orgName) ? path : p.join(path, orgName, appName);
   }
 
   /// Path to the temporary directory on the device that is not backed up and is
@@ -35,16 +33,14 @@ class PathProviderAurora extends PathProviderPlatform {
   @override
   Future<String> getTemporaryPath() async {
     PackageInfo info = await PackageInfo.fromPlatform();
+    String path = xdga_directories.getCacheLocation();
 
     final appName = info.packageName.split('.').last;
     final orgName = info.packageName.replaceAll('.$appName', '');
 
     // QStandardPaths::CacheLocation
-    return p.join(
-      xdga_directories.getCacheLocation(),
-      orgName,
-      appName,
-    );
+    // Check if xdga_directories return app & org name
+    return path.contains(orgName) ? path : p.join(path, orgName, appName);
   }
 
   /// Path to a directory where the application may place data that is

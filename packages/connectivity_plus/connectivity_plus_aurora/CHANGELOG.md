@@ -1,6 +1,6 @@
-## Updated: 01/02/2024 16:05:24 PM
+## Updated: 03/26/2024 14:18:10 PM
 
-### Info
+## Info
 
 - Last tag: connectivity_plus_aurora-0.0.1
 - Released: 1
@@ -9,11 +9,15 @@
 
 - Version: connectivity_plus_aurora-0.0.1 (01/02/2024)
 
-### Version: connectivity_plus_aurora-0.0.1 (01/02/2024)
+### HEAD (26/03/2024)
 
+#### Change
+
+- Use flutter interface client_wrapper.
+
+### Version: connectivity_plus_aurora-0.0.1 (01/02/2024)
 
 #### Feature
 
-* Add example application.
-* The Aurora OS implementation of connectivity_plus.
-
+- Add example application.
+- The Aurora OS implementation of connectivity_plus.

@@ -1,13 +1,25 @@
-# SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
-# SPDX-License-Identifier: BSD-3-Clause
+## Application configuration file Changeln
+## Version config: 0.0.2
 
-### Tag find
-tags: 'connectivity_plus_aurora-.*'
+## Comment tags by which they will be searched
+## and groups by which they will be analyzed.
+commits:
+  Bug: '[connectivity_plus_aurora][bug]'
+  Change: '[connectivity_plus_aurora][change]'
+  Feature: '[connectivity_plus_aurora][feature]'
 
-### Group commits
-# {group name}: {regex}
-groups:
-  Bug: '\[(connectivity_plus_aurora)\]\[(bug)\]\s+(.+)'
-  Change: '\[(connectivity_plus_aurora)\]\[(change)\]\s+(.+)'
-  Feature: '\[(connectivity_plus_aurora)\]\[(feature)\]\s+(.+)'
+## Path to mako template
+template: ../../../.changeln/changeln.mako
+
+## Regular expression to break the comment into groups
+## to format the comment output in the changelog in the 
+## "regex" variable.
+##
+## The empty value is not used.
+parse: ''
+
+## Filter tags using regular expressions
+##
+## The empty value is not used.
+filter: '^((?!connectivity_plus_aurora).)*$'
 

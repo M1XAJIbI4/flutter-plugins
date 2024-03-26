@@ -1,6 +1,6 @@
-## Updated: 28/12/2023 15:40:13 PM
+## Updated: 03/26/2024 14:18:11 PM
 
-### Info
+## Info
 
 - Last tag: device_info_plus_aurora-0.0.1
 - Released: 1
@@ -9,10 +9,14 @@
 
 - Version: device_info_plus_aurora-0.0.1 (28/12/2023)
 
-### Version: device_info_plus_aurora-0.0.1 (28/12/2023)
-
+### HEAD (26/03/2024)
 
 #### Feature
 
-* Add changeln, update dependency ref, readme.
+- Add example for device_info_plus_aurora, fix AuroraOS 5.
 
+### Version: device_info_plus_aurora-0.0.1 (28/12/2023)
+
+#### Feature
+
+- Add changeln, update dependency ref, readme.

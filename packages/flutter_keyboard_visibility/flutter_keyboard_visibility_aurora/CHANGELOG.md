@@ -1,6 +1,6 @@
-## Updated: 28/12/2023 15:40:14 PM
+## Updated: 03/26/2024 14:18:12 PM
 
-### Info
+## Info
 
 - Last tag: flutter_keyboard_visibility_aurora-0.0.1
 - Released: 1
@@ -9,10 +9,18 @@
 
 - Version: flutter_keyboard_visibility_aurora-0.0.1 (28/12/2023)
 
-### Version: flutter_keyboard_visibility_aurora-0.0.1 (28/12/2023)
+### HEAD (26/03/2024)
 
+#### Change
+
+- Use flutter interface client_wrapper.
 
 #### Feature
 
-* Add changeln, update dependency ref, readme.
+- Add example application.
 
+### Version: flutter_keyboard_visibility_aurora-0.0.1 (28/12/2023)
+
+#### Feature
+
+- Add changeln, update dependency ref, readme.

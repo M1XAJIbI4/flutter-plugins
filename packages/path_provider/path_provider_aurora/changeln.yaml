@@ -1,16 +1,25 @@
-### Changeln Configuration Settings
+## Application configuration file Changeln
+## Version config: 0.0.2
 
-# Template engine is Mako - https://www.makotemplates.org/
-# Base template format is Markdown - https://python-markdown.github.io/
----
+## Comment tags by which they will be searched
+## and groups by which they will be analyzed.
+commits:
+  Bug: '[path_provider_aurora][bug]'
+  Change: '[path_provider_aurora][change]'
+  Feature: '[path_provider_aurora][feature]'
 
-### Tag find
-tags: 'path_provider_aurora-.*'
+## Path to mako template
+template: ../../../.changeln/changeln.mako
 
-### Group commits
-# {group name}: {regex}
-groups:
-  Bug: '\[(path_provider_aurora)\]\[(bug)\]\s+(.+)'
-  Change: '\[(path_provider_aurora)\]\[(change)\]\s+(.+)'
-  Feature: '\[(path_provider_aurora)\]\[(feature)\]\s+(.+)'
+## Regular expression to break the comment into groups
+## to format the comment output in the changelog in the 
+## "regex" variable.
+##
+## The empty value is not used.
+parse: ''
+
+## Filter tags using regular expressions
+##
+## The empty value is not used.
+filter: '^((?!path_provider_aurora).)*$'
 
